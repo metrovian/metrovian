@@ -1,18 +1,19 @@
 # Vian Lee #
 BSc Physics / Mathematics in Soongsil University (2019)
 <br/></br>
-
 ## HIT AUTOMOTIVE [ 2022.10 - ] ## 
 Metrology Team Development Engineer 
-### i-Track ###
-- Expandable camera based 6-DoF measurement machine
-- Volumetric accuracy : 0.150 mm
-- Frame rate : 100 FPS
-- Convenient applications
-  1. Die vent hole drilling machine (2023)
 <br/></br>
-### Syncworks ##
-- Laser tracker based manipulator calibration machine
+## i-Track ##
+**FPGA Camera Based 6-DoF Measurement Machine**
+- Nominal accuracy : 150 μm
+- Measurement speed : 100 FPS
+<br/></br>
+- *Confidential Ongoing Project* [ 2025.05 ]
+- *Die Vent Hole Drilling Machine* [ 2023.12 ]
+<br/></br>
+## Syncworks ##
+**Laser Tracker Based Manipulator Calibration Machine**
 - Manipulator coordinate system estimation
 - Manipulator kinematics parameter calibration
 - Metrological feature construction
