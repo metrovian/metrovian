@@ -5,7 +5,7 @@ BSc Physics / Mathematics in Soongsil University (2019)
 Metrology Team Development Engineer 
 <br/></br>
 ## i-Track ##
-**FPGA Camera Based 6-DoF Measurement Machine**
+**FPGA Camera Based 6-DoF Measurement System**
 - Nominal accuracy : 150 μm
 - Measurement speed : 100 FPS
 <br/></br>
@@ -13,10 +13,12 @@ Metrology Team Development Engineer
 - *Die Vent Hole Drilling Machine* [ 2023.12 ]
 <br/></br>
 ## Syncworks ##
-**Laser Tracker Based Manipulator Calibration Machine**
+**Laser Tracker Based Robot Calibration System**
 - Manipulator coordinate system estimation
-- Manipulator kinematics parameter calibration
+- Kinematics parameter calibration
+- Peripheral motion calibration
 - Metrological feature construction
+
   
 <!---
 Metrologist-Vian/Metrologist-Vian is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
