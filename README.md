@@ -5,19 +5,24 @@ BSc Physics / Mathematics in Soongsil University (2019)
 Metrology Team Development Engineer 
 <br/></br>
 ## i-Track ##
-**FPGA Camera Based 6-DoF Measurement System**
+FPGA Camera Based 6-DoF Measurement System
 - Nominal accuracy : 150 μm
 - Measurement speed : 100 FPS
 <br/></br>
 - *Confidential Ongoing Project* [ 2025.05 ]
 - *Die Vent Hole Drilling Machine* [ 2023.12 ]
 <br/></br>
+
 ## Syncworks ##
-**Laser Tracker Based Robot Calibration System**
+Laser Tracker Based Robot Calibration System
 - Manipulator coordinate system estimation
 - Kinematics parameter calibration
 - Peripheral motion calibration
 - Metrological feature construction
+<br/></br>
+## Research Croquis ##
+- Linspector | Machine Vision Based Active Marker Quality Management System
+- Centidea | Ongoing
 
   
 <!---
