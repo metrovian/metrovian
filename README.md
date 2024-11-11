@@ -4,17 +4,16 @@ BSc Physics / Mathematics in Soongsil University [ 2015.03 - 2019.02 ]
 ## HIT AUTOMOTIVE ## 
 Development Engineer in Metrology Team [ 2022.10 - ]
 <br/></br>
-## i-Track ##
-FPGA Camera Based 6-DoF Measurement System
-- Nominal accuracy : 150 μm
-- Measurement speed : 100 FPS
-<br/></br>
 ## Factory Automation ##
-Dimensional Metrology Based Factory Automation Equipment
+Dimensional Metrology Based Factory Automation Equipments
   - Die Vent Hole Drilling Machine [ *SILLA ENGINEERING* - 2023.11 ]
-  - Preform Blowing Machine [ *DONG-A PRECISION* - 2025.04 ]
+  - Die Surface Hardening Machine [ *SEOYON TOPMETAL* - 2025.03 ]
+  - Preform Cooling Machine [ *DONG-A PRECISION* - 2025.04 ]
 <br/></br>
-
+## Quality Management ##
+Dimensional Metrology Based Quality Management Equipments
+- Logistics Robot Trajectory Tracker [ *GYEONGNAM ROBOT LAND* - 2024.11 ]
+- Cartesian Transfer Robot Repeatability Tester [ *DONG-A PRECISION* - 2025.04 ]
 
   
 <!---
