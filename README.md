@@ -12,7 +12,7 @@ Dimensional Metrology Based Factory Automation Equipments
 <br/></br>
 ## Quality Management ##
 Dimensional Metrology Based Quality Management Equipments
-- Logistics Robot Trajectory Tracker [ *GYEONGNAM ROBOT LAND* - 2024.11 ]
+- Logistics Robot Motion Tracker [ *GYEONGNAM ROBOT LAND* - 2024.11 ]
 - Cartesian Transfer Robot Repeatability Tester [ *DONG-A PRECISION* - 2025.04 ]
 
   
