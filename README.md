@@ -6,14 +6,14 @@ Development Engineer in Metrology Team [ 2022.10 - ]
 <br/></br>
 ## Factory Automation ##
 Dimensional Metrology Based Factory Automation Equipments
-  - Die Vent Hole Drilling Machine [ *SILLA ENGINEERING* - 2023.11 ]
-  - Die Surface Hardening Machine [ *SEOYON TOPMETAL* - 2025.03 ]
   - Preform Cooling Machine [ *DONG-A PRECISION* - 2025.04 ]
+  - Die Surface Hardening Machine [ *SEOYON TOPMETAL* - 2025.03 ]
+  - Die Vent Hole Drilling Machine [ *SILLA ENGINEERING* - 2023.12 ]
 <br/></br>
 ## Quality Management ##
 Dimensional Metrology Based Quality Management Equipments
-- Logistics Robot Motion Tracker [ *GYEONGNAM ROBOT LAND* - 2024.11 ]
-- Cartesian Transfer Robot Repeatability Tester [ *DONG-A PRECISION* - 2025.04 ]
+- Cartesian Transfer Robot Motion Tester [ *DONG-A PRECISION* - 2025.04 ]
+- Autonomous Mobile Robot Motion Tester [ *GYEONGNAM ROBOT LAND* - 2024.12 ]
 
   
 <!---
