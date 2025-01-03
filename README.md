@@ -1,13 +1,12 @@
 # Vian Lee #
-Dimensional Metrologist with Optical Expertise
-- Bachelor of Science in Physics / Mathematics [ *SOONGSIL UNIVERSITY* - 2019.02 ]
+Dimensional metrologist with optical expertise
+- Bachelor of science in mathematics · physics | Soongsil University [ 2015.03 - 2019.02 ]
 <br/></br>
 ## HIT AUTOMOTIVE ## 
-Development Engineer in Metrology Team [ 2022.10 - ]
-- Develop Binocular Camera Based Motion Tracker Backend
-- Develop Active Marker Inspector Backend
-- Develop Robot Automation Equipment Backend
-
+Development engineer in metrology team [ 2022.10 - ]
+- Develop binocular camera based motion tracker backend
+- Develop active marker inspector backend
+- Develop robot automation equipment backend
   
 <!---
 Metrologist-Vian/Metrologist-Vian is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
