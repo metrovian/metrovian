@@ -4,6 +4,7 @@ Dimensional metrologist with optical expertise
 <br/></br>
 ## TRUEN ##
 Development engineer in firmware team [ 2025.02 - ]
+- Develop edge artificial intelligence camera firmware platform
 <br/></br>
 ## HIT AUTOMOTIVE ## 
 Development engineer in metrology team [ 2022.10 - 2025.02 ]
