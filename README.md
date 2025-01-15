@@ -1,6 +1,7 @@
 # Vian Lee #
 Dimensional metrologist with optical expertise
-- Bachelor of science in mathematics · physics | Soongsil University [ 2015.03 - 2019.02 ]
+- Bachelor of science in physics | Soongsil University [ 2015.03 - 2019.02 ]
+- Bachelor of science in mathematics | Soongsil University [ 2016.03 - 2019.02 ]
 <br/></br>
 ## TRUEN ##
 Development engineer in firmware team [ 2025.02 - ]
