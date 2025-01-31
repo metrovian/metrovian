@@ -10,9 +10,9 @@ Development engineer in firmware team [ 2025.02 - ]
 ## HIT AUTOMOTIVE ## 
 Development engineer in metrology team [ 2022.10 - 2025.02 ]
 - Develop binocular camera based motion tracker backend
-- Develop active marker inspector backend
-- Develop robot automation equipment backend
-  
+- Develop marker inspector backend
+- Develop automation equipment backend
+- Develop absolute tracker based calibration platform
 <!---
 Metrologist-Vian/Metrologist-Vian is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 You can click the Preview link to take a look at your changes.
