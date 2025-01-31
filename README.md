@@ -9,7 +9,7 @@ Development engineer in firmware team [ 2025.02 - ]
 <br/></br>
 ## HIT AUTOMOTIVE ## 
 Development engineer in metrology team [ 2022.10 - 2025.02 ]
-- Develop binocular camera based motion tracker backend
+- Develop binocular camera tracker backend
 - Develop marker inspector backend
 - Develop automation equipment backend
 - Develop absolute tracker based calibration platform
