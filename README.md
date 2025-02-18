@@ -5,7 +5,8 @@ Dimensional metrologist with optical expertise
 <br/></br>
 ## TRUEN - SEOUL ##
 Development engineer in firmware team [ 2025.02 - ]
-- Develop edge artificial intelligence camera firmware platform
+- Develop internet protocol camera firmware application
+- Develop media server firmware application
 <br/></br>
 ## HIT - ANYANG ## 
 Development engineer in metrology team [ 2022.10 - 2025.02 ]
