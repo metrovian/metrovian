@@ -17,8 +17,8 @@ Development engineer in metrology team [ 2022.10 - 2025.02 ]
 <br></br>
 ## GIST - GWANGJU ##
 Development engineer in applied optics laboratory [ 2019.02 - 2020.05 ]
-- Develop fiber-optic interferometer calibration method
-- Develop homodyne full-field interferometer calibration method
+- Develop fiber interferometer calibration method
+- Develop full-field interferometer calibration method
 <br></br>
 <!---
 Metrologist-Vian/Metrologist-Vian is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
