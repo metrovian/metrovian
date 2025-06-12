@@ -7,6 +7,8 @@ Dimensional metrologist in optics department
 Development engineer in firmware team [ 2025.02 - ]
 - Develop internet protocol camera firmware application
 - Develop media server firmware application
+- Develop media deliverer
+- Develop motorized camera calibration platform
 <br/></br>
 ## HIT - ANYANG ## 
 Development engineer in metrology team [ 2022.10 - 2025.02 ]
