@@ -10,18 +10,6 @@ Development engineer in firmware team [ 2025.02 - ]
 - Develop media streamer platform
 - Develop motorized camera calibration platform
 <br/></br>
-## HIT - ANYANG ## 
-Development engineer in metrology team [ 2022.10 - 2025.02 ]
-- Develop binocular camera tracker backend
-- Develop marker inspector backend
-- Develop automation equipment backend
-- Develop absolute tracker based calibration platform
-<br></br>
-## GIST - GWANGJU ##
-Development engineer in applied optics laboratory [ 2019.02 - 2020.05 ]
-- Develop fiber interferometer calibration method
-- Develop full-field interferometer calibration method
-<br></br>
 <!---
 Metrologist-Vian/Metrologist-Vian is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 You can click the Preview link to take a look at your changes.
