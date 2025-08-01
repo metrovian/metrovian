@@ -1,5 +1,5 @@
 ## 
-### Junior Mathematician ###
+### Mathematician [ C / C++ ] ###
 - Dimensional parameter reconstruction via non-linear optimization
 - Cipher stream reconstruction via approximate decryption
 - Encoded stream reconstruction via approximate decompression
