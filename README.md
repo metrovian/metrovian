@@ -1,16 +1,4 @@
-##
-Dimensional metrologist in optics department
-- Bachelor of science in physics | Soongsil University [ 2015.03 - 2019.02 ]
-- Bachelor of science in mathematics | Soongsil University [ 2016.03 - 2019.02 ]
-<br/></br>
-## TRUEN - SEOUL ##
-Development engineer in firmware team [ 2025.02 - ]
-- Develop internet protocol camera firmware application
-- Develop media server firmware application
-- Develop media streamer platform
-- Develop motorized camera calibration platform
-<br/></br>
-<!---
-Metrologist-Vian/Metrologist-Vian is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-You can click the Preview link to take a look at your changes.
---->
+## Mathematician ##
+- Dimensional parameter reconstruction via non-linear optimization
+- Cipher stream reconstruction via approximate decryption
+- Encoded stream reconstruction via approximate decompression
