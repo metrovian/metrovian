@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <spdlog/spdlog.h>
 
-class abstract_decryption {
+class decryption_abstract {
 protected: /* stream transform */
 	static std::vector<uint8_t> stob(const std::string &chars);
 	static std::vector<uint8_t> htob(const std::string &hexs);
@@ -17,5 +17,5 @@ protected: /* stream transform */
 
 public: /* abstract interface */
 	virtual int8_t decrypt(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) = 0;
-	virtual ~abstract_decryption() {}
+	virtual ~decryption_abstract() {}
 };
