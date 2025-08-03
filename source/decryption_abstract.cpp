@@ -37,10 +37,17 @@ std::string decryption_abstract::btoh(const std::vector<uint8_t> &bytes) {
 	return oss.str();
 }
 
+int8_t decryption_abstract::decrypt(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) {
+	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
+	int8_t retcode = decryption(cipher, plain);
+	spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
+	return retcode;
+}
+
 int8_t decryption_abstract::decrypt(const std::vector<uint8_t> &cipher, std::string &plain) {
 	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
 	std::vector<uint8_t> bytes;
-	int8_t retcode = decrypt(cipher, bytes);
+	int8_t retcode = decryption(cipher, bytes);
 	plain = std::move(btos(bytes));
 	spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 	return retcode;
@@ -50,7 +57,7 @@ int8_t decryption_abstract::decrypt(const std::string &cipher, std::string &plai
 	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
 	std::vector<uint8_t> chars = stob(cipher);
 	std::vector<uint8_t> bytes;
-	int8_t retcode = decrypt(chars, bytes);
+	int8_t retcode = decryption(chars, bytes);
 	plain = std::move(btos(bytes));
 	spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 	return retcode;
@@ -59,7 +66,7 @@ int8_t decryption_abstract::decrypt(const std::string &cipher, std::string &plai
 int8_t decryption_abstract::decrypt(const std::string &cipher, std::vector<uint8_t> &plain) {
 	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
 	std::vector<uint8_t> chars = stob(cipher);
-	int8_t retcode = decrypt(chars, plain);
+	int8_t retcode = decryption(chars, plain);
 	spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 	return retcode;
 }

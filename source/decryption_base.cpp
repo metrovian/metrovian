@@ -1,6 +1,6 @@
 #include "decryption_base.h"
 
-int8_t decryption_base64::decrypt(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) {
+int8_t decryption_base64::decryption(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) {
 	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
 	BIO *base64 = BIO_new(BIO_f_base64());
 	BIO *bio = BIO_new_mem_buf(cipher.data(), static_cast<int32_t>(cipher.size()));
