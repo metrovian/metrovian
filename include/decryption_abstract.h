@@ -19,11 +19,14 @@ protected: /* stream transform */
 	static std::string btoh(const std::vector<uint8_t> &bytes);
 
 public: /* overload */
+	int8_t decrypt(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain);
 	int8_t decrypt(const std::vector<uint8_t> &cipher, std::string &plain);
 	int8_t decrypt(const std::string &cipher, std::string &plain);
 	int8_t decrypt(const std::string &cipher, std::vector<uint8_t> &plain);
 
+protected: /* abstract */
+	virtual int8_t decryption(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) = 0;
+
 public: /* abstract */
-	virtual int8_t decrypt(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) = 0;
 	virtual ~decryption_abstract() {}
 };
