@@ -102,8 +102,10 @@ int8_t decryption_aes256_cbc::decryption(const std::vector<uint8_t> &cipher, std
 
 	EVP_CIPHER_CTX_free(ctx);
 	plain.resize(len1 + len2);
-	spdlog::debug("aes256 cipher: \"{}\"", btos(cipher));
-	spdlog::debug("aes256 plain: \"{}\"", btos(plain));
+	spdlog::debug("aes256-cbc cipher: \"{}\"", btoh(decoded));
+	spdlog::debug("aes256-cbc key:    \"{}\"", btoh(key_));
+	spdlog::debug("aes256-cbc iv:     \"{}\"", btoh(iv_));
+	spdlog::debug("aes256-cbc plain:  \"{}\"", btoh(plain));
 	spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 	return 0;
 }

@@ -21,8 +21,8 @@ int8_t decryption_base64::decryption(const std::vector<uint8_t> &cipher, std::ve
 	}
 
 	plain.resize(static_cast<uint64_t>(BIO_retcode));
-	spdlog::info("base64 cipher: \"{}\"", btos(cipher));
-	spdlog::info("base64 plain: \"{}\"", btos(plain));
+	spdlog::debug("base64 cipher: \"{}\"", btos(cipher));
+	spdlog::debug("base64 plain:  \"{}\"", btoh(plain));
 	spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 	return 0;
 }
