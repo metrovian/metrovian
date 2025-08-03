@@ -41,7 +41,7 @@ int8_t decryption_abstract::decrypt(const std::vector<uint8_t> &cipher, std::str
 	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
 	std::vector<uint8_t> bytes;
 	int8_t retcode = decrypt(cipher, bytes);
-	plain = btos(bytes);
+	plain = std::move(btos(bytes));
 	spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 	return retcode;
 }
@@ -51,7 +51,7 @@ int8_t decryption_abstract::decrypt(const std::string &cipher, std::string &plai
 	std::vector<uint8_t> chars = stob(cipher);
 	std::vector<uint8_t> bytes;
 	int8_t retcode = decrypt(chars, bytes);
-	plain = btos(bytes);
+	plain = std::move(btos(bytes));
 	spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 	return retcode;
 }
