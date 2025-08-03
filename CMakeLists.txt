@@ -14,6 +14,8 @@ FILE(GLOB_RECURSE SOURCES_COMMON
         ${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/source/*.c)
         
+FIND_PACKAGE(OpenSSL REQUIRED)
+
 ADD_SUBDIRECTORY(3rdparty/spdlog)
 
 ADD_EXECUTABLE(test
@@ -21,5 +23,6 @@ ADD_EXECUTABLE(test
         ${SOURCES_COMMON})
 
 TARGET_LINK_LIBRARIES(test
-        PRIVATE 
+        PRIVATE
+        OpenSSL::Crypto
         spdlog::spdlog)
