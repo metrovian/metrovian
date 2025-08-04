@@ -1,5 +1,4 @@
 #include "decryption_aes.h"
-#include "decryption_base.h"
 
 int8_t decryption_aes256::setkey(const std::vector<uint8_t> &key) {
 	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
@@ -29,11 +28,8 @@ int8_t decryption_aes256::setiv(const std::vector<uint8_t> &iv) {
 
 int8_t decryption_aes256::setkey(const std::string &key) {
 	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
-	std::vector<uint8_t> decoded;
-	if (decryption_base64().decrypt(key, decoded) < 0) {
-		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
-		return -1;
-	} else if (decoded.size() != 32) {
+	std::vector<uint8_t> decoded = base64(key);
+	if (decoded.size() != 32) {
 		spdlog::error("aes256 decryption setkey failed: {}", decoded.size());
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 		return -1;
@@ -46,11 +42,8 @@ int8_t decryption_aes256::setkey(const std::string &key) {
 
 int8_t decryption_aes256::setiv(const std::string &iv) {
 	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
-	std::vector<uint8_t> decoded;
-	if (decryption_base64().decrypt(iv, decoded) < 0) {
-		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
-		return -1;
-	} else if (decoded.size() != 16) {
+	std::vector<uint8_t> decoded = base64(iv);
+	if (decoded.size() != 16) {
 		spdlog::error("aes256 decryption setiv failed: {}", decoded.size());
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 		return -1;
@@ -63,12 +56,6 @@ int8_t decryption_aes256::setiv(const std::string &iv) {
 
 int8_t decryption_aes256_cbc::decryption(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) {
 	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
-	std::vector<uint8_t> decoded;
-	if (decryption_base64().decrypt(cipher, decoded) < 0) {
-		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
-		return -1;
-	}
-
 	EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
 	if (ctx == nullptr) {
 		spdlog::critical("[invalid implementation] {}", __PRETTY_FUNCTION__);
@@ -77,7 +64,7 @@ int8_t decryption_aes256_cbc::decryption(const std::vector<uint8_t> &cipher, std
 	}
 
 	plain.clear();
-	plain.resize(decoded.size() + EVP_MAX_BLOCK_LENGTH);
+	plain.resize(cipher.size() + EVP_MAX_BLOCK_LENGTH);
 	if (EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), nullptr, key_.data(), iv_.data()) != 1) {
 		EVP_CIPHER_CTX_free(ctx);
 		spdlog::error("aes256-cbc decryption context init failed");
@@ -87,7 +74,7 @@ int8_t decryption_aes256_cbc::decryption(const std::vector<uint8_t> &cipher, std
 
 	int32_t len_update = 0;
 	int32_t len_final = 0;
-	if (EVP_DecryptUpdate(ctx, plain.data(), &len_update, decoded.data(), static_cast<int32_t>(decoded.size())) != 1) {
+	if (EVP_DecryptUpdate(ctx, plain.data(), &len_update, cipher.data(), static_cast<int32_t>(cipher.size())) != 1) {
 		EVP_CIPHER_CTX_free(ctx);
 		spdlog::error("aes256-cbc decryption context update failed");
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
@@ -103,10 +90,10 @@ int8_t decryption_aes256_cbc::decryption(const std::vector<uint8_t> &cipher, std
 
 	EVP_CIPHER_CTX_free(ctx);
 	plain.resize(len_update + len_final);
-	spdlog::debug("aes256-cbc cipher: \"{}\"", btoh(decoded));
-	spdlog::debug("aes256-cbc key:    \"{}\"", btoh(key_));
-	spdlog::debug("aes256-cbc iv:     \"{}\"", btoh(iv_));
-	spdlog::debug("aes256-cbc plain:  \"{}\"", btoh(plain));
+	spdlog::debug("aes256-cbc cipher: \"{}\"", base64(cipher));
+	spdlog::debug("aes256-cbc key:    \"{}\"", base64(key_));
+	spdlog::debug("aes256-cbc iv:     \"{}\"", base64(iv_));
+	spdlog::debug("aes256-cbc plain:  \"{}\"", base64(plain));
 	spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 	return 0;
 }

@@ -1,30 +1,33 @@
 #include "decryption_abstract.h"
 
-std::vector<uint8_t> decryption_abstract::stob(const std::string &chars) {
-	return std::vector<uint8_t>(chars.begin(), chars.end());
-}
-
-std::vector<uint8_t> decryption_abstract::htob(const std::string &hexs) {
-	std::vector<uint8_t> bytes;
-	for (uint64_t i = 0; i + 1 < hexs.size(); i += 2) {
-		bytes.push_back(std::stoi(hexs.substr(i, 2), nullptr, 16));
+std::vector<uint8_t> decryption_abstract::base64(const std::string &chars) {
+	BIO *base64 = BIO_new(BIO_f_base64());
+	BIO *bio = BIO_new_mem_buf(chars.data(), static_cast<int32_t>(chars.size()));
+	bio = BIO_push(base64, bio);
+	BIO_set_flags(bio, BIO_FLAGS_BASE64_NO_NL);
+	std::vector<uint8_t> decoded((chars.length() * 3) / 4);
+	int32_t len_read = BIO_read(bio, decoded.data(), static_cast<int32_t>(decoded.size()));
+	BIO_free_all(bio);
+	if (len_read > 0) {
+		decoded.resize(static_cast<size_t>(len_read));
+		return decoded;
 	}
 
-	return bytes;
+	return std::vector<uint8_t>();
 }
 
-std::string decryption_abstract::btos(const std::vector<uint8_t> &bytes) {
-	return std::string(bytes.begin(), bytes.end());
-}
-
-std::string decryption_abstract::btoh(const std::vector<uint8_t> &bytes) {
-	std::ostringstream oss;
-	oss << std::hex << std::setfill('0');
-	for (uint8_t byte : bytes) {
-		oss << std::setw(2) << static_cast<int32_t>(byte);
-	}
-
-	return oss.str();
+std::string decryption_abstract::base64(const std::vector<uint8_t> &bytes) {
+	BIO *base64 = BIO_new(BIO_f_base64());
+	BIO *bio = BIO_new(BIO_s_mem());
+	bio = BIO_push(base64, bio);
+	BIO_set_flags(base64, BIO_FLAGS_BASE64_NO_NL);
+	BIO_write(bio, bytes.data(), static_cast<int32_t>(bytes.size()));
+	BIO_flush(bio);
+	BUF_MEM *buf_mem = nullptr;
+	BIO_get_mem_ptr(bio, &buf_mem);
+	std::string encoded(buf_mem->data, buf_mem->length);
+	BIO_free_all(bio);
+	return encoded;
 }
 
 int8_t decryption_abstract::decrypt(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) {
@@ -32,21 +35,21 @@ int8_t decryption_abstract::decrypt(const std::vector<uint8_t> &cipher, std::vec
 }
 
 int8_t decryption_abstract::decrypt(const std::vector<uint8_t> &cipher, std::string &plain) {
-	std::vector<uint8_t> bytes;
-	int8_t retcode = decryption(cipher, bytes);
-	plain = std::move(btos(bytes));
+	std::vector<uint8_t> bytes_plain;
+	int8_t retcode = decryption(cipher, bytes_plain);
+	plain = std::move(base64(bytes_plain));
 	return retcode;
 }
 
 int8_t decryption_abstract::decrypt(const std::string &cipher, std::string &plain) {
-	std::vector<uint8_t> chars = stob(cipher);
-	std::vector<uint8_t> bytes;
-	int8_t retcode = decryption(chars, bytes);
-	plain = std::move(btos(bytes));
+	std::vector<uint8_t> bytes_cipher = base64(cipher);
+	std::vector<uint8_t> bytes_plain;
+	int8_t retcode = decryption(bytes_cipher, bytes_plain);
+	plain = std::move(base64(bytes_plain));
 	return retcode;
 }
 
 int8_t decryption_abstract::decrypt(const std::string &cipher, std::vector<uint8_t> &plain) {
-	std::vector<uint8_t> chars = stob(cipher);
-	return decryption(chars, plain);
+	std::vector<uint8_t> bytes_cipher = base64(cipher);
+	return decryption(bytes_cipher, plain);
 }

@@ -13,10 +13,8 @@
 
 class decryption_abstract {
 public: /* stream transform */
-	static std::vector<uint8_t> stob(const std::string &chars);
-	static std::vector<uint8_t> htob(const std::string &hexs);
-	static std::string btos(const std::vector<uint8_t> &bytes);
-	static std::string btoh(const std::vector<uint8_t> &bytes);
+	static std::vector<uint8_t> base64(const std::string &chars);
+	static std::string base64(const std::vector<uint8_t> &bytes);
 
 public: /* overload */
 	int8_t decrypt(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain);
