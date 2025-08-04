@@ -12,7 +12,7 @@
 #include <openssl/buffer.h>
 
 class decryption_abstract {
-protected: /* stream transform */
+public: /* stream transform */
 	static std::vector<uint8_t> stob(const std::string &chars);
 	static std::vector<uint8_t> htob(const std::string &hexs);
 	static std::string btos(const std::vector<uint8_t> &bytes);
@@ -24,9 +24,9 @@ public: /* overload */
 	int8_t decrypt(const std::string &cipher, std::string &plain);
 	int8_t decrypt(const std::string &cipher, std::vector<uint8_t> &plain);
 
-protected: /* abstract */
-	virtual int8_t decryption(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) = 0;
-
 public: /* abstract */
 	virtual ~decryption_abstract() {}
+
+protected: /* abstract */
+	virtual int8_t decryption(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) = 0;
 };
