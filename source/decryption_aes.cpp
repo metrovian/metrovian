@@ -1,9 +1,9 @@
 #include "decryption_aes.h"
 
-int8_t decryption_aes256::setkey(const std::vector<uint8_t> &key) {
+int8_t decryption_aes::setkey(const std::vector<uint8_t> &key) {
 	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
-	if (key.size() != 32) {
-		spdlog::error("aes256 decryption setkey failed: {}", key.size());
+	if (key.size() != key_size()) {
+		spdlog::error("aes{} decryption setkey failed: {}", static_cast<size_t>(8) * key_size(), key.size());
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 		return -1;
 	}
@@ -13,10 +13,10 @@ int8_t decryption_aes256::setkey(const std::vector<uint8_t> &key) {
 	return 0;
 }
 
-int8_t decryption_aes256::setiv(const std::vector<uint8_t> &iv) {
+int8_t decryption_aes::setiv(const std::vector<uint8_t> &iv) {
 	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
-	if (iv.size() != 16) {
-		spdlog::error("aes256 decryption setiv failed: {}", iv.size());
+	if (iv.size() != iv_size()) {
+		spdlog::error("aes{} decryption setiv failed: {}", static_cast<size_t>(8) * key_size(), iv.size());
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 		return -1;
 	}
@@ -26,11 +26,11 @@ int8_t decryption_aes256::setiv(const std::vector<uint8_t> &iv) {
 	return 0;
 }
 
-int8_t decryption_aes256::setkey(const std::string &key) {
+int8_t decryption_aes::setkey(const std::string &key) {
 	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
 	std::vector<uint8_t> decoded = base64(key);
-	if (decoded.size() != 32) {
-		spdlog::error("aes256 decryption setkey failed: {}", decoded.size());
+	if (decoded.size() != key_size()) {
+		spdlog::error("aes{} decryption setkey failed: {}", static_cast<size_t>(8) * key_size(), decoded.size());
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 		return -1;
 	}
@@ -40,11 +40,11 @@ int8_t decryption_aes256::setkey(const std::string &key) {
 	return 0;
 }
 
-int8_t decryption_aes256::setiv(const std::string &iv) {
+int8_t decryption_aes::setiv(const std::string &iv) {
 	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
 	std::vector<uint8_t> decoded = base64(iv);
-	if (decoded.size() != 16) {
-		spdlog::error("aes256 decryption setiv failed: {}", decoded.size());
+	if (decoded.size() != iv_size()) {
+		spdlog::error("aes{} decryption setiv failed: {}", static_cast<size_t>(8) * key_size(), decoded.size());
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 		return -1;
 	}
@@ -88,8 +88,8 @@ int8_t decryption_aes256_cbc::decryption(const std::vector<uint8_t> &cipher, std
 		return -1;
 	}
 
+	plain.resize(static_cast<size_t>(len_update) + static_cast<size_t>(len_final));
 	EVP_CIPHER_CTX_free(ctx);
-	plain.resize(len_update + len_final);
 	spdlog::debug("aes256-cbc cipher: \"{}\"", base64(cipher));
 	spdlog::debug("aes256-cbc key:    \"{}\"", base64(key_));
 	spdlog::debug("aes256-cbc iv:     \"{}\"", base64(iv_));
