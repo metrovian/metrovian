@@ -97,3 +97,39 @@ int8_t decryption_aes256_cbc::decryption(const std::vector<uint8_t> &cipher, std
 	spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 	return 0;
 }
+
+int8_t decryption_aes256_ctr::decryption(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) {
+	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
+	EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+	if (ctx == nullptr) {
+		spdlog::critical("[invalid implementation] {}", __PRETTY_FUNCTION__);
+		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
+		return -1;
+	}
+
+	plain.clear();
+	plain.resize(cipher.size());
+	if (EVP_DecryptInit_ex(ctx, EVP_aes_256_ctr(), nullptr, key_.data(), iv_.data()) != 1) {
+		EVP_CIPHER_CTX_free(ctx);
+		spdlog::error("aes256-ctr decryption context init failed");
+		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
+		return -1;
+	}
+
+	int32_t len_update = 0;
+	if (EVP_DecryptUpdate(ctx, plain.data(), &len_update, cipher.data(), static_cast<int32_t>(cipher.size())) != 1) {
+		EVP_CIPHER_CTX_free(ctx);
+		spdlog::error("aes256-ctr decryption context update failed");
+		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
+		return -1;
+	}
+
+	plain.resize(static_cast<size_t>(len_update));
+	EVP_CIPHER_CTX_free(ctx);
+	spdlog::debug("aes256-ctr cipher: \"{}\"", base64(cipher));
+	spdlog::debug("aes256-ctr key:    \"{}\"", base64(key_));
+	spdlog::debug("aes256-ctr iv:     \"{}\"", base64(iv_));
+	spdlog::debug("aes256-ctr plain:  \"{}\"", base64(plain));
+	spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
+	return 0;
+}

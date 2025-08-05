@@ -27,3 +27,8 @@ class decryption_aes256_cbc : public decryption_aes256 {
 protected: /* abstract */
 	virtual int8_t decryption(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) override final;
 };
+
+class decryption_aes256_ctr : public decryption_aes256 {
+protected: /* abstract */
+	virtual int8_t decryption(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) override final;
+};
