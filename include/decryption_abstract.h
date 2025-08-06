@@ -9,6 +9,8 @@
 #include <spdlog/spdlog.h>
 #include <openssl/bio.h>
 #include <openssl/evp.h>
+#include <openssl/err.h>
+#include <openssl/pem.h>
 #include <openssl/buffer.h>
 
 class decryption_abstract {
