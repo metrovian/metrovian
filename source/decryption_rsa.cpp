@@ -74,10 +74,11 @@ int8_t decryption_rsa::decryption(const std::vector<uint8_t> &cipher, std::vecto
 		return -1;
 	}
 
+	int32_t pkey_bits = EVP_PKEY_get_bits(pkey);
 	if (EVP_PKEY_decrypt_init(ctx) <= 0) {
 		EVP_PKEY_CTX_free(ctx);
 		EVP_PKEY_free(pkey);
-		spdlog::error("rsa decryption context init failed");
+		spdlog::error("rsa-{} decryption context init failed", pkey_bits);
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 		return -1;
 	}
@@ -85,7 +86,7 @@ int8_t decryption_rsa::decryption(const std::vector<uint8_t> &cipher, std::vecto
 	if (EVP_PKEY_CTX_set_rsa_padding(ctx, RSA_PKCS1_PADDING) <= 0) {
 		EVP_PKEY_CTX_free(ctx);
 		EVP_PKEY_free(pkey);
-		spdlog::error("rsa decryption context set failed");
+		spdlog::error("rsa-{} decryption context set failed", pkey_bits);
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 		return -1;
 	}
@@ -94,7 +95,7 @@ int8_t decryption_rsa::decryption(const std::vector<uint8_t> &cipher, std::vecto
 	if (EVP_PKEY_decrypt(ctx, nullptr, &len_update, cipher.data(), cipher.size()) <= 0) {
 		EVP_PKEY_CTX_free(ctx);
 		EVP_PKEY_free(pkey);
-		spdlog::error("rsa decryption context update failed");
+		spdlog::error("rsa-{} decryption context update failed", pkey_bits);
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 		return -1;
 	}
@@ -112,8 +113,8 @@ int8_t decryption_rsa::decryption(const std::vector<uint8_t> &cipher, std::vecto
 	plain.resize(len_update);
 	EVP_PKEY_CTX_free(ctx);
 	EVP_PKEY_free(pkey);
-	spdlog::debug("RSA cipher: \"{}\"", base64(cipher));
-	spdlog::debug("RSA plain:  \"{}\"", base64(plain));
+	spdlog::debug("rsa-{} cipher: \"{}\"", pkey_bits, base64(cipher));
+	spdlog::debug("rsa-{} plain:  \"{}\"", pkey_bits, base64(plain));
 	spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 	return 0;
 }
