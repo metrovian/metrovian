@@ -13,14 +13,14 @@ public: /* setter */
 	int8_t setiv(const std::string &iv);
 
 protected: /* abstract */
-	virtual size_t key_size() = 0;
-	virtual size_t iv_size() = 0;
+	virtual size_t sizekey() = 0;
+	virtual size_t sizeiv() = 0;
 };
 
 class decryption_aes256 : public decryption_aes {
 protected: /* abstract */
-	virtual size_t key_size() override final { return static_cast<size_t>(32); }
-	virtual size_t iv_size() override { return static_cast<size_t>(16); }
+	virtual size_t sizekey() override final { return static_cast<size_t>(32); }
+	virtual size_t sizeiv() override { return static_cast<size_t>(16); }
 };
 
 class decryption_aes256_cbc : public decryption_aes256 {

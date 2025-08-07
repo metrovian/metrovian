@@ -2,8 +2,8 @@
 
 int8_t decryption_aes::setkey(const std::vector<uint8_t> &key) {
 	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
-	if (key.size() != key_size()) {
-		spdlog::error("aes-{} decryption setkey failed: {}", static_cast<size_t>(8) * key_size(), key.size());
+	if (key.size() != sizekey()) {
+		spdlog::error("aes-{} decryption setkey failed: {}", static_cast<size_t>(8) * sizekey(), key.size());
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 		return -1;
 	}
@@ -15,8 +15,8 @@ int8_t decryption_aes::setkey(const std::vector<uint8_t> &key) {
 
 int8_t decryption_aes::setiv(const std::vector<uint8_t> &iv) {
 	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
-	if (iv.size() != iv_size()) {
-		spdlog::error("aes-{} decryption setiv failed: {}", static_cast<size_t>(8) * key_size(), iv.size());
+	if (iv.size() != sizeiv()) {
+		spdlog::error("aes-{} decryption setiv failed: {}", static_cast<size_t>(8) * sizekey(), iv.size());
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 		return -1;
 	}
@@ -29,8 +29,8 @@ int8_t decryption_aes::setiv(const std::vector<uint8_t> &iv) {
 int8_t decryption_aes::setkey(const std::string &key) {
 	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
 	std::vector<uint8_t> decoded = base64(key);
-	if (decoded.size() != key_size()) {
-		spdlog::error("aes-{} decryption setkey failed: {}", static_cast<size_t>(8) * key_size(), decoded.size());
+	if (decoded.size() != sizekey()) {
+		spdlog::error("aes-{} decryption setkey failed: {}", static_cast<size_t>(8) * sizekey(), decoded.size());
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 		return -1;
 	}
@@ -43,8 +43,8 @@ int8_t decryption_aes::setkey(const std::string &key) {
 int8_t decryption_aes::setiv(const std::string &iv) {
 	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
 	std::vector<uint8_t> decoded = base64(iv);
-	if (decoded.size() != iv_size()) {
-		spdlog::error("aes-{} decryption setiv failed: {}", static_cast<size_t>(8) * key_size(), decoded.size());
+	if (decoded.size() != sizeiv()) {
+		spdlog::error("aes-{} decryption setiv failed: {}", static_cast<size_t>(8) * sizekey(), decoded.size());
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 		return -1;
 	}
