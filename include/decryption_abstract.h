@@ -7,7 +7,11 @@
 #include <string>
 #include <stdint.h>
 #include <spdlog/spdlog.h>
+#include <openssl/core_names.h>
+#include <openssl/param_build.h>
 #include <openssl/bio.h>
+#include <openssl/bn.h>
+#include <openssl/rsa.h>
 #include <openssl/evp.h>
 #include <openssl/err.h>
 #include <openssl/pem.h>
