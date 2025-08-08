@@ -65,24 +65,24 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
 	int8_t retcode = 0;
 	BIO *bio = nullptr;
-	EVP_PKEY *pkey_public = nullptr;
 	EVP_PKEY_CTX *ctx_public = nullptr;
-	BIGNUM *n_rsa = nullptr;
-	BIGNUM *e_rsa = nullptr;
+	EVP_PKEY_CTX *ctx_private = nullptr;
+	EVP_PKEY *pkey_public = nullptr;
+	EVP_PKEY *pkey_private = nullptr;
 	BN_CTX *ctx_rsa = nullptr;
-	BIGNUM *p_rsa = nullptr;
-	BIGNUM *q_rsa = nullptr;
 	BIGNUM *phi_rsa = nullptr;
 	BIGNUM *p1_rsa = nullptr;
 	BIGNUM *q1_rsa = nullptr;
+	BIGNUM *p_rsa = nullptr;
+	BIGNUM *q_rsa = nullptr;
 	BIGNUM *d_rsa = nullptr;
-	OSSL_PARAM_BLD *param_bld = nullptr;
-	OSSL_PARAM *param = nullptr;
-	EVP_PKEY *pkey_private = nullptr;
-	EVP_PKEY_CTX *ctx_private = nullptr;
+	BIGNUM *n_rsa = nullptr;
+	BIGNUM *e_rsa = nullptr;
 	BIGNUM *coefficient = nullptr;
 	BIGNUM *exponent1 = nullptr;
 	BIGNUM *exponent2 = nullptr;
+	OSSL_PARAM_BLD *param_bld = nullptr;
+	OSSL_PARAM *param = nullptr;
 	BIO *mem = nullptr;
 	BUF_MEM *buf_mem = nullptr;
 	bio = BIO_new_mem_buf(public_key.data(), static_cast<int32_t>(public_key.size()));
@@ -223,8 +223,10 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 cleanup:
 	// clang-format off
 	if (bio) BIO_free(bio);
-	if (pkey_public) EVP_PKEY_free(pkey_public);
 	if (ctx_public) EVP_PKEY_CTX_free(ctx_public);
+	if (ctx_private) EVP_PKEY_CTX_free(ctx_private);
+	if (pkey_public) EVP_PKEY_free(pkey_public);
+	if (pkey_private) EVP_PKEY_free(pkey_private);
 	if (ctx_rsa) BN_CTX_free(ctx_rsa);
 	if (phi_rsa) BN_clear_free(phi_rsa);
 	if (p1_rsa) BN_clear_free(p1_rsa);
@@ -234,13 +236,11 @@ cleanup:
 	if (d_rsa) BN_clear_free(d_rsa);
 	if (n_rsa) BN_free(n_rsa);
 	if (e_rsa) BN_free(e_rsa);
-	if (param_bld) OSSL_PARAM_BLD_free(param_bld);
-	if (param) OSSL_PARAM_free(param);
-	if (pkey_private) EVP_PKEY_free(pkey_private);
-	if (ctx_private) EVP_PKEY_CTX_free(ctx_private);
 	if (coefficient) BN_free(coefficient);
 	if (exponent1) BN_free(exponent1);
 	if (exponent2) BN_free(exponent2);
+	if (param_bld) OSSL_PARAM_BLD_free(param_bld);
+	if (param) OSSL_PARAM_free(param);
 	if (mem) BIO_free(mem);
 	// clang-format on
 	return retcode;
