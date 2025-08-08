@@ -57,7 +57,7 @@ int8_t decryption_rsa::setkey(const std::string &private_key) {
 }
 
 int8_t decryption_rsa::calckey(const std::vector<uint8_t> &public_key, rsa::attack algorithm) {
-	return 0;
+	return calckey(base64(public_key), algorithm);
 }
 
 int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algorithm) {
