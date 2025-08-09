@@ -193,6 +193,12 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 		RETURN_CLEANUP(retcode, -1);
 	}
 
+	if (BN_is_zero(p_rsa)) {
+		spdlog::error("rsa decryption calckey attack algorithm failed");
+		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
+		RETURN_CLEANUP(retcode, -1);
+	}
+
 	phi_rsa = BN_new();
 	p1_rsa = BN_new();
 	q1_rsa = BN_new();
