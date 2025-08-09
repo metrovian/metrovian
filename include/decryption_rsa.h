@@ -5,6 +5,8 @@ namespace rsa {
 enum class attack {
 	trial = 0,
 	fermat = 1,
+	pollards_rho = 2,
+	pollards_p1 = 3,
 };
 };
 
