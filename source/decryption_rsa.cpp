@@ -78,9 +78,9 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 	BIGNUM *d_rsa = nullptr;
 	BIGNUM *n_rsa = nullptr;
 	BIGNUM *e_rsa = nullptr;
-	BIGNUM *coefficient = nullptr;
-	BIGNUM *exponent1 = nullptr;
-	BIGNUM *exponent2 = nullptr;
+	BIGNUM *coefficient_rsa = nullptr;
+	BIGNUM *exponent1_rsa = nullptr;
+	BIGNUM *exponent2_rsa = nullptr;
 	OSSL_PARAM_BLD *param_bld = nullptr;
 	OSSL_PARAM *param = nullptr;
 	BIO *mem = nullptr;
@@ -101,13 +101,10 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 
 	ctx_public = EVP_PKEY_CTX_new(pkey_public, nullptr);
 	if (ctx_public == nullptr) {
-		EVP_PKEY_free(pkey_public);
 		spdlog::critical("[invalid implementation] {}", __PRETTY_FUNCTION__);
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 		RETURN_CLEANUP(retcode, -1);
 	} else if (EVP_PKEY_get_base_id(pkey_public) != EVP_PKEY_RSA) {
-		EVP_PKEY_CTX_free(ctx_public);
-		EVP_PKEY_free(pkey_public);
 		spdlog::error("rsa decryption calckey baseid readout failed");
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 		RETURN_CLEANUP(retcode, -1);
@@ -116,15 +113,10 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_RSA_N, &n_rsa);
 	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_RSA_E, &e_rsa);
 	if (n_rsa == nullptr) {
-		EVP_PKEY_CTX_free(ctx_public);
-		EVP_PKEY_free(pkey_public);
 		spdlog::error("rsa decryption calckey modulus readout failed");
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 		RETURN_CLEANUP(retcode, -1);
 	} else if (e_rsa == nullptr) {
-		EVP_PKEY_CTX_free(ctx_public);
-		EVP_PKEY_free(pkey_public);
-		BN_free(n_rsa);
 		spdlog::error("rsa decryption calckey exponent readout failed");
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
 		RETURN_CLEANUP(retcode, -1);
@@ -144,10 +136,9 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 				BN_copy(p_rsa, trial);
 				BN_div(q_rsa, nullptr, n_rsa, p_rsa, ctx_rsa);
 				break;
-			} else {
-				BN_add_word(trial, 1);
-				continue;
 			}
+
+			BN_add_word(trial, 1);
 		}
 
 		BN_free(trial);
@@ -176,20 +167,20 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 
 	param_bld = OSSL_PARAM_BLD_new();
 	ctx_private = EVP_PKEY_CTX_new_from_name(nullptr, "RSA", nullptr);
-	coefficient = BN_new();
-	exponent1 = BN_new();
-	exponent2 = BN_new();
-	BN_mod_inverse(coefficient, q_rsa, p_rsa, ctx_rsa);
-	BN_mod(exponent1, d_rsa, p1_rsa, ctx_rsa);
-	BN_mod(exponent2, d_rsa, q1_rsa, ctx_rsa);
+	coefficient_rsa = BN_new();
+	exponent1_rsa = BN_new();
+	exponent2_rsa = BN_new();
+	BN_mod_inverse(coefficient_rsa, q_rsa, p_rsa, ctx_rsa);
+	BN_mod(exponent1_rsa, d_rsa, p1_rsa, ctx_rsa);
+	BN_mod(exponent2_rsa, d_rsa, q1_rsa, ctx_rsa);
 	OSSL_PARAM_BLD_push_BN(param_bld, OSSL_PKEY_PARAM_RSA_N, n_rsa);
 	OSSL_PARAM_BLD_push_BN(param_bld, OSSL_PKEY_PARAM_RSA_E, e_rsa);
 	OSSL_PARAM_BLD_push_BN(param_bld, OSSL_PKEY_PARAM_RSA_D, d_rsa);
-	OSSL_PARAM_BLD_push_BN(param_bld, "rsa-coefficient1", coefficient);
+	OSSL_PARAM_BLD_push_BN(param_bld, "rsa-coefficient1", coefficient_rsa);
 	OSSL_PARAM_BLD_push_BN(param_bld, "rsa-factor1", p_rsa);
 	OSSL_PARAM_BLD_push_BN(param_bld, "rsa-factor2", q_rsa);
-	OSSL_PARAM_BLD_push_BN(param_bld, "rsa-exponent1", exponent1);
-	OSSL_PARAM_BLD_push_BN(param_bld, "rsa-exponent2", exponent2);
+	OSSL_PARAM_BLD_push_BN(param_bld, "rsa-exponent1", exponent1_rsa);
+	OSSL_PARAM_BLD_push_BN(param_bld, "rsa-exponent2", exponent2_rsa);
 	mem = BIO_new(BIO_s_mem());
 	if (mem == nullptr) {
 		spdlog::critical("[invalid implementation] {}", __PRETTY_FUNCTION__);
@@ -236,9 +227,9 @@ cleanup:
 	if (d_rsa) BN_clear_free(d_rsa);
 	if (n_rsa) BN_free(n_rsa);
 	if (e_rsa) BN_free(e_rsa);
-	if (coefficient) BN_free(coefficient);
-	if (exponent1) BN_free(exponent1);
-	if (exponent2) BN_free(exponent2);
+	if (coefficient_rsa) BN_free(coefficient_rsa);
+	if (exponent1_rsa) BN_free(exponent1_rsa);
+	if (exponent2_rsa) BN_free(exponent2_rsa);
 	if (param_bld) OSSL_PARAM_BLD_free(param_bld);
 	if (param) OSSL_PARAM_free(param);
 	if (mem) BIO_free(mem);
