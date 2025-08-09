@@ -146,6 +146,47 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 		break;
 	}
 
+	case rsa::attack::fermat: {
+		char *n_hexstr = BN_bn2hex(n_rsa);
+		mpz_t n_fermat;
+		mpz_t p_fermat;
+		mpz_t q_fermat;
+		mpz_t a_fermat;
+		mpz_t b_fermat;
+		mpz_t b2_fermat;
+		mpz_t tmp_fermat;
+		mpz_inits(n_fermat, p_fermat, q_fermat, a_fermat, b_fermat, b2_fermat, tmp_fermat, nullptr);
+		mpz_set_str(n_fermat, n_hexstr, 16);
+		mpz_sqrt(a_fermat, n_fermat);
+		mpz_mul(tmp_fermat, a_fermat, a_fermat);
+		OPENSSL_free(n_hexstr);
+		if (mpz_cmp(tmp_fermat, n_fermat) < 0) {
+			mpz_add_ui(a_fermat, a_fermat, 1);
+		}
+
+		for (uint64_t i = 0; i < RSA_FERMAT_MAX_ITERATION; i++) {
+			mpz_mul(b2_fermat, a_fermat, a_fermat);
+			mpz_sub(b2_fermat, b2_fermat, n_fermat);
+			if (mpz_perfect_square_p(b2_fermat)) {
+				mpz_sqrt(b_fermat, b2_fermat);
+				mpz_sub(p_fermat, a_fermat, b_fermat);
+				mpz_add(q_fermat, a_fermat, b_fermat);
+				break;
+			}
+
+			mpz_add_ui(a_fermat, a_fermat, 1);
+		}
+
+		char *p_hexstr = mpz_get_str(nullptr, 16, p_fermat);
+		char *q_hexstr = mpz_get_str(nullptr, 16, q_fermat);
+		BN_hex2bn(&p_rsa, p_hexstr);
+		BN_hex2bn(&q_rsa, q_hexstr);
+		free(p_hexstr);
+		free(q_hexstr);
+		mpz_clears(n_fermat, p_fermat, q_fermat, a_fermat, b_fermat, b2_fermat, tmp_fermat, nullptr);
+		break;
+	}
+
 	default:
 		spdlog::critical("[invalid implementation] {}", __PRETTY_FUNCTION__);
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
