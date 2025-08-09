@@ -16,6 +16,7 @@
 #include <openssl/err.h>
 #include <openssl/pem.h>
 #include <openssl/buffer.h>
+#include <gmp.h>
 
 class decryption_abstract {
 public: /* stream transform */
