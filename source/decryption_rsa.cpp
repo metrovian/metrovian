@@ -164,7 +164,7 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 			mpz_add_ui(a_fermat, a_fermat, 1);
 		}
 
-		for (uint64_t i = 0; i < RSA_FERMAT_MAX_ITERATION; i++) {
+		for (uint64_t i = 0; i < RSA_FERMAT_MAX_ITERATION; ++i) {
 			mpz_mul(b2_fermat, a_fermat, a_fermat);
 			mpz_sub(b2_fermat, b2_fermat, n_fermat);
 			if (mpz_perfect_square_p(b2_fermat)) {
@@ -184,6 +184,55 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 		free(p_hexstr);
 		free(q_hexstr);
 		mpz_clears(n_fermat, p_fermat, q_fermat, a_fermat, b_fermat, b2_fermat, tmp_fermat, nullptr);
+		break;
+	}
+
+	case rsa::attack::pollards_rho: {
+		char *n_hexstr = BN_bn2hex(n_rsa);
+		mpz_t n_rho;
+		mpz_t a_rho;
+		mpz_t b_rho;
+		mpz_t d_rho;
+		mpz_t one_rho;
+		mpz_t absub_rho;
+		mpz_t tmp_rho;
+		mpz_inits(n_rho, a_rho, b_rho, d_rho, one_rho, absub_rho, tmp_rho, nullptr);
+		mpz_set_str(n_rho, n_hexstr, 16);
+		mpz_set_ui(a_rho, 2);
+		mpz_set_ui(b_rho, 2);
+		mpz_set_ui(d_rho, 1);
+		mpz_set_ui(one_rho, 1);
+		OPENSSL_free(n_hexstr);
+		auto iteration_rho = [&](mpz_t result, const mpz_t value) {
+			mpz_mul(tmp_rho, value, value);
+			mpz_add_ui(tmp_rho, tmp_rho, 1);
+			mpz_mod(result, tmp_rho, n_rho);
+		};
+
+		for (uint64_t i = 0; i < RSA_POLLARDS_RHO_MAX_ITERATION; ++i) {
+			iteration_rho(a_rho, a_rho);
+			iteration_rho(tmp_rho, b_rho);
+			iteration_rho(b_rho, tmp_rho);
+			mpz_cmp(a_rho, b_rho) > 0 ? mpz_sub(absub_rho, a_rho, b_rho) : mpz_sub(absub_rho, b_rho, a_rho);
+			mpz_gcd(d_rho, absub_rho, n_rho);
+			if (mpz_cmp_ui(d_rho, 1) != 0) {
+				break;
+			}
+		}
+
+		if (mpz_cmp(d_rho, one_rho) == 0 || mpz_cmp(d_rho, n_rho) == 0) {
+			mpz_clears(n_rho, a_rho, b_rho, d_rho, tmp_rho, one_rho, absub_rho, nullptr);
+			break;
+		}
+
+		mpz_divexact(tmp_rho, n_rho, d_rho);
+		char *p_hexstr = mpz_get_str(nullptr, 16, d_rho);
+		char *q_hexstr = mpz_get_str(nullptr, 16, tmp_rho);
+		BN_hex2bn(&p_rsa, p_hexstr);
+		BN_hex2bn(&q_rsa, q_hexstr);
+		free(p_hexstr);
+		free(q_hexstr);
+		mpz_clears(n_rho, a_rho, b_rho, d_rho, one_rho, absub_rho, tmp_rho, nullptr);
 		break;
 	}
 
