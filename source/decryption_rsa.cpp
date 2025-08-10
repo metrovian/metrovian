@@ -236,6 +236,62 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 		break;
 	}
 
+	case rsa::attack::pollards_p1: {
+		char *n_hexstr = BN_bn2hex(n_rsa);
+		mpz_t n_p1;
+		mpz_t a_p1;
+		mpz_t d_p1;
+		mpz_t m_p1;
+		mpz_t one_p1;
+		mpz_t exp_p1;
+		mpz_t tmp_p1;
+		mpz_inits(n_p1, a_p1, d_p1, m_p1, one_p1, exp_p1, tmp_p1, nullptr);
+		mpz_set_str(n_p1, n_hexstr, 16);
+		mpz_set_ui(a_p1, 2);
+		mpz_set_ui(m_p1, 1);
+		mpz_set_ui(one_p1, 1);
+		OPENSSL_free(n_hexstr);
+		auto primecheck_p1 = [](uint64_t value) {
+			for (uint64_t i = 2; i * i <= value; ++i) {
+				if (value % i == 0) {
+					return false;
+				}
+			}
+
+			return true;
+		};
+
+		for (uint64_t i = 2; i <= RSA_POLLARDS_P1_MAX_ITERATION; ++i) {
+			if (primecheck_p1(i)) {
+				uint64_t pow_p1 = i;
+				while (pow_p1 * i <= RSA_POLLARDS_P1_MAX_ITERATION) {
+					pow_p1 *= i;
+				}
+
+				mpz_mul_ui(tmp_p1, m_p1, pow_p1);
+				mpz_set(m_p1, tmp_p1);
+			}
+		}
+
+		mpz_powm(a_p1, a_p1, m_p1, n_p1);
+		mpz_sub(tmp_p1, a_p1, one_p1);
+		mpz_gcd(d_p1, tmp_p1, n_p1);
+		if (mpz_cmp_ui(d_p1, 1) == 0 || mpz_cmp(d_p1, n_p1) == 0) {
+			mpz_clears(n_p1, a_p1, d_p1, one_p1, tmp_p1, exp_p1, m_p1, nullptr);
+			break;
+		}
+
+		mpz_divexact(tmp_p1, n_p1, d_p1);
+		char *p_hexstr = mpz_get_str(nullptr, 16, d_p1);
+		char *q_hexstr = mpz_get_str(nullptr, 16, tmp_p1);
+		BN_hex2bn(&p_rsa, p_hexstr);
+		BN_hex2bn(&q_rsa, q_hexstr);
+		free(p_hexstr);
+		free(q_hexstr);
+		mpz_clears(n_p1, a_p1, d_p1, m_p1, one_p1, exp_p1, tmp_p1, nullptr);
+		break;
+	}
+
 	default:
 		spdlog::critical("[invalid implementation] {}", __PRETTY_FUNCTION__);
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
