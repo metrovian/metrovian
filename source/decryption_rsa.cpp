@@ -85,6 +85,9 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 	OSSL_PARAM *param = nullptr;
 	BIO *mem = nullptr;
 	BUF_MEM *buf_mem = nullptr;
+	char *p_hexstr = nullptr;
+	char *q_hexstr = nullptr;
+	char *n_hexstr = nullptr;
 	bio = BIO_new_mem_buf(public_key.data(), static_cast<int32_t>(public_key.size()));
 	if (bio == nullptr) {
 		spdlog::critical("[invalid implementation] {}", __PRETTY_FUNCTION__);
@@ -125,6 +128,7 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 	ctx_rsa = BN_CTX_new();
 	p_rsa = BN_new();
 	q_rsa = BN_new();
+	n_hexstr = BN_bn2hex(n_rsa);
 	switch (algorithm) {
 	case rsa::attack::trial: {
 		BIGNUM *trial = BN_new();
@@ -147,7 +151,6 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 	}
 
 	case rsa::attack::fermat: {
-		char *n_hexstr = BN_bn2hex(n_rsa);
 		mpz_t n_fermat;
 		mpz_t p_fermat;
 		mpz_t q_fermat;
@@ -159,7 +162,6 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 		mpz_set_str(n_fermat, n_hexstr, 16);
 		mpz_sqrt(a_fermat, n_fermat);
 		mpz_mul(tmp_fermat, a_fermat, a_fermat);
-		OPENSSL_free(n_hexstr);
 		if (mpz_cmp(tmp_fermat, n_fermat) < 0) {
 			mpz_add_ui(a_fermat, a_fermat, 1);
 		}
@@ -177,18 +179,15 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 			mpz_add_ui(a_fermat, a_fermat, 1);
 		}
 
-		char *p_hexstr = mpz_get_str(nullptr, 16, p_fermat);
-		char *q_hexstr = mpz_get_str(nullptr, 16, q_fermat);
+		p_hexstr = mpz_get_str(nullptr, 16, p_fermat);
+		q_hexstr = mpz_get_str(nullptr, 16, q_fermat);
 		BN_hex2bn(&p_rsa, p_hexstr);
 		BN_hex2bn(&q_rsa, q_hexstr);
-		free(p_hexstr);
-		free(q_hexstr);
 		mpz_clears(n_fermat, p_fermat, q_fermat, a_fermat, b_fermat, b2_fermat, tmp_fermat, nullptr);
 		break;
 	}
 
 	case rsa::attack::pollards_rho: {
-		char *n_hexstr = BN_bn2hex(n_rsa);
 		mpz_t n_rho;
 		mpz_t a_rho;
 		mpz_t b_rho;
@@ -202,7 +201,6 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 		mpz_set_ui(b_rho, 2);
 		mpz_set_ui(d_rho, 1);
 		mpz_set_ui(one_rho, 1);
-		OPENSSL_free(n_hexstr);
 		auto iteration_rho = [&](mpz_t result, const mpz_t value) {
 			mpz_mul(tmp_rho, value, value);
 			mpz_add_ui(tmp_rho, tmp_rho, 1);
@@ -226,18 +224,15 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 		}
 
 		mpz_divexact(tmp_rho, n_rho, d_rho);
-		char *p_hexstr = mpz_get_str(nullptr, 16, d_rho);
-		char *q_hexstr = mpz_get_str(nullptr, 16, tmp_rho);
+		p_hexstr = mpz_get_str(nullptr, 16, d_rho);
+		q_hexstr = mpz_get_str(nullptr, 16, tmp_rho);
 		BN_hex2bn(&p_rsa, p_hexstr);
 		BN_hex2bn(&q_rsa, q_hexstr);
-		free(p_hexstr);
-		free(q_hexstr);
 		mpz_clears(n_rho, a_rho, b_rho, d_rho, one_rho, absub_rho, tmp_rho, nullptr);
 		break;
 	}
 
 	case rsa::attack::pollards_p1: {
-		char *n_hexstr = BN_bn2hex(n_rsa);
 		mpz_t n_p1;
 		mpz_t a_p1;
 		mpz_t d_p1;
@@ -250,7 +245,6 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 		mpz_set_ui(a_p1, 2);
 		mpz_set_ui(m_p1, 1);
 		mpz_set_ui(one_p1, 1);
-		OPENSSL_free(n_hexstr);
 		auto primecheck_p1 = [](uint64_t value) {
 			for (uint64_t i = 2; i * i <= value; ++i) {
 				if (value % i == 0) {
@@ -261,10 +255,10 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 			return true;
 		};
 
-		for (uint64_t i = 2; i <= RSA_POLLARDS_P1_MAX_ITERATION; ++i) {
+		for (uint64_t i = 2; i < RSA_POLLARDS_P1_MAX_ITERATION; ++i) {
 			if (primecheck_p1(i)) {
 				uint64_t pow_p1 = i;
-				while (pow_p1 * i <= RSA_POLLARDS_P1_MAX_ITERATION) {
+				while (pow_p1 * i < RSA_POLLARDS_P1_MAX_ITERATION) {
 					pow_p1 *= i;
 				}
 
@@ -282,12 +276,10 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 		}
 
 		mpz_divexact(tmp_p1, n_p1, d_p1);
-		char *p_hexstr = mpz_get_str(nullptr, 16, d_p1);
-		char *q_hexstr = mpz_get_str(nullptr, 16, tmp_p1);
+		p_hexstr = mpz_get_str(nullptr, 16, d_p1);
+		q_hexstr = mpz_get_str(nullptr, 16, tmp_p1);
 		BN_hex2bn(&p_rsa, p_hexstr);
 		BN_hex2bn(&q_rsa, q_hexstr);
-		free(p_hexstr);
-		free(q_hexstr);
 		mpz_clears(n_p1, a_p1, d_p1, m_p1, one_p1, exp_p1, tmp_p1, nullptr);
 		break;
 	}
@@ -385,6 +377,9 @@ cleanup:
 	if (param_bld) OSSL_PARAM_BLD_free(param_bld);
 	if (param) OSSL_PARAM_free(param);
 	if (mem) BIO_free(mem);
+	if (p_hexstr) free(p_hexstr);
+	if (q_hexstr) free(q_hexstr);
+	if (n_hexstr) OPENSSL_free(n_hexstr);
 	// clang-format on
 	return retcode;
 }
