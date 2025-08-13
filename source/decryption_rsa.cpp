@@ -366,7 +366,7 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 		}
 
 		mpz_set(exp_p1, m_p1);
-		for (size_t i = 0; i < mpz_sizeinbase(exp_p1, 2); ++i) {
+		for (uint64_t i = 0; i < mpz_sizeinbase(exp_p1, 2); ++i) {
 			lucas_square(ures_p1, vres_p1, n_p1);
 			if (mpz_tstbit(exp_p1, mpz_sizeinbase(exp_p1, 2) - i - 1)) {
 				lucas_cross(ures_p1, vres_p1, ubase_p1, vbase_p1, n_p1);
