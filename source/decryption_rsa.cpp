@@ -284,6 +284,111 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 		break;
 	}
 
+	case rsa::attack::williams_p1: {
+		mpz_t n_p1;
+		mpz_t d_p1;
+		mpz_t m_p1;
+		mpz_t one_p1;
+		mpz_t exp_p1;
+		mpz_t ures_p1;
+		mpz_t vres_p1;
+		mpz_t ubase_p1;
+		mpz_t vbase_p1;
+		mpz_t tmp_p1;
+		mpz_inits(n_p1, d_p1, m_p1, one_p1, exp_p1, ures_p1, vres_p1, ubase_p1, vbase_p1, tmp_p1, nullptr);
+		mpz_set_str(n_p1, n_hexstr, 16);
+		mpz_set_ui(m_p1, 1);
+		mpz_set_ui(one_p1, 1);
+		mpz_set_ui(ures_p1, 0);
+		mpz_set_ui(vres_p1, 2);
+		mpz_set_ui(ubase_p1, 1);
+		mpz_set_ui(vbase_p1, 3);
+		auto primecheck_p1 = [](uint64_t value) {
+			for (uint64_t i = 2; i * i <= value; ++i) {
+				if (value % i == 0) {
+					return false;
+				}
+			}
+
+			return true;
+		};
+
+		auto lucas_square = [](mpz_t u, mpz_t v, mpz_t n) {
+			mpz_t u2, v2;
+			mpz_inits(u2, v2, nullptr);
+			mpz_mul(u2, u, v);
+			mpz_mod(u2, u2, n);
+			mpz_mul(v2, v, v);
+			mpz_sub_ui(v2, v2, 2);
+			mpz_mod(v2, v2, n);
+			mpz_set(u, u2);
+			mpz_set(v, v2);
+			mpz_clears(u2, v2, nullptr);
+		};
+
+		auto lucas_cross = [](mpz_t u1, mpz_t v1, mpz_t u2, mpz_t v2, mpz_t n) {
+			mpz_t t1, t2, t3, t4;
+			mpz_inits(t1, t2, t3, t4, nullptr);
+			mpz_mul(t1, u1, v2);
+			mpz_mul(t2, u2, v1);
+			mpz_add(t1, t1, t2);
+			if (mpz_odd_p(t1)) {
+				mpz_add(t1, t1, n);
+			}
+
+			mpz_divexact_ui(t1, t1, 2);
+			mpz_mod(t1, t1, n);
+			mpz_mul(t3, v1, v2);
+			mpz_mul(t4, u1, u2);
+			mpz_mul_ui(t4, t4, 5);
+			mpz_add(t3, t3, t4);
+			if (mpz_odd_p(t3)) {
+				mpz_add(t3, t3, n);
+			}
+
+			mpz_divexact_ui(t3, t3, 2);
+			mpz_mod(t3, t3, n);
+			mpz_set(u1, t1);
+			mpz_set(v1, t3);
+			mpz_clears(t1, t2, t3, t4, nullptr);
+		};
+
+		for (uint64_t i = 2; i < RSA_WILLIAMS_P1_MAX_ITERATION; ++i) {
+			if (primecheck_p1(i)) {
+				uint64_t pow_p1 = i;
+				while (pow_p1 * i < RSA_WILLIAMS_P1_MAX_ITERATION) {
+					pow_p1 *= i;
+				}
+
+				mpz_mul_ui(tmp_p1, m_p1, pow_p1);
+				mpz_set(m_p1, tmp_p1);
+			}
+		}
+
+		mpz_set(exp_p1, m_p1);
+		for (size_t i = 0; i < mpz_sizeinbase(exp_p1, 2); ++i) {
+			lucas_square(ures_p1, vres_p1, n_p1);
+			if (mpz_tstbit(exp_p1, mpz_sizeinbase(exp_p1, 2) - i - 1)) {
+				lucas_cross(ures_p1, vres_p1, ubase_p1, vbase_p1, n_p1);
+			}
+		}
+
+		mpz_sub_ui(tmp_p1, vres_p1, 2);
+		mpz_gcd(d_p1, tmp_p1, n_p1);
+		if (mpz_cmp_ui(d_p1, 1) == 0 || mpz_cmp(d_p1, n_p1) == 0) {
+			mpz_clears(n_p1, d_p1, m_p1, one_p1, exp_p1, ures_p1, vres_p1, ubase_p1, vbase_p1, tmp_p1, nullptr);
+			break;
+		}
+
+		mpz_divexact(tmp_p1, n_p1, d_p1);
+		p_hexstr = mpz_get_str(nullptr, 16, d_p1);
+		q_hexstr = mpz_get_str(nullptr, 16, tmp_p1);
+		BN_hex2bn(&p_rsa, p_hexstr);
+		BN_hex2bn(&q_rsa, q_hexstr);
+		mpz_clears(n_p1, d_p1, m_p1, one_p1, exp_p1, ures_p1, vres_p1, ubase_p1, vbase_p1, tmp_p1, nullptr);
+		break;
+	}
+
 	default:
 		spdlog::critical("[invalid implementation] {}", __PRETTY_FUNCTION__);
 		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);

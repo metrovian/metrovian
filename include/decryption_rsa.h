@@ -7,6 +7,7 @@ enum class attack {
 	fermat = 1,
 	pollards_rho = 2,
 	pollards_p1 = 3,
+	williams_p1 = 4,
 };
 };
 
