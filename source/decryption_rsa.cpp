@@ -390,7 +390,7 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 	}
 
 	default:
-		spdlog::critical("[invalid implementation] {}", __PRETTY_FUNCTION__);
+		LOG_ARGUMENT(algorithm);
 		LOG_EXIT();
 		RETURN_CLEANUP(retcode, -7);
 	}
@@ -538,7 +538,7 @@ int8_t decryption_rsa::decryption(const std::vector<uint8_t> &cipher, std::vecto
 	if (EVP_PKEY_decrypt(ctx, plain.data(), &len_update, cipher.data(), cipher.size()) <= 0) {
 		EVP_PKEY_CTX_free(ctx);
 		EVP_PKEY_free(pkey);
-		spdlog::critical("[invalid implementation] {}", __PRETTY_FUNCTION__);
+		LOG_CONDITION(EVP_PKEY_decrypt <= 0);
 		LOG_EXIT();
 		return -6;
 	}
