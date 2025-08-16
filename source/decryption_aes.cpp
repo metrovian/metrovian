@@ -2,56 +2,40 @@
 #include "predefined.h"
 
 int8_t decryption_aes::setkey(const std::vector<uint8_t> &key) {
-	LOG_ENTER();
 	if (key.size() != sizekey()) {
-		spdlog::error("aes-{} decryption setkey failed: {}", static_cast<size_t>(8) * sizekey(), key.size());
-		LOG_EXIT();
 		return -1;
 	}
 
 	key_ = key;
-	LOG_EXIT();
 	return 0;
 }
 
 int8_t decryption_aes::setiv(const std::vector<uint8_t> &iv) {
-	LOG_ENTER();
 	if (iv.size() != sizeiv()) {
-		spdlog::error("aes-{} decryption setiv failed: {}", static_cast<size_t>(8) * sizekey(), iv.size());
-		LOG_EXIT();
 		return -1;
 	}
 
 	iv_ = iv;
-	LOG_EXIT();
 	return 0;
 }
 
 int8_t decryption_aes::setkey(const std::string &key) {
-	LOG_ENTER();
 	std::vector<uint8_t> decoded = base64(key);
 	if (decoded.size() != sizekey()) {
-		spdlog::error("aes-{} decryption setkey failed: {}", static_cast<size_t>(8) * sizekey(), decoded.size());
-		LOG_EXIT();
 		return -1;
 	}
 
 	key_ = decoded;
-	LOG_EXIT();
 	return 0;
 }
 
 int8_t decryption_aes::setiv(const std::string &iv) {
-	LOG_ENTER();
 	std::vector<uint8_t> decoded = base64(iv);
 	if (decoded.size() != sizeiv()) {
-		spdlog::error("aes-{} decryption setiv failed: {}", static_cast<size_t>(8) * sizekey(), decoded.size());
-		LOG_EXIT();
 		return -1;
 	}
 
 	iv_ = decoded;
-	LOG_EXIT();
 	return 0;
 }
 
@@ -70,7 +54,7 @@ int8_t decryption_aes256_cbc::decryption(const std::vector<uint8_t> &cipher, std
 		EVP_CIPHER_CTX_free(ctx);
 		LOG_CONDITION(EVP_DecryptInit_ex != 1);
 		LOG_EXIT();
-		return -1;
+		return -2;
 	}
 
 	int32_t len_update = 0;
@@ -79,14 +63,14 @@ int8_t decryption_aes256_cbc::decryption(const std::vector<uint8_t> &cipher, std
 		EVP_CIPHER_CTX_free(ctx);
 		LOG_CONDITION(EVP_DecryptUpdate != 1);
 		LOG_EXIT();
-		return -1;
+		return -3;
 	}
 
 	if (EVP_DecryptFinal_ex(ctx, plain.data() + len_update, &len_final) != 1) {
 		EVP_CIPHER_CTX_free(ctx);
 		LOG_CONDITION(EVP_DecryptFinal_ex != 1);
 		LOG_EXIT();
-		return -1;
+		return -4;
 	}
 
 	plain.resize(static_cast<size_t>(len_update) + static_cast<size_t>(len_final));
@@ -114,7 +98,7 @@ int8_t decryption_aes256_ctr::decryption(const std::vector<uint8_t> &cipher, std
 		EVP_CIPHER_CTX_free(ctx);
 		LOG_CONDITION(EVP_DecryptInit_ex != 1);
 		LOG_EXIT();
-		return -1;
+		return -2;
 	}
 
 	int32_t len_update = 0;
@@ -122,7 +106,7 @@ int8_t decryption_aes256_ctr::decryption(const std::vector<uint8_t> &cipher, std
 		EVP_CIPHER_CTX_free(ctx);
 		LOG_CONDITION(EVP_DecryptUpdate != 1);
 		LOG_EXIT();
-		return -1;
+		return -3;
 	}
 
 	plain.resize(static_cast<size_t>(len_update));
