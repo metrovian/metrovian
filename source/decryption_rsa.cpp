@@ -31,7 +31,7 @@ int8_t decryption_rsa::setkey(const std::string &private_key) {
 	if (pkey == nullptr) {
 		LOG_CONDITION(PEM_read_bio_PrivateKey == nullptr);
 		LOG_EXIT();
-		return -1;
+		return -2;
 	}
 
 	int32_t len_key = i2d_PrivateKey(pkey, nullptr);
@@ -39,16 +39,16 @@ int8_t decryption_rsa::setkey(const std::string &private_key) {
 		EVP_PKEY_free(pkey);
 		LOG_CONDITION(i2d_PrivateKey <= 0);
 		LOG_EXIT();
-		return -1;
+		return -3;
 	}
 
 	std::vector<uint8_t> der_key(len_key);
 	uint8_t *ptr = der_key.data();
 	if (i2d_PrivateKey(pkey, &ptr) != len_key) {
 		EVP_PKEY_free(pkey);
-		spdlog::critical("[invalid implementation] {}", __PRETTY_FUNCTION__);
+		LOG_CONDITION(i2d_PrivateKey <= 0);
 		LOG_EXIT();
-		return -1;
+		return -4;
 	}
 
 	EVP_PKEY_free(pkey);
@@ -99,18 +99,18 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 	if (pkey_public == nullptr) {
 		LOG_CONDITION(PEM_read_bio_PUBKEY == nullptr);
 		LOG_EXIT();
-		RETURN_CLEANUP(retcode, -1);
+		RETURN_CLEANUP(retcode, -2);
 	}
 
 	ctx_public = EVP_PKEY_CTX_new(pkey_public, nullptr);
 	if (ctx_public == nullptr) {
 		LOG_CONDITION(EVP_PKEY_CTX_new == nullptr);
 		LOG_EXIT();
-		RETURN_CLEANUP(retcode, -1);
+		RETURN_CLEANUP(retcode, -3);
 	} else if (EVP_PKEY_get_base_id(pkey_public) != EVP_PKEY_RSA) {
 		LOG_CONDITION(EVP_PKEY_get_base_id != EVP_PKEY_RSA);
 		LOG_EXIT();
-		RETURN_CLEANUP(retcode, -1);
+		RETURN_CLEANUP(retcode, -4);
 	}
 
 	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_RSA_N, &n_rsa);
@@ -118,11 +118,11 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 	if (n_rsa == nullptr) {
 		LOG_CONDITION(EVP_PKEY_get_bn_param(OSSL_PKEY_PARAM_RSA_N) == nullptr);
 		LOG_EXIT();
-		RETURN_CLEANUP(retcode, -1);
+		RETURN_CLEANUP(retcode, -5);
 	} else if (e_rsa == nullptr) {
 		LOG_CONDITION(EVP_PKEY_get_bn_param(OSSL_PKEY_PARAM_RSA_E) == nullptr);
 		LOG_EXIT();
-		RETURN_CLEANUP(retcode, -1);
+		RETURN_CLEANUP(retcode, -6);
 	}
 
 	ctx_rsa = BN_CTX_new();
@@ -392,13 +392,13 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 	default:
 		spdlog::critical("[invalid implementation] {}", __PRETTY_FUNCTION__);
 		LOG_EXIT();
-		RETURN_CLEANUP(retcode, -1);
+		RETURN_CLEANUP(retcode, -7);
 	}
 
 	if (BN_is_zero(p_rsa)) {
 		LOG_CONDITION(BN_is_zero == 1);
 		LOG_EXIT();
-		RETURN_CLEANUP(retcode, -1);
+		RETURN_CLEANUP(retcode, -8);
 	}
 
 	phi_rsa = BN_new();
@@ -411,7 +411,7 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 	if (BN_mod_inverse(d_rsa, e_rsa, phi_rsa, ctx_rsa) == nullptr) {
 		LOG_CONDITION(BN_mod_inverse == nullptr);
 		LOG_EXIT();
-		RETURN_CLEANUP(retcode, -1);
+		RETURN_CLEANUP(retcode, -9);
 	}
 
 	param_bld = OSSL_PARAM_BLD_new();
@@ -434,7 +434,7 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 	if (mem == nullptr) {
 		LOG_CONDITION(BIO_new == nullptr);
 		LOG_EXIT();
-		RETURN_CLEANUP(retcode, -1);
+		RETURN_CLEANUP(retcode, -10);
 	}
 
 	param = OSSL_PARAM_BLD_to_param(param_bld);
@@ -443,18 +443,18 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 	if (i2d_PrivateKey_bio(mem, pkey_private) != 1) {
 		LOG_CONDITION(i2d_PrivateKey_bio(EVP_PKEY_KEYPAIR) != 1);
 		LOG_EXIT();
-		RETURN_CLEANUP(retcode, -1);
+		RETURN_CLEANUP(retcode, -11);
 	}
 
 	BIO_get_mem_ptr(mem, &buf_mem);
 	if (buf_mem == nullptr) {
 		LOG_CONDITION(BIO_get_mem_ptr == nullptr);
 		LOG_EXIT();
-		RETURN_CLEANUP(retcode, -1);
+		RETURN_CLEANUP(retcode, -12);
 	} else if (buf_mem->data == nullptr) {
 		LOG_CONDITION(BIO_get_mem_ptr == nullptr);
 		LOG_EXIT();
-		RETURN_CLEANUP(retcode, -1);
+		RETURN_CLEANUP(retcode, -13);
 	}
 
 	private_key_.clear();
@@ -504,7 +504,7 @@ int8_t decryption_rsa::decryption(const std::vector<uint8_t> &cipher, std::vecto
 		EVP_PKEY_free(pkey);
 		LOG_CONDITION(EVP_PKEY_CTX_new == nullptr);
 		LOG_EXIT();
-		return -1;
+		return -2;
 	}
 
 	int32_t pkey_bits = EVP_PKEY_get_bits(pkey);
@@ -513,7 +513,7 @@ int8_t decryption_rsa::decryption(const std::vector<uint8_t> &cipher, std::vecto
 		EVP_PKEY_free(pkey);
 		LOG_CONDITION(EVP_PKEY_decrypt_init <= 0);
 		LOG_EXIT();
-		return -1;
+		return -3;
 	}
 
 	if (EVP_PKEY_CTX_set_rsa_padding(ctx, RSA_PKCS1_PADDING) <= 0) {
@@ -521,7 +521,7 @@ int8_t decryption_rsa::decryption(const std::vector<uint8_t> &cipher, std::vecto
 		EVP_PKEY_free(pkey);
 		LOG_CONDITION(EVP_PKEY_CTX_set_rsa_padding(RSA_PKCS1_PADDING) <= 0);
 		LOG_EXIT();
-		return -1;
+		return -4;
 	}
 
 	size_t len_update = 0;
@@ -530,7 +530,7 @@ int8_t decryption_rsa::decryption(const std::vector<uint8_t> &cipher, std::vecto
 		EVP_PKEY_free(pkey);
 		LOG_CONDITION(EVP_PKEY_decrypt <= 0);
 		LOG_EXIT();
-		return -1;
+		return -5;
 	}
 
 	plain.clear();
@@ -540,7 +540,7 @@ int8_t decryption_rsa::decryption(const std::vector<uint8_t> &cipher, std::vecto
 		EVP_PKEY_free(pkey);
 		spdlog::critical("[invalid implementation] {}", __PRETTY_FUNCTION__);
 		LOG_EXIT();
-		return -1;
+		return -6;
 	}
 
 	plain.resize(len_update);
