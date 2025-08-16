@@ -30,17 +30,17 @@ void decompression_abstract::clear() {
 }
 
 void decompression_abstract::decompress(const std::string &path) {
-	spdlog::trace("[enter] {}", __PRETTY_FUNCTION__);
+	LOG_ENTER();
 	AVFormatContext *avformat_ctx = nullptr;
 	if (avformat_open_input(&avformat_ctx, path.c_str(), nullptr, nullptr) != 0) {
-		spdlog::error("decompression open failed: {}", path);
-		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
+		LOG_CONDITION(avformat_open_input != 0);
+		LOG_EXIT();
 		return;
 	}
 
 	if (avformat_find_stream_info(avformat_ctx, nullptr) < 0) {
-		spdlog::error("decompression find stream information failed: {}", path);
-		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
+		LOG_CONDITION(avformat_find_stream_info < 0);
+		LOG_EXIT();
 		avformat_close_input(&avformat_ctx);
 		return;
 	}
@@ -55,7 +55,7 @@ void decompression_abstract::decompress(const std::string &path) {
 
 	if (stream_index < 0) {
 		spdlog::error("decompression find audio stream failed: {}", path);
-		spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
+		LOG_EXIT();
 		avformat_close_input(&avformat_ctx);
 		return;
 	}
@@ -94,7 +94,7 @@ void decompression_abstract::decompress(const std::string &path) {
 	producer_thread.join();
 	consumer_thread.join();
 	queue_state.store(0);
-	spdlog::trace("[exit] {}", __PRETTY_FUNCTION__);
+	LOG_EXIT();
 	return;
 }
 
