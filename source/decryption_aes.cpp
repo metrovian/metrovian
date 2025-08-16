@@ -2,40 +2,56 @@
 #include "predefined.h"
 
 int8_t decryption_aes::setkey(const std::vector<uint8_t> &key) {
+	LOG_ENTER();
 	if (key.size() != sizekey()) {
+		LOG_ARGUMENT(key);
+		LOG_EXIT();
 		return -1;
 	}
 
 	key_ = key;
+	LOG_EXIT();
 	return 0;
 }
 
 int8_t decryption_aes::setiv(const std::vector<uint8_t> &iv) {
+	LOG_ENTER();
 	if (iv.size() != sizeiv()) {
+		LOG_ARGUMENT(iv);
+		LOG_EXIT();
 		return -1;
 	}
 
 	iv_ = iv;
+	LOG_EXIT();
 	return 0;
 }
 
 int8_t decryption_aes::setkey(const std::string &key) {
+	LOG_ENTER();
 	std::vector<uint8_t> decoded = base64(key);
 	if (decoded.size() != sizekey()) {
+		LOG_ARGUMENT(key);
+		LOG_EXIT();
 		return -1;
 	}
 
 	key_ = decoded;
+	LOG_EXIT();
 	return 0;
 }
 
 int8_t decryption_aes::setiv(const std::string &iv) {
+	LOG_ENTER();
 	std::vector<uint8_t> decoded = base64(iv);
 	if (decoded.size() != sizeiv()) {
+		LOG_ARGUMENT(iv);
+		LOG_EXIT();
 		return -1;
 	}
 
 	iv_ = decoded;
+	LOG_EXIT();
 	return 0;
 }
 
