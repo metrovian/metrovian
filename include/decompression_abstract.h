@@ -16,6 +16,10 @@
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
+#include <libavutil/frame.h>
+#include <libavutil/mem.h>
+#include <libswresample/swresample.h>
+#include <alsa/asoundlib.h>
 }
 
 class decompression_abstract {
@@ -42,5 +46,18 @@ public: /* abstract */
 	virtual ~decompression_abstract();
 
 protected: /* abstract */
-	virtual std::vector<uint8_t> decompression(const std::vector<uint8_t> &payload);
+	virtual int8_t open(AVCodecParameters *params) = 0;
+	virtual int8_t close(AVCodecParameters *params) = 0;
+	virtual std::vector<uint8_t> decompression(const std::vector<uint8_t> &payload, AVCodecParameters *params) = 0;
+};
+
+class decompression_general : public decompression_abstract {
+protected: /* context */
+	AVCodec *avcodec = nullptr;
+	AVCodecContext *avcodec_ctx = nullptr;
+
+protected: /* abstract */
+	virtual int8_t open(AVCodecParameters *params) override final;
+	virtual int8_t close(AVCodecParameters *params) override final;
+	virtual std::vector<uint8_t> decompression(const std::vector<uint8_t> &payload, AVCodecParameters *params) override final;
 };
