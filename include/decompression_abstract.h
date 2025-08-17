@@ -31,12 +31,12 @@ protected: /* playback queue */
 	std::mutex queue_mutex;
 	std::condition_variable queue_cvar;
 
-protected: /* playback memory */
+protected: /* playback queue */
 	void push(std::vector<uint8_t> &payload);
 	void pop(std::vector<uint8_t> &payload);
 	void clear();
 
-public: /* playback control */
+public: /* overload */
 	void decompress(const std::string &path);
 
 public: /* constructor */
