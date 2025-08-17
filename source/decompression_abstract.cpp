@@ -172,9 +172,16 @@ int8_t decompression_general::open(AVCodecParameters *params) {
 		return -2;
 	}
 
-	if (avcodec_open2(avcodec_ctx, avcodec, nullptr) < 0) {
-		LOG_CONDITION(avcodec_open2 < 0);
+	if (avcodec_parameters_to_context(avcodec_ctx, params) < 0) {
+		avcodec_free_context(&avcodec_ctx);
+		LOG_CONDITION(avcodec_parameters_to_context < 0);
 		return -3;
+	}
+
+	if (avcodec_open2(avcodec_ctx, avcodec, nullptr) < 0) {
+		avcodec_free_context(&avcodec_ctx);
+		LOG_CONDITION(avcodec_open2 < 0);
+		return -4;
 	}
 
 	return 0;
