@@ -24,12 +24,12 @@ extern "C" {
 
 class decompression_abstract {
 protected: /* playback queue */
-	std::thread producer_thread;
-	std::thread consumer_thread;
-	std::queue<std::vector<uint8_t>> queue;
-	std::atomic<uint8_t> queue_state;
-	std::mutex queue_mutex;
-	std::condition_variable queue_cvar;
+	std::thread producer_thread_;
+	std::thread consumer_thread_;
+	std::queue<std::vector<uint8_t>> queue_;
+	std::atomic<uint8_t> queue_state_;
+	std::mutex queue_mutex_;
+	std::condition_variable queue_cvar_;
 
 protected: /* playback queue */
 	void push(std::vector<uint8_t> &payload);
@@ -53,8 +53,8 @@ protected: /* abstract */
 
 class decompression_general : public decompression_abstract {
 protected: /* context */
-	AVCodec *avcodec = nullptr;
-	AVCodecContext *avcodec_ctx = nullptr;
+	AVCodec *avcodec_ = nullptr;
+	AVCodecContext *avcodec_ctx_ = nullptr;
 
 protected: /* abstract */
 	virtual int8_t open(AVCodecParameters *params) override final;

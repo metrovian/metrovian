@@ -2,28 +2,28 @@
 #include "predefined.h"
 
 void decompression_abstract::push(std::vector<uint8_t> &payload) {
-	std::unique_lock<std::mutex> lock(queue_mutex);
-	queue.push(payload);
+	std::unique_lock<std::mutex> lock(queue_mutex_);
+	queue_.push(payload);
 	lock.unlock();
-	queue_cvar.notify_one();
+	queue_cvar_.notify_one();
 	return;
 }
 
 void decompression_abstract::pop(std::vector<uint8_t> &payload) {
-	std::unique_lock<std::mutex> lock(queue_mutex);
-	queue_cvar.wait(lock, [&]() { return (queue.empty() == 0) || (queue_state.load() != 1); });
-	if (queue.empty() == 0) {
-		payload = queue.front();
-		queue.pop();
+	std::unique_lock<std::mutex> lock(queue_mutex_);
+	queue_cvar_.wait(lock, [&]() { return (queue_.empty() == 0) || (queue_state_.load() != 1); });
+	if (queue_.empty() == 0) {
+		payload = queue_.front();
+		queue_.pop();
 	}
 
 	return;
 }
 
 void decompression_abstract::clear() {
-	std::unique_lock<std::mutex> lock(queue_mutex);
-	while (queue.empty() == 0) {
-		queue.pop();
+	std::unique_lock<std::mutex> lock(queue_mutex_);
+	while (queue_.empty() == 0) {
+		queue_.pop();
 	}
 
 	return;
@@ -68,10 +68,10 @@ void decompression_abstract::decompress(const std::string &path) {
 		return;
 	}
 
-	queue_state.store(1);
-	producer_thread = std::thread([&]() {
+	queue_state_.store(1);
+	producer_thread_ = std::thread([&]() {
 		AVPacket *avpacket = av_packet_alloc();
-		while (av_read_frame(avformat_ctx, avpacket) >= 0 && queue_state.load() == 1) {
+		while (av_read_frame(avformat_ctx, avpacket) >= 0 && queue_state_.load() == 1) {
 			if (avpacket->stream_index == stream_index) {
 				std::vector<uint8_t> payload(avpacket->data, avpacket->data + avpacket->size);
 				std::vector<uint8_t> pcm = decompression(payload, avcodec_params);
@@ -86,12 +86,12 @@ void decompression_abstract::decompress(const std::string &path) {
 		}
 
 		av_packet_free(&avpacket);
-		queue_state.store(2);
-		queue_cvar.notify_one();
+		queue_state_.store(2);
+		queue_cvar_.notify_one();
 		return;
 	});
 
-	consumer_thread = std::thread([&]() {
+	consumer_thread_ = std::thread([&]() {
 		snd_pcm_t *pcm_handle = nullptr;
 		snd_pcm_hw_params_t *pcm_params = nullptr;
 		int32_t retcode = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
@@ -109,7 +109,7 @@ void decompression_abstract::decompress(const std::string &path) {
 		snd_pcm_hw_params(pcm_handle, pcm_params);
 		snd_pcm_hw_params_free(pcm_params);
 		snd_pcm_prepare(pcm_handle);
-		while (queue_state.load() != 0) {
+		while (queue_state_.load() != 0) {
 			std::vector<uint8_t> pcm;
 			pop(pcm);
 			if (pcm.size() == 0) {
@@ -139,9 +139,9 @@ void decompression_abstract::decompress(const std::string &path) {
 		return;
 	});
 
-	producer_thread.join();
-	consumer_thread.join();
-	queue_state.store(0);
+	producer_thread_.join();
+	consumer_thread_.join();
+	queue_state_.store(0);
 	close(avcodec_params);
 	avformat_close_input(&avformat_ctx);
 	LOG_EXIT();
@@ -149,37 +149,37 @@ void decompression_abstract::decompress(const std::string &path) {
 }
 
 decompression_abstract::decompression_abstract() {
-	queue_state.store(0);
-	queue_cvar.notify_one();
+	queue_state_.store(0);
+	queue_cvar_.notify_one();
 }
 
 decompression_abstract::~decompression_abstract() {
-	queue_state.store(0);
-	queue_cvar.notify_one();
+	queue_state_.store(0);
+	queue_cvar_.notify_one();
 	clear();
 }
 
 int8_t decompression_general::open(AVCodecParameters *params) {
-	avcodec = const_cast<AVCodec *>(avcodec_find_decoder(params->codec_id));
-	if (avcodec == nullptr) {
+	avcodec_ = const_cast<AVCodec *>(avcodec_find_decoder(params->codec_id));
+	if (avcodec_ == nullptr) {
 		LOG_CONDITION(avcodec_find_decoder == nullptr);
 		return -1;
 	}
 
-	avcodec_ctx = avcodec_alloc_context3(avcodec);
-	if (avcodec_ctx == nullptr) {
+	avcodec_ctx_ = avcodec_alloc_context3(avcodec_);
+	if (avcodec_ctx_ == nullptr) {
 		LOG_CONDITION(avcodec_alloc_context3 == nullptr);
 		return -2;
 	}
 
-	if (avcodec_parameters_to_context(avcodec_ctx, params) < 0) {
-		avcodec_free_context(&avcodec_ctx);
+	if (avcodec_parameters_to_context(avcodec_ctx_, params) < 0) {
+		avcodec_free_context(&avcodec_ctx_);
 		LOG_CONDITION(avcodec_parameters_to_context < 0);
 		return -3;
 	}
 
-	if (avcodec_open2(avcodec_ctx, avcodec, nullptr) < 0) {
-		avcodec_free_context(&avcodec_ctx);
+	if (avcodec_open2(avcodec_ctx_, avcodec_, nullptr) < 0) {
+		avcodec_free_context(&avcodec_ctx_);
 		LOG_CONDITION(avcodec_open2 < 0);
 		return -4;
 	}
@@ -188,7 +188,7 @@ int8_t decompression_general::open(AVCodecParameters *params) {
 }
 
 int8_t decompression_general::close(AVCodecParameters *params) {
-	avcodec_free_context(&avcodec_ctx);
+	avcodec_free_context(&avcodec_ctx_);
 	return 0;
 }
 
@@ -229,8 +229,8 @@ std::vector<uint8_t> decompression_general::decompression(const std::vector<uint
 	}
 
 	memcpy(avpacket->data, payload.data(), payload.size());
-	if (avcodec_send_packet(avcodec_ctx, avpacket) == 0) {
-		while (avcodec_receive_frame(avcodec_ctx, avframe) == 0) {
+	if (avcodec_send_packet(avcodec_ctx_, avpacket) == 0) {
+		while (avcodec_receive_frame(avcodec_ctx_, avframe) == 0) {
 			int32_t rescale_samples =
 			    av_rescale_rnd(
 				swr_get_delay(swr_ctx, params->sample_rate) + avframe->nb_samples,
