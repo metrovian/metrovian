@@ -19,11 +19,13 @@ OPTION(ENABLE_OPENMP ON)
 OPTION(ENABLE_WIDE_CHAR OFF)
 OPTION(BUILD_SHARED_LIBS OFF)
 
-ADD_SUBDIRECTORY(3rdparty/spdlog)
+ADD_SUBDIRECTORY(3rdparty/cli11)
 ADD_SUBDIRECTORY(3rdparty/muparser)
-SET(SUBDIR_LIBRARIES 
-        spdlog::spdlog
-        muparser::muparser)
+ADD_SUBDIRECTORY(3rdparty/spdlog)
+SET(SUBDIR_LIBRARIES
+        CLI11::CLI11 
+        muparser::muparser
+        spdlog::spdlog)
 
 FIND_PACKAGE(PkgConfig REQUIRED)
 FIND_PACKAGE(OpenSSL REQUIRED)
