@@ -41,10 +41,10 @@ int8_t command_abstract::write_text(const std::string &path, std::string &text) 
 
 void command_aes256_cbc::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("aes-256-cbc", "AES-256-CBC decryption");
-	command->add_option("--key", key, "key")->required();
-	command->add_option("--iv", iv, "iv")->required();
-	command->add_option("--in", in, "ciphertext file")->required();
-	command->add_option("--out", out, "plaintext file")->required();
+	command->add_option("--key", key, "key base64")->required();
+	command->add_option("--iv", iv, "iv base64")->required();
+	command->add_option("--in", in, "ciphertext binary")->required();
+	command->add_option("--out", out, "plaintext binary")->required();
 	command->callback([this]() { run(); });
 	return;
 }
