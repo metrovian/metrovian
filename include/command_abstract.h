@@ -23,10 +23,10 @@ public: /* abstract */
 
 class command_aes : public command_abstract {
 protected: /* parameter */
-	std::string key;
-	std::string iv;
-	std::string in;
-	std::string out;
+	std::string key_;
+	std::string iv_;
+	std::string in_;
+	std::string out_;
 };
 
 class command_aes256_cbc : public command_aes {
