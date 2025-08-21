@@ -21,13 +21,21 @@ public: /* abstract */
 	virtual void run() = 0;
 };
 
-class command_aes256_cbc : public command_abstract {
+class command_aes : public command_abstract {
 protected: /* parameter */
 	std::string key;
 	std::string iv;
 	std::string in;
 	std::string out;
+};
 
+class command_aes256_cbc : public command_aes {
+public: /* abstract */
+	void setup(CLI::App *parent) override final;
+	void run() override final;
+};
+
+class command_aes256_ctr : public command_aes {
 public: /* abstract */
 	void setup(CLI::App *parent) override final;
 	void run() override final;
