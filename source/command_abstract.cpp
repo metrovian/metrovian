@@ -68,3 +68,33 @@ void command_aes256_cbc::run() {
 
 	return;
 }
+
+void command_aes256_ctr::setup(CLI::App *parent) {
+	auto command = parent->add_subcommand("aes-256-ctr", "AES-256-CTR decryption");
+	command->add_option("--key", key, "key base64")->required();
+	command->add_option("--iv", iv, "iv base64")->required();
+	command->add_option("--in", in, "ciphertext binary")->required();
+	command->add_option("--out", out, "plaintext binary")->required();
+	command->callback([this]() { run(); });
+	return;
+}
+
+void command_aes256_ctr::run() {
+	decryption_aes256_ctr engine;
+	if (engine.setkey(key) == 0) {
+		if (engine.setiv(iv) == 0) {
+			std::vector<uint8_t> cipher;
+			std::vector<uint8_t> plain;
+			if (read_binary(in, cipher) == 0) {
+				if (engine.decrypt(cipher, plain) == 0) {
+					if (write_binary(out, plain) == 0) {
+						spdlog::info("AES-256-CTR decryption success");
+						return;
+					}
+				}
+			}
+		}
+	}
+
+	return;
+}
