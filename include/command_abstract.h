@@ -40,3 +40,12 @@ public: /* abstract */
 	void setup(CLI::App *parent) override final;
 	void run() override final;
 };
+
+class command_avcodec : public command_abstract {
+protected: /* parameter */
+	std::string path_;
+
+public: /* abstract */
+	void setup(CLI::App *parent) override final;
+	void run() override final;
+};
