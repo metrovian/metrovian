@@ -65,10 +65,10 @@ int8_t command_abstract::write_text(const std::string &path, std::string &text) 
 
 void command_aes256_cbc::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("aes-256-cbc", "AES-256-CBC decryption");
-	command->add_option("--key", key_, "key base64")->required();
-	command->add_option("--iv", iv_, "iv base64")->required();
-	command->add_option("--in", in_, "ciphertext binary")->required();
-	command->add_option("--out", out_, "plaintext binary")->required();
+	command->add_option("-k, --key", key_, "key base64")->required();
+	command->add_option("-v, --iv", iv_, "iv base64")->required();
+	command->add_option("-i, --in", in_, "ciphertext binary")->required();
+	command->add_option("-o, --out", out_, "plaintext binary")->required();
 	command->callback([this]() { run(); });
 	return;
 }
@@ -95,10 +95,10 @@ void command_aes256_cbc::run() {
 
 void command_aes256_ctr::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("aes-256-ctr", "AES-256-CTR decryption");
-	command->add_option("--key", key_, "key base64")->required();
-	command->add_option("--iv", iv_, "iv base64")->required();
-	command->add_option("--in", in_, "ciphertext binary")->required();
-	command->add_option("--out", out_, "plaintext binary")->required();
+	command->add_option("-k, --key", key_, "key base64")->required();
+	command->add_option("-v, --iv", iv_, "iv base64")->required();
+	command->add_option("-i, --in", in_, "ciphertext binary")->required();
+	command->add_option("-o, --out", out_, "plaintext binary")->required();
 	command->callback([this]() { run(); });
 	return;
 }
@@ -125,7 +125,7 @@ void command_aes256_ctr::run() {
 
 void command_avcodec::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("avcodec", "FFMPEG decompression");
-	command->add_option("--in", path_, "encoded audio")->required();
+	command->add_option("-i, --in", path_, "encoded audio")->required();
 	command->callback([this]() { run(); });
 	return;
 }
