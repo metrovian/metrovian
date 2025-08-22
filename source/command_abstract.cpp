@@ -1,5 +1,7 @@
 #include "command_abstract.h"
 #include "decryption_aes.h"
+#include "decryption_rsa.h"
+#include "decompression_avcodec.h"
 
 int8_t command_abstract::read_binary(const std::string &path, std::vector<uint8_t> &binary) {
 	std::ifstream ifs(path, std::ios::binary);
@@ -118,5 +120,18 @@ void command_aes256_ctr::run() {
 		}
 	}
 
+	return;
+}
+
+void command_avcodec::setup(CLI::App *parent) {
+	auto command = parent->add_subcommand("avcodec", "FFMPEG decompression");
+	command->add_option("--in", path_, "encoded audio")->required();
+	command->callback([this]() { run(); });
+	return;
+}
+
+void command_avcodec::run() {
+	decompression_avcodec engine;
+	engine.decompress(path_);
 	return;
 }
