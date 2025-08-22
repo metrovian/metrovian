@@ -32,10 +32,32 @@ int8_t command_abstract::write_binary(const std::string &path, std::vector<uint8
 }
 
 int8_t command_abstract::read_text(const std::string &path, std::string &text) {
+	std::ifstream ifs(path);
+	if (ifs.is_open() == false) {
+		return -1;
+	}
+
+	std::ostringstream oss;
+	oss << ifs.rdbuf();
+	if (ifs.fail() == true) {
+		return -2;
+	}
+
+	text = oss.str();
 	return 0;
 }
 
 int8_t command_abstract::write_text(const std::string &path, std::string &text) {
+	std::ofstream ofs(path);
+	if (ofs.is_open() == false) {
+		return -1;
+	}
+
+	ofs << text;
+	if (ofs.fail() == true) {
+		return -2;
+	}
+
 	return 0;
 }
 
