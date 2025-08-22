@@ -41,6 +41,17 @@ public: /* abstract */
 	void run() override final;
 };
 
+class command_rsa : public command_abstract {
+protected: /* parameter */
+	std::string private_pem_;
+	std::string in_;
+	std::string out_;
+
+public: /* abstract */
+	void setup(CLI::App *parent) override final;
+	void run() override final;
+};
+
 class command_avcodec : public command_abstract {
 protected: /* parameter */
 	std::string path_;
