@@ -2,6 +2,7 @@
 #include "decryption_aes.h"
 #include "decryption_rsa.h"
 #include "decompression_avcodec.h"
+#include "optimization_user.h"
 
 int8_t command_abstract::read_binary(const std::string &path, std::vector<uint8_t> &binary) {
 	std::ifstream ifs(path, std::ios::binary);
@@ -58,6 +59,53 @@ int8_t command_abstract::write_text(const std::string &path, std::string &text) 
 	ofs << text;
 	if (ofs.fail() == true) {
 		return -2;
+	}
+
+	return 0;
+}
+
+int8_t command_abstract::read_vector(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter) {
+	std::ifstream ifs(path);
+	if (ifs.is_open() == false) {
+		return -1;
+	}
+
+	std::vector<double> read_domain;
+	std::vector<double> read_range;
+	std::string line;
+	while (std::getline(ifs, line).fail() == false) {
+		std::istringstream iss(line);
+		std::string token1;
+		std::string token2;
+		if (std::getline(iss, token1, delimiter).fail() == true) {
+			continue;
+		} else if (std::getline(iss, token2, delimiter).fail() == true) {
+			continue;
+		}
+
+		read_domain.push_back(std::stod(token1));
+		read_range.push_back(std::stod(token2));
+	}
+
+	domain = Eigen::Map<Eigen::VectorXd>(read_domain.data(), read_domain.size());
+	range = Eigen::Map<Eigen::VectorXd>(read_range.data(), read_range.size());
+	return 0;
+}
+
+int8_t command_abstract::read_write(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter) {
+	std::ofstream ofs(path);
+	if (ofs.is_open() == false) {
+		return -1;
+	} else if (domain.size() != range.size()) {
+		return -2;
+	}
+
+	for (size_t i = 0; i < domain.size(); ++i) {
+		ofs << domain[i] << delimiter << range[i] << std::endl;
+	}
+
+	if (ofs.fail() == true) {
+		return -3;
 	}
 
 	return 0;
@@ -153,13 +201,39 @@ void command_rsa::run() {
 
 void command_avcodec::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("avcodec", "FFMPEG decompression");
-	command->add_option("-i, --in", path_, "encoded audio")->required();
+	command->add_option("-i, --in", in_, "encoded audio")->required();
 	command->callback([this]() { run(); });
 	return;
 }
 
 void command_avcodec::run() {
 	decompression_avcodec engine;
-	engine.decompress(path_);
+	engine.decompress(in_);
+	return;
+}
+
+void command_user::setup(CLI::App *parent) {
+	auto command = parent->add_subcommand("user", "USER optimization");
+	command->add_option("-f, --func", function_, "user-defined function")->required();
+	command->add_option("-i, --in", in_, "calibration csv")->required();
+	command->add_option("-n, --iter", iter_, "iteration max")->default_val<size_t>(1000);
+	command->add_option("-e, --eps", eps_, "iteration eps")->default_val<double>(1.000E-30);
+	command->callback([this]() { run(); });
+	return;
+}
+
+void command_user::run() {
+	optimization_user engine;
+	if (engine.import_function(function_).length() > 0) {
+		Eigen::VectorXd domain;
+		Eigen::VectorXd range;
+		if (read_vector(in_, domain, range, ',') == 0) {
+			if (engine.calibrate(domain, range, iter_, eps_).norm() > 0) {
+				std::cout << "function: " << engine.export_function() << std::endl;
+				std::cout << "parameters: " << engine.export_parameters().transpose() << std::endl;
+			}
+		}
+	}
+
 	return;
 }

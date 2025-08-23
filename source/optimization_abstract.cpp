@@ -112,16 +112,3 @@ Eigen::VectorXd optimization_abstract::step_iteration(const Eigen::VectorXd &dom
 	approximation.diagonal() += damp * hess.diagonal();
 	return approximation.ldlt().solve(gradient);
 }
-
-std::string optimization_general::export_function() {
-	return function_;
-}
-
-std::string optimization_general::import_function(const std::string &function) {
-	function_ = function;
-	return export_function();
-}
-
-std::string optimization_general::objective_function() {
-	return export_function();
-}
