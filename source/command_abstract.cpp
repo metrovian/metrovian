@@ -217,7 +217,7 @@ void command_user::setup(CLI::App *parent) {
 	command->add_option("-f, --func", function_, "user-defined function")->required();
 	command->add_option("-i, --in", in_, "measured csv")->required();
 	command->add_option("-n, --iter", iter_, "iteration max")->default_val<size_t>(1000);
-	command->add_option("-e, --eps", eps_, "iteration eps")->default_val<double>(1.000E-30);
+	command->add_option("-e, --eps", eps_, "iteration eps")->default_val<double>(1.000E-15);
 	command->callback([this]() { run(); });
 	return;
 }
