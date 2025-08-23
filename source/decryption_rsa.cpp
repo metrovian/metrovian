@@ -91,25 +91,21 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 	bio = BIO_new_mem_buf(public_key.data(), static_cast<int32_t>(public_key.size()));
 	if (bio == nullptr) {
 		LOG_CONDITION(BIO_new_mem_buf == nullptr);
-		LOG_EXIT();
 		RETURN_CLEANUP(retcode, -1);
 	}
 
 	pkey_public = PEM_read_bio_PUBKEY(bio, nullptr, nullptr, nullptr);
 	if (pkey_public == nullptr) {
 		LOG_CONDITION(PEM_read_bio_PUBKEY == nullptr);
-		LOG_EXIT();
 		RETURN_CLEANUP(retcode, -2);
 	}
 
 	ctx_public = EVP_PKEY_CTX_new(pkey_public, nullptr);
 	if (ctx_public == nullptr) {
 		LOG_CONDITION(EVP_PKEY_CTX_new == nullptr);
-		LOG_EXIT();
 		RETURN_CLEANUP(retcode, -3);
 	} else if (EVP_PKEY_get_base_id(pkey_public) != EVP_PKEY_RSA) {
 		LOG_CONDITION(EVP_PKEY_get_base_id != EVP_PKEY_RSA);
-		LOG_EXIT();
 		RETURN_CLEANUP(retcode, -4);
 	}
 
@@ -117,11 +113,9 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_RSA_E, &e_rsa);
 	if (n_rsa == nullptr) {
 		LOG_CONDITION(EVP_PKEY_get_bn_param(OSSL_PKEY_PARAM_RSA_N) == nullptr);
-		LOG_EXIT();
 		RETURN_CLEANUP(retcode, -5);
 	} else if (e_rsa == nullptr) {
 		LOG_CONDITION(EVP_PKEY_get_bn_param(OSSL_PKEY_PARAM_RSA_E) == nullptr);
-		LOG_EXIT();
 		RETURN_CLEANUP(retcode, -6);
 	}
 
@@ -391,13 +385,11 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 
 	default:
 		LOG_ARGUMENT(algorithm);
-		LOG_EXIT();
 		RETURN_CLEANUP(retcode, -7);
 	}
 
 	if (BN_is_zero(p_rsa)) {
 		LOG_CONDITION(BN_is_zero == 1);
-		LOG_EXIT();
 		RETURN_CLEANUP(retcode, -8);
 	}
 
@@ -410,7 +402,6 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 	BN_mul(phi_rsa, p1_rsa, q1_rsa, ctx_rsa);
 	if (BN_mod_inverse(d_rsa, e_rsa, phi_rsa, ctx_rsa) == nullptr) {
 		LOG_CONDITION(BN_mod_inverse == nullptr);
-		LOG_EXIT();
 		RETURN_CLEANUP(retcode, -9);
 	}
 
@@ -433,7 +424,6 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 	mem = BIO_new(BIO_s_mem());
 	if (mem == nullptr) {
 		LOG_CONDITION(BIO_new == nullptr);
-		LOG_EXIT();
 		RETURN_CLEANUP(retcode, -10);
 	}
 
@@ -442,18 +432,15 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 	EVP_PKEY_fromdata(ctx_private, &pkey_private, EVP_PKEY_KEYPAIR, param);
 	if (i2d_PrivateKey_bio(mem, pkey_private) != 1) {
 		LOG_CONDITION(i2d_PrivateKey_bio(EVP_PKEY_KEYPAIR) != 1);
-		LOG_EXIT();
 		RETURN_CLEANUP(retcode, -11);
 	}
 
 	BIO_get_mem_ptr(mem, &buf_mem);
 	if (buf_mem == nullptr) {
 		LOG_CONDITION(BIO_get_mem_ptr == nullptr);
-		LOG_EXIT();
 		RETURN_CLEANUP(retcode, -12);
 	} else if (buf_mem->data == nullptr) {
 		LOG_CONDITION(BIO_get_mem_ptr == nullptr);
-		LOG_EXIT();
 		RETURN_CLEANUP(retcode, -13);
 	}
 
@@ -486,6 +473,7 @@ cleanup:
 	if (q_hexstr) free(q_hexstr);
 	if (n_hexstr) OPENSSL_free(n_hexstr);
 	// clang-format on
+	LOG_EXIT();
 	return retcode;
 }
 
