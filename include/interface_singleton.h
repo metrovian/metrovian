@@ -14,7 +14,7 @@ public: /* instance */
 	static interface_singleton &instance();
 
 private: /* constraint */
-	interface_singleton() {}
+	interface_singleton();
 	interface_singleton(const interface_singleton &) = default;
 	interface_singleton &operator=(const interface_singleton &) = default;
 };
