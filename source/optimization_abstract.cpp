@@ -75,12 +75,12 @@ Eigen::VectorXd optimization_abstract::calibrate(const Eigen::VectorXd &domain, 
 		Eigen::VectorXd step = step_iteration(domain, range, damp);
 		params_ -= step;
 		residual(domain, range).norm() < prev.norm() ? damp *= step_decrease() : damp *= step_increase();
+		spdlog::debug("residual-{}: {}", i, residual(domain, range).norm());
 		if (step.norm() < epsilon) {
 			break;
 		}
 	}
 
-	spdlog::debug("residual: {}", residual(domain, range).norm());
 	LOG_EXIT();
 	return residual(domain, range);
 }
