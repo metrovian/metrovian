@@ -130,7 +130,7 @@ void command_aes256_cbc::run() {
 			if (read_binary(in_, cipher) == 0) {
 				if (engine.decrypt(cipher, plain) == 0) {
 					if (write_binary(out_, plain) == 0) {
-						spdlog::info("AES-256-CBC decryption success");
+						std::cout << engine.base64(plain) << std::endl;
 						return;
 					}
 				}
@@ -160,7 +160,7 @@ void command_aes256_ctr::run() {
 			if (read_binary(in_, cipher) == 0) {
 				if (engine.decrypt(cipher, plain) == 0) {
 					if (write_binary(out_, plain) == 0) {
-						spdlog::info("AES-256-CTR decryption success");
+						std::cout << engine.base64(plain) << std::endl;
 						return;
 					}
 				}
@@ -190,7 +190,7 @@ void command_rsa::run() {
 			if (read_binary(in_, cipher) == 0) {
 				if (engine.decrypt(cipher, plain) == 0) {
 					if (write_binary(out_, plain) == 0) {
-						spdlog::info("RSA decryption success");
+						std::cout << engine.base64(plain) << std::endl;
 						return;
 					}
 				}
@@ -229,8 +229,7 @@ void command_user::run() {
 		Eigen::VectorXd range;
 		if (read_vector(in_, domain, range, ',') == 0) {
 			if (engine.calibrate(domain, range, iter_, eps_).norm() > 0) {
-				std::cout << "function: " << engine.export_function() << std::endl;
-				std::cout << "parameters: " << engine.export_parameters().transpose() << std::endl;
+				std::cout << engine.export_parameters().transpose() << std::endl;
 			}
 		}
 	}
