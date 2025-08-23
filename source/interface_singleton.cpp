@@ -15,3 +15,10 @@ interface_singleton &interface_singleton::instance() {
 	static interface_singleton instance_;
 	return instance_;
 }
+
+interface_singleton::interface_singleton() {
+	auto formatter = std::make_shared<CLI::Formatter>();
+	formatter->column_width(35);
+	command_parser_.formatter(formatter);
+	command_parser_.get_option("--help")->description("help");
+}
