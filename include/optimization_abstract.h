@@ -35,7 +35,7 @@ public: /* abstract */
 	~optimization_abstract() {}
 
 protected: /* abstract */
-	virtual double step_derivative() { return 1.000E-15; }
+	virtual double step_derivative() { return 1.000E-5; }
 	virtual double step_damp() { return 1.000E+0; }
 	virtual double step_increase() { return 1.000E+1; }
 	virtual double step_decrease() { return 1.000E-1; }
