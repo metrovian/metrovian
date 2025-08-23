@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <vector>
 #include <map>
+#include <regex>
 #include <sstream>
 #include <string>
 #include <stdint.h>
@@ -34,22 +35,10 @@ public: /* abstract */
 	~optimization_abstract() {}
 
 protected: /* abstract */
-	virtual double step_derivative() { return 1.000E-5; }
+	virtual double step_derivative() { return 1.000E-15; }
 	virtual double step_damp() { return 1.000E+0; }
 	virtual double step_increase() { return 1.000E+1; }
 	virtual double step_decrease() { return 1.000E-1; }
 	virtual Eigen::VectorXd step_iteration(const Eigen::VectorXd &domain, const Eigen::VectorXd &range, const double damp);
 	virtual std::string objective_function() = 0;
-};
-
-class optimization_general : public optimization_abstract {
-protected: /* custom function */
-	std::string function_;
-
-public: /* custom function */
-	std::string export_function();
-	std::string import_function(const std::string &function);
-
-protected: /* abstract */
-	virtual std::string objective_function() override final;
 };
