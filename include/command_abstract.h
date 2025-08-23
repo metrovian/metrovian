@@ -1,12 +1,12 @@
 #pragma once
-#include <unordered_map>
-#include <string>
-#include <vector>
-#include <memory>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
-#include <Eigen/Dense>
 #include <CLI/CLI.hpp>
+
+#include "decryption_aes.h"
+#include "decryption_rsa.h"
+#include "decompression_avcodec.h"
+#include "optimization_user.h"
 
 class command_abstract {
 protected: /* file */
@@ -35,14 +35,14 @@ protected: /* parameter */
 
 class command_aes256_cbc : public command_aes {
 public: /* abstract */
-	void setup(CLI::App *parent) override final;
-	void run() override final;
+	virtual void setup(CLI::App *parent) override final;
+	virtual void run() override final;
 };
 
 class command_aes256_ctr : public command_aes {
 public: /* abstract */
-	void setup(CLI::App *parent) override final;
-	void run() override final;
+	virtual void setup(CLI::App *parent) override final;
+	virtual void run() override final;
 };
 
 class command_rsa : public command_abstract {
@@ -52,8 +52,19 @@ protected: /* parameter */
 	std::string out_;
 
 public: /* abstract */
-	void setup(CLI::App *parent) override final;
-	void run() override final;
+	virtual void setup(CLI::App *parent) override;
+	virtual void run() override;
+};
+
+class command_rsa_attack : public command_rsa {
+protected: /* parameter */
+	std::string public_pem_;
+	std::string method_;
+	std::unordered_map<std::string, rsa::attack> map_;
+
+public: /* abstract */
+	virtual void setup(CLI::App *parent) override final;
+	virtual void run() override final;
 };
 
 class command_avcodec : public command_abstract {
@@ -61,8 +72,8 @@ protected: /* parameter */
 	std::string in_;
 
 public: /* abstract */
-	void setup(CLI::App *parent) override final;
-	void run() override final;
+	virtual void setup(CLI::App *parent) override final;
+	virtual void run() override final;
 };
 
 class command_user : public command_abstract {
@@ -73,6 +84,6 @@ protected: /* parameter */
 	double eps_;
 
 public: /* abstract */
-	void setup(CLI::App *parent) override final;
-	void run() override final;
+	virtual void setup(CLI::App *parent) override final;
+	virtual void run() override final;
 };
