@@ -30,6 +30,46 @@ std::string decryption_abstract::base64(const std::vector<uint8_t> &bytes) {
 	return encoded;
 }
 
+std::vector<uint8_t> decryption_abstract::hash(const std::vector<uint8_t> &bytes, const EVP_MD *algorithm) {
+	EVP_MD_CTX *ctx = EVP_MD_CTX_new();
+	if (ctx == nullptr) {
+		return std::vector<uint8_t>();
+	}
+
+	if (EVP_DigestInit_ex(ctx, algorithm, nullptr) != 1) {
+		EVP_MD_CTX_free(ctx);
+		return std::vector<uint8_t>();
+	}
+
+	if (EVP_DigestUpdate(ctx, bytes.data(), bytes.size()) != 1) {
+		EVP_MD_CTX_free(ctx);
+		return std::vector<uint8_t>();
+	}
+
+	std::vector<uint8_t> digest(EVP_MD_size(algorithm));
+	uint32_t len_final = 0;
+	if (EVP_DigestFinal_ex(ctx, digest.data(), &len_final) != 1) {
+		EVP_MD_CTX_free(ctx);
+		return std::vector<uint8_t>();
+	}
+
+	EVP_MD_CTX_free(ctx);
+	digest.resize(static_cast<size_t>(len_final));
+	return digest;
+}
+
+std::vector<uint8_t> decryption_abstract::md5(const std::vector<uint8_t> &bytes) {
+	return hash(bytes, EVP_md5());
+}
+
+std::vector<uint8_t> decryption_abstract::sha256(const std::vector<uint8_t> &bytes) {
+	return hash(bytes, EVP_sha256());
+}
+
+std::vector<uint8_t> decryption_abstract::sha512(const std::vector<uint8_t> &bytes) {
+	return hash(bytes, EVP_sha512());
+}
+
 int8_t decryption_abstract::decrypt(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) {
 	return decryption(cipher, plain);
 }
