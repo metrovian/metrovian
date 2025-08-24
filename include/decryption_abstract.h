@@ -24,6 +24,12 @@ public: /* stream transform */
 	static std::vector<uint8_t> base64(const std::string &chars);
 	static std::string base64(const std::vector<uint8_t> &bytes);
 
+public: /* stream transform */
+	static std::vector<uint8_t> hash(const std::vector<uint8_t> &bytes, const EVP_MD *algorithm);
+	static std::vector<uint8_t> md5(const std::vector<uint8_t> &bytes);
+	static std::vector<uint8_t> sha256(const std::vector<uint8_t> &bytes);
+	static std::vector<uint8_t> sha512(const std::vector<uint8_t> &bytes);
+
 public: /* overload */
 	int8_t decrypt(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain);
 	int8_t decrypt(const std::vector<uint8_t> &cipher, std::string &plain);
