@@ -12,8 +12,8 @@ std::string optimization_user::import_function(const std::string &function) {
 	auto begin = std::sregex_iterator(function.begin(), function.end(), rex);
 	auto end = std::sregex_iterator();
 	for (auto it = begin; it != end; ++it) {
-		if (dimension < std::stoi((*it)[1].str())) {
-			dimension = std::stoi((*it)[1].str());
+		if (dimension < std::stoull((*it)[1].str())) {
+			dimension = std::stoull((*it)[1].str());
 		}
 	}
 
