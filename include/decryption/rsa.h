@@ -2,7 +2,7 @@
 #include "decryption/abstract.h"
 
 namespace rsa {
-enum class attack {
+enum class attack : uint8_t {
 	trial = 0,
 	fermat = 1,
 	pollards_rho = 2,
