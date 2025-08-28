@@ -1,0 +1,28 @@
+#pragma once
+#include "command/abstract.h"
+
+namespace rsa {
+enum class attack : uint8_t;
+};
+
+class command_rsa : public command_abstract {
+protected: /* parameter */
+	std::string private_pem_;
+	std::string in_;
+	std::string out_;
+
+public: /* abstract */
+	virtual void setup(CLI::App *parent) override;
+	virtual void run() override;
+};
+
+class command_rsa_attack : public command_rsa {
+protected: /* parameter */
+	std::string public_pem_;
+	std::string method_;
+	std::unordered_map<std::string, rsa::attack> map_;
+
+public: /* abstract */
+	virtual void setup(CLI::App *parent) override final;
+	virtual void run() override final;
+};

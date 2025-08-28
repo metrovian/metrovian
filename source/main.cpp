@@ -1,5 +1,8 @@
 #include "interface_singleton.h"
-#include "command_abstract.h"
+#include "command/aes.h"
+#include "command/rsa.h"
+#include "command/avcodec.h"
+#include "command/user.h"
 
 int32_t main(int argc, char **argv) {
 	interface_singleton::instance().command_setup(std::make_unique<command_aes256_cbc>());
