@@ -1,4 +1,4 @@
-#include "decompression_avcodec.h"
+#include "decompression/avcodec.h"
 #include "predefined.h"
 
 int8_t decompression_avcodec::open(AVCodecParameters *params) {

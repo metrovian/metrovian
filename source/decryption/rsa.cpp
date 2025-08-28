@@ -1,4 +1,4 @@
-#include "decryption_rsa.h"
+#include "decryption/rsa.h"
 #include "predefined.h"
 
 int8_t decryption_rsa::setkey(const std::vector<uint8_t> &private_key) {

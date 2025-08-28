@@ -1,5 +1,5 @@
 #pragma once
-#include "decompression_abstract.h"
+#include "decompression/abstract.h"
 
 class decompression_avcodec : public decompression_abstract {
 protected: /* context */

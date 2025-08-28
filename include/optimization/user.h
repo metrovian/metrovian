@@ -1,5 +1,5 @@
 #pragma once
-#include "optimization_abstract.h"
+#include "optimization/abstract.h"
 
 class optimization_user : public optimization_abstract {
 protected: /* custom function */

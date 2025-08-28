@@ -1,4 +1,4 @@
-#include "decryption_abstract.h"
+#include "decryption/abstract.h"
 
 std::vector<uint8_t> decryption_abstract::base64(const std::string &chars) {
 	BIO *base64 = BIO_new(BIO_f_base64());

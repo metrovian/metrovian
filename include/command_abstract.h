@@ -3,10 +3,10 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <CLI/CLI.hpp>
 
-#include "decryption_aes.h"
-#include "decryption_rsa.h"
-#include "decompression_avcodec.h"
-#include "optimization_user.h"
+#include "decryption/aes.h"
+#include "decryption/rsa.h"
+#include "decompression/avcodec.h"
+#include "optimization/user.h"
 
 class command_abstract {
 protected: /* file */

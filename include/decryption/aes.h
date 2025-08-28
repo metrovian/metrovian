@@ -1,5 +1,5 @@
 #pragma once
-#include "decryption_abstract.h"
+#include "decryption/abstract.h"
 
 class decryption_aes : public decryption_abstract {
 protected: /* parameter */
