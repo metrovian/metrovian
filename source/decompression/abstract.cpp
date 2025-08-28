@@ -1,4 +1,4 @@
-#include "decompression_abstract.h"
+#include "decompression/abstract.h"
 #include "predefined.h"
 
 void decompression_abstract::push(std::vector<uint8_t> &payload) {

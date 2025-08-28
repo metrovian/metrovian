@@ -1,5 +1,5 @@
 #pragma once
-#include "decryption_abstract.h"
+#include "decryption/abstract.h"
 
 namespace rsa {
 enum class attack {
