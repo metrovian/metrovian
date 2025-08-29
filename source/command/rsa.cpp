@@ -1,5 +1,6 @@
 #include "command/rsa.h"
 #include "decryption/rsa.h"
+#include "predefined.h"
 
 void command_rsa::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("rsa", "RSA decryption");

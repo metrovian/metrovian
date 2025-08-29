@@ -1,5 +1,6 @@
 #include "command/user.h"
 #include "optimization/user.h"
+#include "predefined.h"
 
 void command_user::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("user", "USER optimization");

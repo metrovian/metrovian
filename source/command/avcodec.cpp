@@ -1,5 +1,6 @@
 #include "command/avcodec.h"
 #include "decompression/avcodec.h"
+#include "predefined.h"
 
 void command_avcodec::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("avcodec", "FFMPEG decompression");

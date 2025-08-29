@@ -1,3 +1,4 @@
+#pragma once
 // clang-format off
 #define RETURN_CLEANUP(retcode, code)   do { retcode = code; goto cleanup; } while(0)
 #define LOG_ENTER()                     spdlog::trace("[enter] [{}:{}] {}", basename(__FILE__), __LINE__, __func__)

@@ -1,5 +1,6 @@
 #include "command/aes.h"
 #include "decryption/aes.h"
+#include "predefined.h"
 
 void command_aes256_cbc::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("aes-256-cbc", "AES-256-CBC decryption");
