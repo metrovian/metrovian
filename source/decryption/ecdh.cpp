@@ -18,24 +18,22 @@ int8_t decryption_ecdh::setkey(const std::vector<uint8_t> &private_key) {
 		return -2;
 	}
 
-	EC_KEY *eckey = EVP_PKEY_get1_EC_KEY(pkey);
-	if (eckey == nullptr) {
-		EVP_PKEY_free(pkey);
-		LOG_CONDITION(EVP_PKEY_get1_EC_KEY == nullptr);
+	EVP_PKEY_CTX *ctx = EVP_PKEY_CTX_new(pkey, nullptr);
+	if (ctx == nullptr) {
+		LOG_CONDITION(EVP_PKEY_CTX_new == nullptr);
 		LOG_EXIT();
 		return -3;
 	}
 
-	if (EC_KEY_check_key(eckey) != 1) {
-		EC_KEY_free(eckey);
-		EVP_PKEY_free(pkey);
-		LOG_CONDITION(EC_KEY_check_key != 1);
+	if (EVP_PKEY_param_check(ctx) <= 0) {
+		EVP_PKEY_CTX_free(ctx);
+		LOG_CONDITION(EVP_PKEY_param_check <= 0);
 		LOG_EXIT();
 		return -4;
 	}
 
 	private_key_ = private_key;
-	EC_KEY_free(eckey);
+	EVP_PKEY_CTX_free(ctx);
 	EVP_PKEY_free(pkey);
 	LOG_EXIT();
 	return 0;
