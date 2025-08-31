@@ -11,8 +11,8 @@ int8_t decryption_rsa::setkey(const std::vector<uint8_t> &private_key) {
 		return -1;
 	}
 
-	EVP_PKEY_free(pkey);
 	private_key_ = private_key;
+	EVP_PKEY_free(pkey);
 	LOG_EXIT();
 	return 0;
 }
@@ -51,8 +51,8 @@ int8_t decryption_rsa::setkey(const std::string &private_key) {
 		return -4;
 	}
 
-	EVP_PKEY_free(pkey);
 	private_key_ = std::move(der_key);
+	EVP_PKEY_free(pkey);
 	LOG_EXIT();
 	return 0;
 }
