@@ -6,6 +6,7 @@
 
 class command_abstract {
 protected: /* command parser */
+	CLI::App *command_parser_;
 	std::vector<std::unique_ptr<command_abstract>> commands_;
 
 protected: /* file */
@@ -17,7 +18,8 @@ protected: /* file */
 	int8_t read_write(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter);
 
 protected: /* subcommand */
-	int8_t setup_subcommand(CLI::App *parent, std::unique_ptr<command_abstract> command);
+	int8_t setup_subcommand(std::unique_ptr<command_abstract> command);
+	int8_t select_subcommand();
 
 public: /* abstract */
 	~command_abstract() {}
