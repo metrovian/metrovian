@@ -5,6 +5,9 @@
 #include <Eigen/Dense>
 
 class command_abstract {
+protected: /* command parser */
+	std::vector<std::unique_ptr<command_abstract>> commands_;
+
 protected: /* file */
 	int8_t read_binary(const std::string &path, std::vector<uint8_t> &binary);
 	int8_t write_binary(const std::string &path, std::vector<uint8_t> &binary);
@@ -12,6 +15,9 @@ protected: /* file */
 	int8_t write_text(const std::string &path, std::string &text);
 	int8_t read_vector(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter);
 	int8_t read_write(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter);
+
+protected: /* subcommand */
+	int8_t setup_subcommand(CLI::App *parent, std::unique_ptr<command_abstract> command);
 
 public: /* abstract */
 	~command_abstract() {}

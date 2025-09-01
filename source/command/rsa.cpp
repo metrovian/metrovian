@@ -8,6 +8,7 @@ void command_rsa::setup(CLI::App *parent) {
 	command->add_option("-i, --in", in_, "ciphertext binary")->required();
 	command->add_option("-o, --out", out_, "plaintext binary")->required();
 	command->callback([this]() { run(); });
+	setup_subcommand(command, std::make_unique<command_rsa_attack>());
 	return;
 }
 
@@ -31,7 +32,7 @@ void command_rsa::run() {
 }
 
 void command_rsa_attack::setup(CLI::App *parent) {
-	auto command = parent->add_subcommand("rsa-attack", "RSA-EXPLOIT decryption");
+	auto command = parent->add_subcommand("attack", "RSA-EXPLOIT decryption");
 	command->add_option("-p, --pem", public_pem_, "public pem")->required();
 	command->add_option("-m, --method", method_, "attack method")->required();
 	command->add_option("-i, --in", in_, "ciphertext binary")->required();
