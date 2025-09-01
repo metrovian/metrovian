@@ -78,18 +78,18 @@ int8_t decryption_ecdh::setkey(const std::string &private_key_pem) {
 	return 0;
 }
 
-int8_t decryption_ecdh::decryption(const std::vector<uint8_t> &public_key, std::vector<uint8_t> &shared_key) {
+int8_t decryption_ecdh::decryption(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) {
 	LOG_ENTER();
 	const uint8_t *ptr = private_key_.data();
-	EVP_PKEY *pkey = d2i_AutoPrivateKey(nullptr, &ptr, static_cast<long>(private_key_.size()));
+	EVP_PKEY *pkey = d2i_AutoPrivateKey(nullptr, &ptr, static_cast<int64_t>(private_key_.size()));
 	if (pkey == nullptr) {
 		LOG_CONDITION(d2i_AutoPrivateKey == nullptr);
 		LOG_EXIT();
 		return -1;
 	}
 
-	const uint8_t *q = public_key.data();
-	EVP_PKEY *pkey_peer = d2i_PUBKEY(nullptr, &q, static_cast<long>(public_key.size()));
+	const uint8_t *ptr_peer = cipher.data();
+	EVP_PKEY *pkey_peer = d2i_PUBKEY(nullptr, &ptr_peer, static_cast<int64_t>(cipher.size()));
 	if (pkey_peer == nullptr) {
 		EVP_PKEY_free(pkey);
 		LOG_CONDITION(d2i_PUBKEY == nullptr);
@@ -124,8 +124,8 @@ int8_t decryption_ecdh::decryption(const std::vector<uint8_t> &public_key, std::
 		return -5;
 	}
 
-	size_t secret_len = 0;
-	if (EVP_PKEY_derive(ctx, nullptr, &secret_len) <= 0) {
+	size_t len_derive = 0;
+	if (EVP_PKEY_derive(ctx, nullptr, &len_derive) <= 0) {
 		EVP_PKEY_CTX_free(ctx);
 		EVP_PKEY_free(pkey);
 		EVP_PKEY_free(pkey_peer);
@@ -134,9 +134,9 @@ int8_t decryption_ecdh::decryption(const std::vector<uint8_t> &public_key, std::
 		return -6;
 	}
 
-	shared_key.clear();
-	shared_key.resize(secret_len);
-	if (EVP_PKEY_derive(ctx, shared_key.data(), &secret_len) <= 0) {
+	plain.clear();
+	plain.resize(len_derive);
+	if (EVP_PKEY_derive(ctx, plain.data(), &len_derive) <= 0) {
 		EVP_PKEY_CTX_free(ctx);
 		EVP_PKEY_free(pkey);
 		EVP_PKEY_free(pkey_peer);
@@ -145,12 +145,12 @@ int8_t decryption_ecdh::decryption(const std::vector<uint8_t> &public_key, std::
 		return -7;
 	}
 
-	shared_key.resize(secret_len);
+	plain.resize(len_derive);
 	EVP_PKEY_CTX_free(ctx);
 	EVP_PKEY_free(pkey);
 	EVP_PKEY_free(pkey_peer);
-	spdlog::debug("ecdh cipher: \"{}\"", base64(public_key));
-	spdlog::debug("ecdh plain: \"{}\"", base64(shared_key));
+	spdlog::debug("ecdh cipher: \"{}\"", base64(cipher));
+	spdlog::debug("ecdh plain: \"{}\"", base64(plain));
 	LOG_EXIT();
 	return 0;
 }
