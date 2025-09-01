@@ -107,3 +107,9 @@ int8_t command_abstract::read_write(const std::string &path, Eigen::VectorXd &do
 
 	return 0;
 }
+
+int8_t command_abstract::setup_subcommand(CLI::App *parent, std::unique_ptr<command_abstract> command) {
+	command->setup(parent);
+	commands_.emplace_back(std::move(command));
+	return 0;
+}
