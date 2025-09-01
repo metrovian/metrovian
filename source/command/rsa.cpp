@@ -19,7 +19,7 @@ void command_rsa::run() {
 }
 
 void command_rsa_private::setup(CLI::App *parent) {
-	auto command = parent->add_subcommand("private", "RSA decryption")->fallthrough(false)->subcommand_fallthrough(false);
+	auto command = parent->add_subcommand("private", "RSA decryption");
 	command->add_option("-p, --pem", private_pem_, "private pem")->required();
 	command->add_option("-i, --in", in_, "ciphertext binary")->required();
 	command->add_option("-o, --out", out_, "plaintext binary")->required();
@@ -47,7 +47,7 @@ void command_rsa_private::run() {
 }
 
 void command_rsa_public::setup(CLI::App *parent) {
-	auto command = parent->add_subcommand("public", "RSA-EXPLOIT decryption")->fallthrough(false)->subcommand_fallthrough(false);
+	auto command = parent->add_subcommand("public", "RSA-EXPLOIT decryption");
 	command->add_option("-p, --pem", public_pem_, "public pem")->required();
 	command->add_option("-m, --method", method_, "attack method")->required();
 	command->add_option("-i, --in", in_, "ciphertext binary")->required();
