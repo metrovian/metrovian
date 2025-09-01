@@ -3,16 +3,31 @@
 #include "predefined.h"
 
 void command_rsa::setup(CLI::App *parent) {
-	auto command = parent->add_subcommand("rsa", "RSA decryption");
-	command->add_option("-p, --pem", private_pem_, "private pem")->required();
-	command->add_option("-i, --in", in_, "ciphertext binary")->required();
-	command->add_option("-o, --out", out_, "plaintext binary")->required();
-	command->callback([this]() { run(); });
-	setup_subcommand(command, std::make_unique<command_rsa_attack>());
+	command_parser_ = parent->add_subcommand("rsa", "RSA decryption");
+	command_parser_->callback([this]() { run(); });
+	setup_subcommand(std::make_unique<command_rsa_private>());
+	setup_subcommand(std::make_unique<command_rsa_public>());
 	return;
 }
 
 void command_rsa::run() {
+	if (select_subcommand() == 0) {
+		throw CLI::CallForHelp();
+	}
+
+	return;
+}
+
+void command_rsa_private::setup(CLI::App *parent) {
+	auto command = parent->add_subcommand("private", "RSA decryption")->fallthrough(false)->subcommand_fallthrough(false);
+	command->add_option("-p, --pem", private_pem_, "private pem")->required();
+	command->add_option("-i, --in", in_, "ciphertext binary")->required();
+	command->add_option("-o, --out", out_, "plaintext binary")->required();
+	command->callback([this]() { run(); });
+	return;
+}
+
+void command_rsa_private::run() {
 	decryption_rsa engine;
 	std::string private_key;
 	if (read_text(private_pem_, private_key) == 0) {
@@ -31,8 +46,8 @@ void command_rsa::run() {
 	}
 }
 
-void command_rsa_attack::setup(CLI::App *parent) {
-	auto command = parent->add_subcommand("attack", "RSA-EXPLOIT decryption");
+void command_rsa_public::setup(CLI::App *parent) {
+	auto command = parent->add_subcommand("public", "RSA-EXPLOIT decryption")->fallthrough(false)->subcommand_fallthrough(false);
 	command->add_option("-p, --pem", public_pem_, "public pem")->required();
 	command->add_option("-m, --method", method_, "attack method")->required();
 	command->add_option("-i, --in", in_, "ciphertext binary")->required();
@@ -44,7 +59,7 @@ void command_rsa_attack::setup(CLI::App *parent) {
 	map_.insert(std::make_pair<std::string, rsa::attack>("williams-p1", rsa::attack::williams_p1));
 }
 
-void command_rsa_attack::run() {
+void command_rsa_public::run() {
 	if (map_.find(method_) != map_.end()) {
 		decryption_rsa engine;
 		std::string public_key;
