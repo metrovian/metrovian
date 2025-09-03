@@ -4,7 +4,7 @@ Dimensional metrologist in optics department
 - Bachelor of science in mathematics | Soongsil University [ 2016.03 - 2019.02 ]
 <br/></br>
 ## GIST - GWANGJU ##
-Development engineer in applied optics laboratory [ 2019.02 - 2020.05 ]
+Development engineer in optics laboratory [ 2019.02 - 2020.05 ]
 - Develop fiber interferometer calibration method
 - Develop full-field interferometer calibration method
 <br></br>
