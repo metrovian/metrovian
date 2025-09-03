@@ -10,15 +10,15 @@ Development engineer in applied optics laboratory [ 2019.02 - 2020.05 ]
 <br></br>
 ## HIT - ANYANG ## 
 Development engineer in metrology team [ 2022.10 - 2025.02 ]
-- Develop binocular camera tracker backend
-- Develop marker inspector backend
-- Develop automation equipment backend
-- Develop absolute tracker based calibration platform
+- Develop multiview measurement camera backend
+- Develop marker measurement camera backend
+- Develop automation equipment
+- Develop absolute interferometer calibration platform
 <br></br>
 ## TRUEN - SEOUL ##
 Development engineer in firmware team [ 2025.02 - ]
-- Develop internet protocol camera firmware application
-- Develop media server firmware application
-- Develop media security firmware application
+- Develop internet protocol camera application
+- Develop media server application
+- Develop media security requirement
 - Develop motorized camera calibration platform
 <br/></br>
