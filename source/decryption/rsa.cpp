@@ -1,4 +1,5 @@
 #include "decryption/rsa.h"
+#include "property.h"
 #include "predefined.h"
 
 int8_t decryption_rsa::setkey(const std::vector<uint8_t> &private_key) {
@@ -160,7 +161,8 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 			mpz_add_ui(a_fermat, a_fermat, 1);
 		}
 
-		for (uint64_t i = 0; i < RSA_FERMAT_MAX_ITERATION; ++i) {
+		uint64_t max_fermat = std::stoull(property_singleton::instance().parse({"decryption", "rsa", "fermat-iteration"}));
+		for (uint64_t i = 0; i < max_fermat; ++i) {
 			mpz_mul(b2_fermat, a_fermat, a_fermat);
 			mpz_sub(b2_fermat, b2_fermat, n_fermat);
 			if (mpz_perfect_square_p(b2_fermat)) {
@@ -201,7 +203,8 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 			mpz_mod(result, tmp_rho, n_rho);
 		};
 
-		for (uint64_t i = 0; i < RSA_POLLARDS_RHO_MAX_ITERATION; ++i) {
+		uint64_t max_rho = std::stoull(property_singleton::instance().parse({"decryption", "rsa", "pollards-rho-iteration"}));
+		for (uint64_t i = 0; i < max_rho; ++i) {
 			iteration_rho(a_rho, a_rho);
 			iteration_rho(tmp_rho, b_rho);
 			iteration_rho(b_rho, tmp_rho);
@@ -249,10 +252,11 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 			return true;
 		};
 
-		for (uint64_t i = 2; i < RSA_POLLARDS_P1_MAX_ITERATION; ++i) {
+		uint64_t max_p1 = std::stoull(property_singleton::instance().parse({"decryption", "rsa", "pollards-p1-iteration"}));
+		for (uint64_t i = 2; i < max_p1; ++i) {
 			if (primecheck_p1(i)) {
 				uint64_t pow_p1 = i;
-				while (pow_p1 * i < RSA_POLLARDS_P1_MAX_ITERATION) {
+				while (pow_p1 * i < max_p1) {
 					pow_p1 *= i;
 				}
 
@@ -347,10 +351,11 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 			mpz_clears(t1, t2, t3, t4, nullptr);
 		};
 
-		for (uint64_t i = 2; i < RSA_WILLIAMS_P1_MAX_ITERATION; ++i) {
+		uint64_t max_p1 = std::stoull(property_singleton::instance().parse({"decryption", "rsa", "williams-p1-iteration"}));
+		for (uint64_t i = 2; i < max_p1; ++i) {
 			if (primecheck_p1(i)) {
 				uint64_t pow_p1 = i;
-				while (pow_p1 * i < RSA_WILLIAMS_P1_MAX_ITERATION) {
+				while (pow_p1 * i < max_p1) {
 					pow_p1 *= i;
 				}
 
