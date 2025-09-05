@@ -8,7 +8,8 @@ SET(CMAKE_CXX_EXTENSIONS OFF)
 
 INCLUDE_DIRECTORIES(
         ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/eigen)
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/eigen
+        ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/json/include)
 
 FILE(GLOB_RECURSE SOURCES_COMMON
         ${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp
