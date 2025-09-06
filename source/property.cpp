@@ -1,4 +1,5 @@
 #include "property.h"
+#include "predefined.h"
 
 std::string property_singleton::parse(std::vector<std::string> property) {
 	nlohmann::json json = parser_;
@@ -31,8 +32,20 @@ property_singleton &property_singleton::instance() {
 }
 
 property_singleton::property_singleton() {
-	parser_["decryption"]["rsa"]["fermat-iteration"] = 1000000;
-	parser_["decryption"]["rsa"]["pollards-rho-iteration"] = 100000000;
-	parser_["decryption"]["rsa"]["pollards-p1-iteration"] = 100000;
-	parser_["decryption"]["rsa"]["williams-p1-iteration"] = 100000;
+	std::string path = std::string(std::getenv("HOME")) + PATH_PROPERTY;
+	std::ifstream ifs(path);
+	if (ifs.is_open() == true) {
+		ifs >> parser_;
+		ifs.close();
+	} else {
+		std::ofstream ofs(path);
+		if (ofs.is_open() == true) {
+			parser_["decryption"]["rsa"]["fermat-iteration"] = 1000000;
+			parser_["decryption"]["rsa"]["pollards-rho-iteration"] = 100000000;
+			parser_["decryption"]["rsa"]["pollards-p1-iteration"] = 100000;
+			parser_["decryption"]["rsa"]["williams-p1-iteration"] = 100000;
+			ofs << parser_.dump(8);
+			ofs.close();
+		}
+	}
 }
