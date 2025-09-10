@@ -12,6 +12,13 @@
 #include <Eigen/Dense>
 
 class optimization_abstract {
+protected: /* custom function */
+	std::string function_;
+
+public: /* custom function */
+	std::string export_function();
+	std::string import_function(const std::string &function);
+
 protected: /* paramter */
 	Eigen::VectorXd params_;
 

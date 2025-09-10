@@ -18,7 +18,7 @@ void command_user::run() {
 		Eigen::VectorXd domain;
 		Eigen::VectorXd range;
 		if (read_vector(in_, domain, range, ',') == 0) {
-			if (engine.calibrate(domain, range, iter_, eps_).norm() > 0) {
+			if (engine.calibrate(domain, range, iter_, eps_).norm() >= 0) {
 				std::cout << engine.export_parameters().transpose() << std::endl;
 			}
 		}
