@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <vector>
 #include <map>
+#include <algorithm>
 #include <regex>
 #include <sstream>
 #include <string>
