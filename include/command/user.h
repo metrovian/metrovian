@@ -9,6 +9,6 @@ protected: /* parameter */
 	double eps_;
 
 public: /* abstract */
-	virtual void setup(CLI::App *parent) override final;
-	virtual void run() override final;
+	virtual void setup(CLI::App *parent) override;
+	virtual void run() override;
 };
