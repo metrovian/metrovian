@@ -83,23 +83,39 @@ Eigen::VectorXd optimization_abstract::derivative(const Eigen::VectorXd &domain,
 }
 
 Eigen::MatrixXd optimization_abstract::jacobian(const Eigen::VectorXd &domain, const Eigen::VectorXd &range) {
-	Eigen::MatrixXd jacobi(params_.size(), domain.size());
+	Eigen::MatrixXd jacobi(domain.size(), params_.size());
 	for (size_t i = 0; i < params_.size(); ++i) {
 		jacobi.col(i) = derivative(domain, range, i);
 	}
 
-	return jacobi.transpose();
+	return jacobi;
 }
 
 Eigen::VectorXd optimization_abstract::calibrate(const Eigen::VectorXd &domain, const Eigen::VectorXd &range, const size_t iteration, const double epsilon) {
 	LOG_ENTER();
-	double damp = step_damp();
+	Eigen::MatrixXd jacobi = jacobian(domain, range);
+	Eigen::MatrixXd hess = jacobi.transpose() * jacobi;
+	Eigen::VectorXd diag = hess.diagonal();
+	double damp = *std::max_element(diag.begin(), diag.end()) * step_damp();
+	double predicted = 0;
+	double measured = 0;
 	for (size_t i = 0; i < iteration; ++i) {
-		Eigen::VectorXd prev = residual(domain, range);
 		Eigen::VectorXd step = step_iteration(domain, range, damp);
-		params_ -= step;
-		residual(domain, range).norm() < prev.norm() ? damp *= step_decrease() : damp *= step_increase();
-		spdlog::debug("residual-{}: {}", i, residual(domain, range).norm());
+		Eigen::VectorXd prev = residual(domain, range);
+		Eigen::VectorXd now = residual(domain, range, params_ - step);
+		predicted = prev.norm() - (prev - step).norm();
+		measured = prev.norm() - now.norm();
+		if (measured > 0.000E+0) {
+			if (measured > predicted * 0.750E+0) {
+				damp /= step_decrease();
+			}
+
+			params_ -= step;
+			spdlog::debug("residual-{}: {}", i, now.norm());
+		} else {
+			damp *= step_increase();
+		}
+
 		if (step.norm() < epsilon) {
 			break;
 		}
