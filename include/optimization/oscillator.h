@@ -3,8 +3,9 @@
 
 namespace oscillator {
 enum class motion : uint8_t {
-	harmonic = 0,
-	parametric = 1,
+	under_damped = 0,
+	over_damped = 1,
+	critical_damped = 2,
 };
 };
 
