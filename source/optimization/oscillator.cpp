@@ -10,7 +10,6 @@ std::string optimization_oscillator::import_function(oscillator::motion model) {
 	case oscillator::motion::critical_damped: function = std::string("c0 + (c1 + c2 * x) * exp(c3 * x)"); break;
 	}
 	// clang-format on
-
 	return optimization_abstract::import_function(function);
 }
 
