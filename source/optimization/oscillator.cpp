@@ -5,7 +5,7 @@ std::string optimization_oscillator::import_function(oscillator::motion model) {
 	// clang-format off
 	std::string function;
 	switch (model) {
-	case oscillator::motion::harmonic: function = std::string("c1 * exp(c2 * x) * cos(c3 * x + c4)");
+	case oscillator::motion::harmonic: function = std::string("c1 * exp(c2 * x) * cos(c3 * x + c4) + c5");
 	}
 	// clang-format on
 
