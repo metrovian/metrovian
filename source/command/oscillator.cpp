@@ -7,10 +7,12 @@ void command_oscillator::setup(CLI::App *parent) {
 	command->add_option("-f, --func", function_, "oscillator function")->required();
 	command->add_option("-i, --in", in_, "measured csv")->required();
 	command->add_option("-n, --iter", iter_, "iteration max")->default_val<size_t>(1000);
-	command->add_option("-e, --eps", eps_, "iteration eps")->default_val<double>(1.000E-15);
+	command->add_option("-e, --eps", eps_, "iteration epsilon")->default_val<double>(1.000E-15);
 	command->add_option("-p, --params", params_, "parameters");
 	command->callback([this]() { run(); });
-	map_.insert(std::make_pair<std::string, oscillator::motion>("harmonic", oscillator::motion::harmonic));
+	map_.insert(std::make_pair<std::string, oscillator::motion>("under-damped", oscillator::motion::under_damped));
+	map_.insert(std::make_pair<std::string, oscillator::motion>("over-damped", oscillator::motion::over_damped));
+	map_.insert(std::make_pair<std::string, oscillator::motion>("critical-damped", oscillator::motion::critical_damped));
 	return;
 }
 

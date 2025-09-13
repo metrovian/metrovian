@@ -12,8 +12,8 @@ std::string optimization_abstract::import_function(const std::string &function) 
 	auto begin = std::sregex_iterator(function.begin(), function.end(), rex);
 	auto end = std::sregex_iterator();
 	for (auto it = begin; it != end; ++it) {
-		if (dimension < std::stoull((*it)[1].str())) {
-			dimension = std::stoull((*it)[1].str());
+		if (dimension < std::stoull((*it)[1].str()) + 1) {
+			dimension = std::stoull((*it)[1].str()) + 1;
 		}
 	}
 
@@ -38,7 +38,7 @@ double optimization_abstract::residual(const double domain, const double range) 
 	mu::Parser parser;
 	parser.DefineVar("x", const_cast<double *>(&domain));
 	for (size_t i = 0; i < params_.size(); ++i) {
-		parser.DefineVar("c" + std::to_string(i + 1), &params_[i]);
+		parser.DefineVar("c" + std::to_string(i), &params_[i]);
 	}
 
 	parser.SetExpr(objective_function());
@@ -49,7 +49,7 @@ double optimization_abstract::residual(const double domain, const double range, 
 	mu::Parser parser;
 	parser.DefineVar("x", const_cast<double *>(&domain));
 	for (size_t i = 0; i < params.size(); ++i) {
-		parser.DefineVar("c" + std::to_string(i + 1), const_cast<double *>(&params[i]));
+		parser.DefineVar("c" + std::to_string(i), const_cast<double *>(&params[i]));
 	}
 
 	parser.SetExpr(objective_function());
