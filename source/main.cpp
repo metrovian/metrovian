@@ -18,14 +18,18 @@ int8_t interface_singleton::command_setup(std::unique_ptr<command_abstract> comm
 	return 0;
 }
 
-void interface_singleton::init_command_parser() {
+void interface_singleton::load_command_parser() {
 	auto formatter = std::make_shared<CLI::Formatter>();
 	formatter->column_width(35);
 	command_parser_.formatter(formatter);
 	command_parser_.get_option("--help")->description("HELP command");
 }
 
-void interface_singleton::init_spdlog() {
+void interface_singleton::load_stdout() {
+	std::cout << std::scientific << std::showpos << std::setprecision(6);
+}
+
+void interface_singleton::load_stderr() {
 	spdlog::set_default_logger(spdlog::stderr_color_mt("stderr"));
 	spdlog::set_level(spdlog::level::trace);
 }
@@ -36,8 +40,9 @@ interface_singleton &interface_singleton::instance() {
 }
 
 interface_singleton::interface_singleton() {
-	init_command_parser();
-	init_spdlog();
+	load_command_parser();
+	load_stdout();
+	load_stderr();
 }
 
 int32_t main(int argc, char **argv) {

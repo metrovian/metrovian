@@ -13,9 +13,10 @@ public: /* command parser */
 public: /* instance */
 	static interface_singleton &instance();
 
-private: /* init */
-	void init_command_parser();
-	void init_spdlog();
+private: /* load */
+	void load_command_parser();
+	void load_stdout();
+	void load_stderr();
 
 private: /* constraint */
 	interface_singleton();
