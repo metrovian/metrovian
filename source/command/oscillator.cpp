@@ -4,15 +4,16 @@
 
 void command_oscillator::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("oscillator", "OSCILLATOR optimization");
-	command->add_option("-f, --func", function_, "oscillator function")->required();
+	command->add_option("-f, --func", function_, "oscillator-damped function")->required();
 	command->add_option("-i, --in", in_, "measured csv")->required();
 	command->add_option("-n, --iter", iter_, "iteration max")->default_val<size_t>(1000);
 	command->add_option("-e, --eps", eps_, "iteration epsilon")->default_val<double>(1.000E-15);
 	command->add_option("-p, --params", params_, "parameters");
 	command->callback([this]() { run(); });
-	map_.insert(std::make_pair<std::string, oscillator::motion>("under-damped", oscillator::motion::under_damped));
-	map_.insert(std::make_pair<std::string, oscillator::motion>("over-damped", oscillator::motion::over_damped));
-	map_.insert(std::make_pair<std::string, oscillator::motion>("critical-damped", oscillator::motion::critical_damped));
+	map_.insert(std::make_pair<std::string, oscillator::function>("un-damped", oscillator::function::un_damped));
+	map_.insert(std::make_pair<std::string, oscillator::function>("under-damped", oscillator::function::under_damped));
+	map_.insert(std::make_pair<std::string, oscillator::function>("over-damped", oscillator::function::over_damped));
+	map_.insert(std::make_pair<std::string, oscillator::function>("critical-damped", oscillator::function::critical_damped));
 	return;
 }
 
