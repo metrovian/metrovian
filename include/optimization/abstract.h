@@ -13,10 +13,10 @@
 #include <Eigen/Dense>
 
 class optimization_abstract {
-protected: /* custom function */
+protected: /* function */
 	std::string function_;
 
-public: /* custom function */
+public: /* function */
 	std::string export_function();
 	std::string import_function(const std::string &function);
 
