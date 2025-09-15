@@ -2,7 +2,7 @@
 #include "predefined.h"
 
 std::string property_singleton::parse(std::vector<std::string> property) {
-	nlohmann::json json = parser_;
+	nlohmann::ordered_json json = parser_;
 	for (const auto &key : property) {
 		if (!json.contains(key)) {
 			return std::string();
@@ -44,6 +44,10 @@ property_singleton::property_singleton() {
 			parser_["decryption"]["rsa"]["pollards-rho-iteration"] = 100000000;
 			parser_["decryption"]["rsa"]["pollards-p1-iteration"] = 100000;
 			parser_["decryption"]["rsa"]["williams-p1-iteration"] = 100000;
+			parser_["optimization"]["derivative-step"] = 1.000E-5;
+			parser_["optimization"]["damp-step"] = 1.000E-3;
+			parser_["optimization"]["increase-step"] = 1.000E+1;
+			parser_["optimization"]["decrease-step"] = 1.000E+1;
 			ofs << parser_.dump(8);
 			ofs.close();
 		}

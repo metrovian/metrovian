@@ -5,7 +5,7 @@
 
 class property_singleton {
 protected: /* json parser */
-	nlohmann::json parser_;
+	nlohmann::ordered_json parser_;
 
 public: /* json parser */
 	std::string parse(std::vector<std::string> property);

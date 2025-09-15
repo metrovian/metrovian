@@ -1,4 +1,5 @@
 #include "optimization/abstract.h"
+#include "property.h"
 #include "predefined.h"
 
 std::string optimization_abstract::export_function() {
@@ -141,6 +142,22 @@ Eigen::VectorXd optimization_abstract::estimate(const Eigen::VectorXd &domain) {
 
 	LOG_EXIT();
 	return estimation;
+}
+
+double optimization_abstract::step_derivative() {
+	return std::stod(property_singleton::instance().parse({"optimization", "derivative-step"}));
+}
+
+double optimization_abstract::step_damp() {
+	return std::stod(property_singleton::instance().parse({"optimization", "damp-step"}));
+}
+
+double optimization_abstract::step_increase() {
+	return std::stod(property_singleton::instance().parse({"optimization", "increase-step"}));
+}
+
+double optimization_abstract::step_decrease() {
+	return std::stod(property_singleton::instance().parse({"optimization", "decrease-step"}));
 }
 
 Eigen::VectorXd optimization_abstract::step_iteration(const Eigen::VectorXd &domain, const Eigen::VectorXd &range, const double damp) {
