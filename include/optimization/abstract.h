@@ -43,10 +43,10 @@ public: /* abstract */
 	~optimization_abstract() {}
 
 protected: /* abstract */
-	virtual double step_derivative() { return 1.000E-5; }
-	virtual double step_damp() { return 1.000E-3; }
-	virtual double step_increase() { return 1.000E+1; }
-	virtual double step_decrease() { return 1.000E+1; }
+	virtual double step_derivative();
+	virtual double step_damp();
+	virtual double step_increase();
+	virtual double step_decrease();
 	virtual Eigen::VectorXd step_iteration(const Eigen::VectorXd &domain, const Eigen::VectorXd &range, const double damp);
 	virtual std::string objective_function() = 0;
 };
