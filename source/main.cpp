@@ -1,5 +1,6 @@
 #include "main.h"
 #include "command/optimization/polynomial.h"
+#include "command/optimization/rational.h"
 #include "command/optimization/user.h"
 #include "command/optimization/oscillator.h"
 #include "command/decryption/aes.h"
@@ -21,7 +22,7 @@ int8_t interface_singleton::command_setup(std::unique_ptr<command_abstract> comm
 
 void interface_singleton::load_command_parser() {
 	auto formatter = std::make_shared<CLI::Formatter>();
-	formatter->column_width(35);
+	formatter->column_width(40);
 	command_parser_.formatter(formatter);
 	command_parser_.get_option("--help")->description("HELP command");
 }
@@ -48,6 +49,7 @@ interface_singleton::interface_singleton() {
 
 int32_t main(int argc, char **argv) {
 	interface_singleton::instance().command_setup(std::make_unique<command_polynomial>());
+	interface_singleton::instance().command_setup(std::make_unique<command_rational>());
 	interface_singleton::instance().command_setup(std::make_unique<command_user>());
 	interface_singleton::instance().command_setup(std::make_unique<command_oscillator>());
 	interface_singleton::instance().command_setup(std::make_unique<command_aes256_cbc>());
