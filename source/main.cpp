@@ -5,6 +5,7 @@
 #include "command/avcodec.h"
 #include "command/user.h"
 #include "command/oscillator.h"
+#include "command/taylor.h"
 #include "predefined.h"
 
 int8_t interface_singleton::command_parse(int argc, char **argv) {
@@ -53,6 +54,7 @@ int32_t main(int argc, char **argv) {
 	interface_singleton::instance().command_setup(std::make_unique<command_avcodec>());
 	interface_singleton::instance().command_setup(std::make_unique<command_user>());
 	interface_singleton::instance().command_setup(std::make_unique<command_oscillator>());
+	interface_singleton::instance().command_setup(std::make_unique<command_taylor>());
 	interface_singleton::instance().command_parse(argc, argv);
 	return 0;
 }
