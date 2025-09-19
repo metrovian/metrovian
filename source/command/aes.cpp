@@ -3,7 +3,7 @@
 #include "predefined.h"
 
 void command_aes256_cbc::setup(CLI::App *parent) {
-	auto command = parent->add_subcommand("aes-256-cbc", "AES-256-CBC decryption");
+	auto command = parent->add_subcommand("aes-256-cbc", "AES-256-CBC decryption")->group("DECRYPTION");
 	command->add_option("-k, --key", key_, "key base64")->required();
 	command->add_option("-v, --iv", iv_, "iv base64")->required();
 	command->add_option("-i, --in", in_, "ciphertext binary")->required();
@@ -33,7 +33,7 @@ void command_aes256_cbc::run() {
 }
 
 void command_aes256_ctr::setup(CLI::App *parent) {
-	auto command = parent->add_subcommand("aes-256-ctr", "AES-256-CTR decryption");
+	auto command = parent->add_subcommand("aes-256-ctr", "AES-256-CTR decryption")->group("DECRYPTION");
 	command->add_option("-k, --key", key_, "key base64")->required();
 	command->add_option("-v, --iv", iv_, "iv base64")->required();
 	command->add_option("-i, --in", in_, "ciphertext binary")->required();

@@ -3,7 +3,7 @@
 #include "predefined.h"
 
 void command_oscillator::setup(CLI::App *parent) {
-	auto command = parent->add_subcommand("oscillator", "OSCILLATOR optimization");
+	auto command = parent->add_subcommand("oscillator", "OSCILLATOR optimization")->group("OPTIMIZATION");
 	command->add_option("-f, --func", function_, "oscillator-damped function")->required();
 	command->add_option("-i, --in", in_, "measured csv")->required();
 	command->add_option("-n, --iter", iter_, "iteration max")->default_val<size_t>(1000);

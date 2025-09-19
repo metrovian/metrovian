@@ -3,7 +3,7 @@
 #include "predefined.h"
 
 void command_rsa::setup(CLI::App *parent) {
-	command_parser_ = parent->add_subcommand("rsa", "RSA decryption");
+	command_parser_ = parent->add_subcommand("rsa", "RSA decryption")->group("DECRYPTION");
 	command_parser_->callback([this]() { run(); });
 	setup_subcommand(std::make_unique<command_rsa_private>());
 	setup_subcommand(std::make_unique<command_rsa_public>());
