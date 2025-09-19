@@ -3,7 +3,7 @@
 #include "predefined.h"
 
 void command_avcodec::setup(CLI::App *parent) {
-	auto command = parent->add_subcommand("avcodec", "FFMPEG decompression");
+	auto command = parent->add_subcommand("avcodec", "FFMPEG decompression")->group("DECOMPRESSION");
 	command->add_option("-i, --in", in_, "encoded audio")->required();
 	command->callback([this]() { run(); });
 	return;

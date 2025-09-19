@@ -3,7 +3,7 @@
 #include "predefined.h"
 
 void command_ecdh::setup(CLI::App *parent) {
-	auto command = parent->add_subcommand("ecdh", "ECDH decryption");
+	auto command = parent->add_subcommand("ecdh", "ECDH decryption")->group("DECRYPTION");
 	command->add_option("-p, --pem", private_pem_, "private pem")->required();
 	command->add_option("-i, --in", in_, "ciphertext binary")->required();
 	command->add_option("-o, --out", out_, "plaintext binary")->required();
