@@ -2,7 +2,7 @@
 #include "command/abstract.h"
 #include "command/optimization/user.h"
 
-class command_taylor : public command_user {
+class command_polynomial : public command_user {
 protected: /* parameter */
 	uint8_t model_;
 

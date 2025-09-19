@@ -1,7 +1,7 @@
-#include "reconstruction/optimization/taylor.h"
+#include "reconstruction/optimization/polynomial.h"
 #include "predefined.h"
 
-std::string optimization_taylor::import_function(uint8_t model) {
+std::string optimization_polynomial::import_function(uint8_t model) {
 	std::ostringstream oss;
 	oss << "c0";
 	for (uint8_t i = 0; i < model; ++i) {
@@ -15,6 +15,6 @@ std::string optimization_taylor::import_function(uint8_t model) {
 	return optimization_abstract::import_function(oss.str());
 }
 
-std::string optimization_taylor::objective_function() {
+std::string optimization_polynomial::objective_function() {
 	return export_function();
 }
