@@ -1,10 +1,10 @@
-#include "command/optimization/taylor.h"
-#include "reconstruction/optimization/taylor.h"
+#include "command/optimization/polynomial.h"
+#include "reconstruction/optimization/polynomial.h"
 #include "predefined.h"
 
-void command_taylor::setup(CLI::App *parent) {
-	auto command = parent->add_subcommand("taylor", "TAYLOR optimization")->group("OPTIMIZATION");
-	command->add_option("-f, --func", model_, "monomial-approximated function")->required();
+void command_polynomial::setup(CLI::App *parent) {
+	auto command = parent->add_subcommand("polynomial", "POLYNOMIAL optimization")->group("OPTIMIZATION");
+	command->add_option("-f, --func", model_, "polynomial-approximated function")->required();
 	command->add_option("-i, --in", in_, "measured csv")->required();
 	command->add_option("-n, --iter", iter_, "iteration max")->default_val<size_t>(1000);
 	command->add_option("-e, --eps", eps_, "iteration epsilon")->default_val<double>(1.000E-15);
@@ -13,8 +13,8 @@ void command_taylor::setup(CLI::App *parent) {
 	return;
 }
 
-void command_taylor::run() {
-	optimization_taylor engine;
+void command_polynomial::run() {
+	optimization_polynomial engine;
 	if (engine.import_function(model_).length() > 0) {
 		Eigen::VectorXd domain;
 		Eigen::VectorXd range;
