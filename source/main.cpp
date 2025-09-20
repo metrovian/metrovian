@@ -1,6 +1,7 @@
 #include "main.h"
 #include "command/optimization/polynomial.h"
 #include "command/optimization/rational.h"
+#include "command/optimization/transcendental.h"
 #include "command/optimization/user.h"
 #include "command/optimization/oscillator.h"
 #include "command/decryption/aes.h"
@@ -50,6 +51,7 @@ interface_singleton::interface_singleton() {
 int32_t main(int argc, char **argv) {
 	interface_singleton::instance().command_setup(std::make_unique<command_polynomial>());
 	interface_singleton::instance().command_setup(std::make_unique<command_rational>());
+	interface_singleton::instance().command_setup(std::make_unique<command_transcendental>());
 	interface_singleton::instance().command_setup(std::make_unique<command_user>());
 	interface_singleton::instance().command_setup(std::make_unique<command_oscillator>());
 	interface_singleton::instance().command_setup(std::make_unique<command_aes256_cbc>());
