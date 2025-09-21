@@ -10,7 +10,7 @@ void command_transcendental::setup(CLI::App *parent) {
 	command->add_option("-e, --eps", eps_, "iteration epsilon")->default_val<double>(1.000E-15);
 	command->add_option("-p, --params", params_, "parameters");
 	command->callback([this]() { run(); });
-	map_.insert(std::make_pair<std::string, transcendental::function>("exponential", transcendental::function::exponential));
+	map_.insert(std::make_pair<std::string, transcendental::function>("exp", transcendental::function::exp));
 	map_.insert(std::make_pair<std::string, transcendental::function>("ln", transcendental::function::ln));
 	return;
 }
