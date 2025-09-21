@@ -37,7 +37,7 @@ Eigen::VectorXd optimization_abstract::import_parameters(const Eigen::VectorXd &
 
 double optimization_abstract::residual(const double domain, const double range) {
 	mu::Parser parser;
-	parser.DefineVar("x", const_cast<double *>(&domain));
+	parser.DefineVar("t", const_cast<double *>(&domain));
 	for (size_t i = 0; i < params_.size(); ++i) {
 		parser.DefineVar("c" + std::to_string(i), &params_[i]);
 	}
@@ -48,7 +48,7 @@ double optimization_abstract::residual(const double domain, const double range) 
 
 double optimization_abstract::residual(const double domain, const double range, const Eigen::VectorXd &params) {
 	mu::Parser parser;
-	parser.DefineVar("x", const_cast<double *>(&domain));
+	parser.DefineVar("t", const_cast<double *>(&domain));
 	for (size_t i = 0; i < params.size(); ++i) {
 		parser.DefineVar("c" + std::to_string(i), const_cast<double *>(&params[i]));
 	}
