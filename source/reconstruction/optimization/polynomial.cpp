@@ -6,7 +6,7 @@ std::string optimization_polynomial::import_function(uint8_t model) {
 	oss << "c0";
 	for (uint8_t i = 0; i < model; ++i) {
 		oss << " + ";
-		oss << "c" << i + 1 << " * x";
+		oss << "c" << i + 1 << " * t";
 		if (i > 0) {
 			oss << "^" << i + 1;
 		}
