@@ -5,7 +5,7 @@
 void command_rational::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("rational", "RATIONAL optimization")->group("OPTIMIZATION");
 	command->add_option("-f, --func", model_, "rational-approximated function")->required()->expected(2);
-	command->add_option("-i, --in", in_, "measured csv")->required();
+	command->add_option("-i, --in", in_, "measured csv");
 	command->add_option("-n, --iter", iter_, "iteration max")->default_val<size_t>(1000);
 	command->add_option("-e, --eps", eps_, "iteration epsilon")->default_val<double>(1.000E-15);
 	command->add_option("-p, --params", params_, "parameters");
@@ -28,6 +28,8 @@ void command_rational::run() {
 			if (engine.calibrate(domain, range, iter_, eps_).norm() >= 0) {
 				std::cout << engine.export_parameters().transpose() << std::endl;
 			}
+		} else {
+			std::cout << engine.export_function() << std::endl;
 		}
 	}
 
