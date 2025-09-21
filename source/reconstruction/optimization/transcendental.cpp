@@ -5,7 +5,7 @@ std::string optimization_transcendental::import_function(transcendental::functio
 	// clang-format off
 	std::string function;
 	switch (model) {
-	case transcendental::function::exponential: function = std::string("c0 + c1 * exp(c2 * t)"); break;
+	case transcendental::function::exp: function = std::string("c0 + c1 * exp(c2 * t)"); break;
 	case transcendental::function::ln: function = std::string("c0 + c1 * ln(t)"); break;
 	}
 	// clang-format on

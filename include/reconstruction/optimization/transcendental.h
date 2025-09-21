@@ -3,7 +3,7 @@
 
 namespace transcendental {
 enum class function : uint8_t {
-	exponential = 0,
+	exp = 0,
 	ln = 1,
 	sinh = 2,
 	cosh = 3,
