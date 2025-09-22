@@ -7,6 +7,9 @@ std::string optimization_transcendental::import_function(transcendental::functio
 	switch (model) {
 	case transcendental::function::exp: function = std::string("c0 + c1 * exp(c2 * t)"); break;
 	case transcendental::function::ln: function = std::string("c0 + c1 * ln(t)"); break;
+	case transcendental::function::sinh: function = std::string("c0 + c1 * sinh(c2 * t + c3)"); break;
+	case transcendental::function::cosh: function = std::string("c0 + c1 * cosh(c2 * t + c3)"); break;
+	case transcendental::function::tanh: function = std::string("c0 + c1 * tanh(c2 * t + c3)"); break;
 	}
 	// clang-format on
 	return optimization_abstract::import_function(function);

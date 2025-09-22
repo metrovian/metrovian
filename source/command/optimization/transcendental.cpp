@@ -12,6 +12,9 @@ void command_transcendental::setup(CLI::App *parent) {
 	command->callback([this]() { run(); });
 	map_.insert(std::make_pair<std::string, transcendental::function>("exp", transcendental::function::exp));
 	map_.insert(std::make_pair<std::string, transcendental::function>("ln", transcendental::function::ln));
+	map_.insert(std::make_pair<std::string, transcendental::function>("sinh", transcendental::function::sinh));
+	map_.insert(std::make_pair<std::string, transcendental::function>("cosh", transcendental::function::cosh));
+	map_.insert(std::make_pair<std::string, transcendental::function>("tanh", transcendental::function::tanh));
 	return;
 }
 
