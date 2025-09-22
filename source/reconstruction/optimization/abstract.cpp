@@ -85,8 +85,23 @@ Eigen::VectorXd optimization_abstract::derivative(const Eigen::VectorXd &domain,
 
 Eigen::MatrixXd optimization_abstract::jacobian(const Eigen::VectorXd &domain, const Eigen::VectorXd &range) {
 	Eigen::MatrixXd jacobi(domain.size(), params_.size());
-	for (size_t i = 0; i < params_.size(); ++i) {
-		jacobi.col(i) = derivative(domain, range, i);
+	auto trd_func = [&](size_t value) {
+		jacobi.col(value) = derivative(domain, range, value);
+	};
+
+	size_t trd_max = std::stoi(property_singleton::instance().parse({"optimization", "thread-max"}));
+	size_t trd_q = params_.size() / trd_max;
+	size_t trd_r = params_.size() % trd_max;
+	for (size_t i = 0; i < trd_q; ++i) {
+		std::vector<std::jthread> trds(trd_max);
+		for (size_t j = 0; j < trds.size(); ++j) {
+			trds[j] = std::jthread(trd_func, trd_max * i + j);
+		}
+	}
+
+	std::vector<std::jthread> trds(trd_r);
+	for (size_t i = 0; i < trds.size(); ++i) {
+		trds[i] = std::jthread(trd_func, trd_max * trd_q + i);
 	}
 
 	return jacobi;
