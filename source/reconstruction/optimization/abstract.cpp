@@ -127,7 +127,7 @@ Eigen::VectorXd optimization_abstract::calibrate(const Eigen::VectorXd &domain, 
 			}
 
 			params_ -= step;
-			spdlog::debug("residual-{}: {}", i, now.norm());
+			spdlog::debug("residual-{}: {}", i, now.norm() / std::sqrt(now.size()));
 		} else {
 			damp *= step_increase();
 		}
