@@ -89,7 +89,7 @@ int8_t command_abstract::read_vector(const std::string &path, Eigen::VectorXd &d
 	return 0;
 }
 
-int8_t command_abstract::read_write(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter) {
+int8_t command_abstract::write_vector(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter) {
 	std::ofstream ofs(path);
 	if (ofs.is_open() == false) {
 		return -1;
