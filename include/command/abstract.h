@@ -15,7 +15,7 @@ protected: /* file */
 	int8_t read_text(const std::string &path, std::string &text);
 	int8_t write_text(const std::string &path, std::string &text);
 	int8_t read_vector(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter);
-	int8_t read_write(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter);
+	int8_t write_vector(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter);
 
 protected: /* subcommand */
 	int8_t setup_subcommand(std::unique_ptr<command_abstract> command);
