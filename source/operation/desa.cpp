@@ -34,7 +34,7 @@ int8_t operation_desa1::operation(const Eigen::VectorXd &domain, const Eigen::Ve
 	amplitude = Eigen::VectorXd::Zero(range.size());
 	frequency = Eigen::VectorXd::Zero(range.size());
 	Eigen::VectorXd psi = tkeo(range);
-	Eigen::VectorXd dsi = tkeo(range - prev);
+	Eigen::VectorXd dsi = tkeo((range - prev) / 1.000E+0);
 	for (size_t i = 1; i < range.size(); ++i) {
 		if (domain[i] != domain[i - 1]) {
 			amplitude[i] = psi[i] / std::sqrt(dsi[i]);
@@ -46,5 +46,23 @@ int8_t operation_desa1::operation(const Eigen::VectorXd &domain, const Eigen::Ve
 }
 
 int8_t operation_desa2::operation(const Eigen::VectorXd &domain, const Eigen::VectorXd &range, Eigen::VectorXd &amplitude, Eigen::VectorXd &frequency) {
+	Eigen::VectorXd prev = Eigen::VectorXd::Zero(range.size());
+	Eigen::VectorXd next = Eigen::VectorXd::Zero(range.size());
+	for (size_t i = 1; i < range.size(); ++i) {
+		prev[i] = range[i - 1];
+		next[i - 1] = range[i];
+	}
+
+	amplitude = Eigen::VectorXd::Zero(range.size());
+	frequency = Eigen::VectorXd::Zero(range.size());
+	Eigen::VectorXd psi = tkeo(range);
+	Eigen::VectorXd dsi = tkeo((next - prev) / 2.000E+0);
+	for (size_t i = 1; i < range.size() - 1; ++i) {
+		if (domain[i] != domain[i - 1]) {
+			amplitude[i] = psi[i] / std::sqrt(dsi[i]);
+			frequency[i] = std::sqrt(dsi[i] / psi[i]) / (domain[i] - domain[i - 1]);
+		}
+	}
+
 	return 0;
 }
