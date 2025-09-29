@@ -39,8 +39,8 @@ int8_t decryption_ecdh::setkey(const std::vector<uint8_t> &private_key) {
 	return 0;
 }
 
-int8_t decryption_ecdh::setkey(const std::string &private_key_pem) {
-	BIO *bio = BIO_new_mem_buf(private_key_pem.data(), static_cast<int32_t>(private_key_pem.size()));
+int8_t decryption_ecdh::setkey(const std::string &private_key) {
+	BIO *bio = BIO_new_mem_buf(private_key.data(), static_cast<int32_t>(private_key.size()));
 	if (bio == nullptr) {
 		LOG_CONDITION(BIO_new_mem_buf == nullptr);
 		LOG_EXIT();
