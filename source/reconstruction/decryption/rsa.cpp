@@ -569,17 +569,22 @@ int8_t decryption_rsa::decryption(const std::vector<uint8_t> &cipher, std::vecto
 		return -5;
 	}
 
-	plain.clear();
-	plain.resize(len_update);
-	if (EVP_PKEY_decrypt(ctx, plain.data(), &len_update, cipher.data(), cipher.size()) <= 0) {
-		EVP_PKEY_CTX_free(ctx);
-		EVP_PKEY_free(pkey);
-		LOG_CONDITION(EVP_PKEY_decrypt <= 0);
-		LOG_EXIT();
-		return -6;
+	if (len_update > 0) {
+		plain.clear();
+		plain.resize(len_update);
+		if (EVP_PKEY_decrypt(ctx, plain.data(), &len_update, cipher.data(), cipher.size()) <= 0) {
+			EVP_PKEY_CTX_free(ctx);
+			EVP_PKEY_free(pkey);
+			LOG_CONDITION(EVP_PKEY_decrypt <= 0);
+			LOG_EXIT();
+			return -6;
+		}
+
+		if (len_update > 0) {
+			plain.resize(len_update);
+		}
 	}
 
-	plain.resize(len_update);
 	EVP_PKEY_CTX_free(ctx);
 	EVP_PKEY_free(pkey);
 	spdlog::debug("rsa-{} cipher: \"{}\"", pkey_bits, base64(cipher));
