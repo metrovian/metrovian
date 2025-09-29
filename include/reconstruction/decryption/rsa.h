@@ -16,6 +16,9 @@ protected: /* parameter */
 	std::vector<uint8_t> private_key_;
 	std::vector<uint8_t> public_key_;
 
+public: /* pem */
+	std::string pem();
+
 public: /* setter */
 	int8_t setkey(const std::vector<uint8_t> &private_key);
 	int8_t setkey(const std::string &private_key);
