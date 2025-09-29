@@ -1,7 +1,7 @@
 #pragma once
 #include "reconstruction/optimization/abstract.h"
 
-namespace oscillator {
+namespace sinusoidal {
 enum class function : uint8_t {
 	un_damped = 0,
 	under_damped = 1,
@@ -10,9 +10,9 @@ enum class function : uint8_t {
 };
 };
 
-class optimization_oscillator : public optimization_abstract {
+class optimization_sinusoidal : public optimization_abstract {
 public: /* function */
-	std::string import_function(oscillator::function model);
+	std::string import_function(sinusoidal::function model);
 
 protected: /* abstract */
 	virtual std::string objective_function() override final;
