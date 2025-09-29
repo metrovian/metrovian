@@ -2,6 +2,49 @@
 #include "property.h"
 #include "predefined.h"
 
+std::string decryption_rsa::pem() {
+	LOG_ENTER();
+	const uint8_t *ptr = private_key_.data();
+	EVP_PKEY *pkey = d2i_PrivateKey(EVP_PKEY_RSA, nullptr, &ptr, private_key_.size());
+	if (pkey == nullptr) {
+		LOG_CONDITION(d2i_PrivateKey(EVP_PKEY_RSA) == nullptr);
+		LOG_EXIT();
+		return std::string();
+	}
+
+	BIO *bio = BIO_new(BIO_s_mem());
+	if (bio == nullptr) {
+		EVP_PKEY_free(pkey);
+		LOG_CONDITION(BIO_new == nullptr);
+		LOG_EXIT();
+		return std::string();
+	}
+
+	if (PEM_write_bio_PrivateKey(bio, pkey, nullptr, nullptr, 0, nullptr, nullptr) == 0) {
+		BIO_free(bio);
+		EVP_PKEY_free(pkey);
+		LOG_CONDITION(PEM_write_bio_PrivateKey == 0);
+		LOG_EXIT();
+		return std::string();
+	}
+
+	char *ptr_key = nullptr;
+	int64_t len_key = BIO_get_mem_data(bio, &ptr_key);
+	if (len_key <= 0) {
+		BIO_free(bio);
+		EVP_PKEY_free(pkey);
+		LOG_CONDITION(BIO_get_mem_data <= 0);
+		LOG_EXIT();
+		return std::string();
+	}
+
+	std::string pem_key(ptr_key, len_key);
+	BIO_free(bio);
+	EVP_PKEY_free(pkey);
+	LOG_EXIT();
+	return pem_key;
+}
+
 int8_t decryption_rsa::setkey(const std::vector<uint8_t> &private_key) {
 	LOG_ENTER();
 	const uint8_t *ptr = private_key.data();
