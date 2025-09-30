@@ -134,23 +134,17 @@ int8_t decryption_ecdh::decryption(const std::vector<uint8_t> &cipher, std::vect
 		return -6;
 	}
 
-	if (len_derive > 0) {
-		plain.clear();
-		plain.resize(len_derive);
-		if (EVP_PKEY_derive(ctx, plain.data(), &len_derive) <= 0) {
-			EVP_PKEY_CTX_free(ctx);
-			EVP_PKEY_free(pkey);
-			EVP_PKEY_free(pkey_peer);
-			LOG_CONDITION(EVP_PKEY_derive <= 0);
-			LOG_EXIT();
-			return -7;
-		}
-
-		if (len_derive > 0) {
-			plain.resize(len_derive);
-		}
+	plain.resize(len_derive);
+	if (EVP_PKEY_derive(ctx, plain.data(), &len_derive) <= 0) {
+		EVP_PKEY_CTX_free(ctx);
+		EVP_PKEY_free(pkey);
+		EVP_PKEY_free(pkey_peer);
+		LOG_CONDITION(EVP_PKEY_derive <= 0);
+		LOG_EXIT();
+		return -7;
 	}
 
+	plain.resize(len_derive);
 	EVP_PKEY_CTX_free(ctx);
 	EVP_PKEY_free(pkey);
 	EVP_PKEY_free(pkey_peer);
