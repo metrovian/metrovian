@@ -156,14 +156,14 @@ int8_t decryption_aes256_gcm::decryption(const std::vector<uint8_t> &cipher, std
 		EVP_CIPHER_CTX_free(ctx);
 		LOG_CONDITION(EVP_DecryptInit_ex != 1);
 		LOG_EXIT();
-		return -3;
+		return -2;
 	}
 
 	if (EVP_DecryptInit_ex(ctx, nullptr, nullptr, key_.data(), iv_.data()) != 1) {
 		EVP_CIPHER_CTX_free(ctx);
 		LOG_CONDITION(EVP_DecryptInit_ex != 1);
 		LOG_EXIT();
-		return -4;
+		return -3;
 	}
 
 	int32_t len_update = 0;
@@ -172,21 +172,21 @@ int8_t decryption_aes256_gcm::decryption(const std::vector<uint8_t> &cipher, std
 		EVP_CIPHER_CTX_free(ctx);
 		LOG_CONDITION(EVP_DecryptUpdate != 1);
 		LOG_EXIT();
-		return -5;
+		return -4;
 	}
 
 	if (EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, static_cast<int32_t>(len_tag), const_cast<uint8_t *>(data_tag)) != 1) {
 		EVP_CIPHER_CTX_free(ctx);
 		LOG_CONDITION(EVP_CIPHER_CTX_ctrl != 1);
 		LOG_EXIT();
-		return -6;
+		return -5;
 	}
 
 	if (EVP_DecryptFinal_ex(ctx, plain.data() + len_update, &len_final) != 1) {
 		EVP_CIPHER_CTX_free(ctx);
 		LOG_CONDITION(EVP_DecryptFinal_ex != 1);
 		LOG_EXIT();
-		return -7;
+		return -6;
 	}
 
 	plain.resize(static_cast<size_t>(len_update) + static_cast<size_t>(len_final));
