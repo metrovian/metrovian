@@ -35,5 +35,6 @@ protected: /* abstract */
 
 class decryption_aes256_gcm : public decryption_aes256 {
 protected: /* abstract */
+	virtual size_t sizeiv() override final { return static_cast<size_t>(12); }
 	virtual int8_t decryption(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) override final;
 };
