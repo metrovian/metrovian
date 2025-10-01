@@ -20,3 +20,9 @@ public: /* abstract */
 	virtual void setup(CLI::App *parent) override final;
 	virtual void run() override final;
 };
+
+class command_aes256_gcm : public command_aes {
+public: /* abstract */
+	virtual void setup(CLI::App *parent) override final;
+	virtual void run() override final;
+};

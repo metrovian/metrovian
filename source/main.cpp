@@ -56,6 +56,7 @@ int32_t main(int argc, char **argv) {
 	interface_singleton::instance().command_setup(std::make_unique<command_user>());
 	interface_singleton::instance().command_setup(std::make_unique<command_aes256_cbc>());
 	interface_singleton::instance().command_setup(std::make_unique<command_aes256_ctr>());
+	interface_singleton::instance().command_setup(std::make_unique<command_aes256_gcm>());
 	interface_singleton::instance().command_setup(std::make_unique<command_rsa>());
 	interface_singleton::instance().command_setup(std::make_unique<command_ecdh>());
 	interface_singleton::instance().command_setup(std::make_unique<command_avcodec>());
