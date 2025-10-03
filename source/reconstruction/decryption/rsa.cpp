@@ -187,7 +187,6 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 		BN_free(remainder);
 		break;
 	}
-
 	case rsa::attack::fermat: {
 		mpz_t n_fermat;
 		mpz_t p_fermat;
@@ -225,7 +224,6 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 		mpz_clears(n_fermat, p_fermat, q_fermat, a_fermat, b_fermat, b2_fermat, tmp_fermat, nullptr);
 		break;
 	}
-
 	case rsa::attack::pollards_rho: {
 		mpz_t n_rho;
 		mpz_t a_rho;
@@ -271,7 +269,6 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 		mpz_clears(n_rho, a_rho, b_rho, d_rho, one_rho, absub_rho, tmp_rho, nullptr);
 		break;
 	}
-
 	case rsa::attack::pollards_p1: {
 		mpz_t n_p1;
 		mpz_t a_p1;
@@ -324,7 +321,6 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 		mpz_clears(n_p1, a_p1, d_p1, m_p1, one_p1, exp_p1, tmp_p1, nullptr);
 		break;
 	}
-
 	case rsa::attack::williams_p1: {
 		mpz_t n_p1;
 		mpz_t d_p1;
@@ -430,7 +426,6 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 		mpz_clears(n_p1, d_p1, m_p1, one_p1, exp_p1, ures_p1, vres_p1, ubase_p1, vbase_p1, tmp_p1, nullptr);
 		break;
 	}
-
 	default:
 		LOG_ARGUMENT(algorithm);
 		RETURN_CLEANUP(retcode, -7);
