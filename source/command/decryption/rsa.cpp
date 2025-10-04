@@ -53,6 +53,7 @@ void command_rsa_public::setup(CLI::App *parent) {
 	command->add_option("-i, --in", in_, "ciphertext binary");
 	command->add_option("-o, --out", out_, "plaintext binary")->required();
 	command->callback([this]() { run(); });
+	map_.insert(std::make_pair<std::string, rsa::attack>("trial", rsa::attack::trial));
 	map_.insert(std::make_pair<std::string, rsa::attack>("fermat", rsa::attack::fermat));
 	map_.insert(std::make_pair<std::string, rsa::attack>("pollards-rho", rsa::attack::pollards_rho));
 	map_.insert(std::make_pair<std::string, rsa::attack>("pollards-p1", rsa::attack::pollards_p1));
