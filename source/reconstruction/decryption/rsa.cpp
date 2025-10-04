@@ -169,22 +169,31 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 	n_hexstr = BN_bn2hex(n_rsa);
 	switch (algorithm) {
 	case rsa::attack::trial: {
-		BIGNUM *trial = BN_new();
-		BIGNUM *remainder = BN_new();
-		BN_set_word(trial, 2);
-		while (BN_cmp(trial, n_rsa) < 0) {
-			BN_mod(remainder, n_rsa, trial, ctx_rsa);
-			if (BN_is_zero(remainder)) {
-				BN_copy(p_rsa, trial);
-				BN_div(q_rsa, nullptr, n_rsa, p_rsa, ctx_rsa);
+		mpz_t n_trial;
+		mpz_t d_trial;
+		mpz_t p_trial;
+		mpz_t q_trial;
+		mpz_t r_trial;
+		mpz_inits(n_trial, d_trial, p_trial, q_trial, r_trial, nullptr);
+		mpz_set_str(n_trial, n_hexstr, 16);
+		mpz_set_ui(d_trial, 2);
+		uint64_t max_trial = std::stoull(property_singleton::instance().parse({"decryption", "rsa", "trial-iteration"}));
+		for (uint64_t i = 0; i < max_trial; ++i) {
+			mpz_mod(r_trial, n_trial, d_trial);
+			if (mpz_cmp_ui(r_trial, 0) == 0) {
+				mpz_set(p_trial, d_trial);
+				mpz_tdiv_q(q_trial, n_trial, d_trial);
 				break;
 			}
 
-			BN_add_word(trial, 1);
+			mpz_add_ui(d_trial, d_trial, 1);
 		}
 
-		BN_free(trial);
-		BN_free(remainder);
+		p_hexstr = mpz_get_str(nullptr, 16, p_trial);
+		q_hexstr = mpz_get_str(nullptr, 16, q_trial);
+		BN_hex2bn(&p_rsa, p_hexstr);
+		BN_hex2bn(&q_rsa, q_hexstr);
+		mpz_clears(n_trial, d_trial, p_trial, q_trial, r_trial, nullptr);
 		break;
 	}
 	case rsa::attack::fermat: {
