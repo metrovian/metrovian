@@ -40,8 +40,9 @@ property_singleton::property_singleton() {
 	} else {
 		std::ofstream ofs(path);
 		if (ofs.is_open() == true) {
+			parser_["decryption"]["rsa"]["trial-iteration"] = 1000000;
 			parser_["decryption"]["rsa"]["fermat-iteration"] = 1000000;
-			parser_["decryption"]["rsa"]["pollards-rho-iteration"] = 100000000;
+			parser_["decryption"]["rsa"]["pollards-rho-iteration"] = 1000000;
 			parser_["decryption"]["rsa"]["pollards-p1-iteration"] = 100000;
 			parser_["decryption"]["rsa"]["williams-p1-iteration"] = 100000;
 			parser_["optimization"]["thread-max"] = 8;
