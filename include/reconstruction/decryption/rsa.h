@@ -27,6 +27,13 @@ public: /* attack */
 	int8_t calckey(const std::vector<uint8_t> &public_key, rsa::attack algorithm);
 	int8_t calckey(const std::string &public_key, rsa::attack algorithm);
 
+protected: /* attack */
+	int8_t trial(const char *modulus, char **prime1, char **prime2);
+	int8_t fermat(const char *modulus, char **prime1, char **prime2);
+	int8_t pollards_rho(const char *modulus, char **prime1, char **prime2);
+	int8_t pollards_p1(const char *modulus, char **prime1, char **prime2);
+	int8_t williams_p1(const char *modulus, char **prime1, char **prime2);
+
 protected: /* abstract */
 	virtual int8_t decryption(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) override final;
 };

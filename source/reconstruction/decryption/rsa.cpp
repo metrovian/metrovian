@@ -163,288 +163,29 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 		RETURN_CLEANUP(retcode, -6);
 	}
 
-	ctx_rsa = BN_CTX_new();
-	p_rsa = BN_new();
-	q_rsa = BN_new();
 	n_hexstr = BN_bn2hex(n_rsa);
+	// clang-format off
 	switch (algorithm) {
-	case rsa::attack::trial: {
-		mpz_t n_trial;
-		mpz_t d_trial;
-		mpz_t p_trial;
-		mpz_t q_trial;
-		mpz_t r_trial;
-		mpz_inits(n_trial, d_trial, p_trial, q_trial, r_trial, nullptr);
-		mpz_set_str(n_trial, n_hexstr, 16);
-		mpz_set_ui(d_trial, 2);
-		uint64_t max_trial = std::stoull(property_singleton::instance().parse({"decryption", "rsa", "trial-iteration"}));
-		for (uint64_t i = 0; i < max_trial; ++i) {
-			mpz_mod(r_trial, n_trial, d_trial);
-			if (mpz_cmp_ui(r_trial, 0) == 0) {
-				mpz_set(p_trial, d_trial);
-				mpz_tdiv_q(q_trial, n_trial, d_trial);
-				break;
-			}
-
-			mpz_add_ui(d_trial, d_trial, 1);
-		}
-
-		p_hexstr = mpz_get_str(nullptr, 16, p_trial);
-		q_hexstr = mpz_get_str(nullptr, 16, q_trial);
-		BN_hex2bn(&p_rsa, p_hexstr);
-		BN_hex2bn(&q_rsa, q_hexstr);
-		mpz_clears(n_trial, d_trial, p_trial, q_trial, r_trial, nullptr);
-		break;
-	}
-	case rsa::attack::fermat: {
-		mpz_t n_fermat;
-		mpz_t p_fermat;
-		mpz_t q_fermat;
-		mpz_t a_fermat;
-		mpz_t b_fermat;
-		mpz_t b2_fermat;
-		mpz_t tmp_fermat;
-		mpz_inits(n_fermat, p_fermat, q_fermat, a_fermat, b_fermat, b2_fermat, tmp_fermat, nullptr);
-		mpz_set_str(n_fermat, n_hexstr, 16);
-		mpz_sqrt(a_fermat, n_fermat);
-		mpz_mul(tmp_fermat, a_fermat, a_fermat);
-		if (mpz_cmp(tmp_fermat, n_fermat) < 0) {
-			mpz_add_ui(a_fermat, a_fermat, 1);
-		}
-
-		uint64_t max_fermat = std::stoull(property_singleton::instance().parse({"decryption", "rsa", "fermat-iteration"}));
-		for (uint64_t i = 0; i < max_fermat; ++i) {
-			mpz_mul(b2_fermat, a_fermat, a_fermat);
-			mpz_sub(b2_fermat, b2_fermat, n_fermat);
-			if (mpz_perfect_square_p(b2_fermat)) {
-				mpz_sqrt(b_fermat, b2_fermat);
-				mpz_sub(p_fermat, a_fermat, b_fermat);
-				mpz_add(q_fermat, a_fermat, b_fermat);
-				break;
-			}
-
-			mpz_add_ui(a_fermat, a_fermat, 1);
-		}
-
-		p_hexstr = mpz_get_str(nullptr, 16, p_fermat);
-		q_hexstr = mpz_get_str(nullptr, 16, q_fermat);
-		BN_hex2bn(&p_rsa, p_hexstr);
-		BN_hex2bn(&q_rsa, q_hexstr);
-		mpz_clears(n_fermat, p_fermat, q_fermat, a_fermat, b_fermat, b2_fermat, tmp_fermat, nullptr);
-		break;
-	}
-	case rsa::attack::pollards_rho: {
-		mpz_t n_rho;
-		mpz_t a_rho;
-		mpz_t b_rho;
-		mpz_t d_rho;
-		mpz_t one_rho;
-		mpz_t absub_rho;
-		mpz_t tmp_rho;
-		mpz_inits(n_rho, a_rho, b_rho, d_rho, one_rho, absub_rho, tmp_rho, nullptr);
-		mpz_set_str(n_rho, n_hexstr, 16);
-		mpz_set_ui(a_rho, 2);
-		mpz_set_ui(b_rho, 2);
-		mpz_set_ui(d_rho, 1);
-		mpz_set_ui(one_rho, 1);
-		auto iteration_rho = [&](mpz_t result, const mpz_t value) {
-			mpz_mul(tmp_rho, value, value);
-			mpz_add_ui(tmp_rho, tmp_rho, 1);
-			mpz_mod(result, tmp_rho, n_rho);
-		};
-
-		uint64_t max_rho = std::stoull(property_singleton::instance().parse({"decryption", "rsa", "pollards-rho-iteration"}));
-		for (uint64_t i = 0; i < max_rho; ++i) {
-			iteration_rho(a_rho, a_rho);
-			iteration_rho(tmp_rho, b_rho);
-			iteration_rho(b_rho, tmp_rho);
-			mpz_cmp(a_rho, b_rho) > 0 ? mpz_sub(absub_rho, a_rho, b_rho) : mpz_sub(absub_rho, b_rho, a_rho);
-			mpz_gcd(d_rho, absub_rho, n_rho);
-			if (mpz_cmp_ui(d_rho, 1) != 0) {
-				break;
-			}
-		}
-
-		if (mpz_cmp(d_rho, one_rho) == 0 || mpz_cmp(d_rho, n_rho) == 0) {
-			mpz_clears(n_rho, a_rho, b_rho, d_rho, tmp_rho, one_rho, absub_rho, nullptr);
-			break;
-		}
-
-		mpz_divexact(tmp_rho, n_rho, d_rho);
-		p_hexstr = mpz_get_str(nullptr, 16, d_rho);
-		q_hexstr = mpz_get_str(nullptr, 16, tmp_rho);
-		BN_hex2bn(&p_rsa, p_hexstr);
-		BN_hex2bn(&q_rsa, q_hexstr);
-		mpz_clears(n_rho, a_rho, b_rho, d_rho, one_rho, absub_rho, tmp_rho, nullptr);
-		break;
-	}
-	case rsa::attack::pollards_p1: {
-		mpz_t n_p1;
-		mpz_t a_p1;
-		mpz_t d_p1;
-		mpz_t m_p1;
-		mpz_t one_p1;
-		mpz_t exp_p1;
-		mpz_t tmp_p1;
-		mpz_inits(n_p1, a_p1, d_p1, m_p1, one_p1, exp_p1, tmp_p1, nullptr);
-		mpz_set_str(n_p1, n_hexstr, 16);
-		mpz_set_ui(a_p1, 2);
-		mpz_set_ui(m_p1, 1);
-		mpz_set_ui(one_p1, 1);
-		auto primecheck_p1 = [](uint64_t value) {
-			for (uint64_t i = 2; i * i <= value; ++i) {
-				if (value % i == 0) {
-					return false;
-				}
-			}
-
-			return true;
-		};
-
-		uint64_t max_p1 = std::stoull(property_singleton::instance().parse({"decryption", "rsa", "pollards-p1-iteration"}));
-		for (uint64_t i = 2; i < max_p1; ++i) {
-			if (primecheck_p1(i)) {
-				uint64_t pow_p1 = i;
-				while (pow_p1 * i < max_p1) {
-					pow_p1 *= i;
-				}
-
-				mpz_mul_ui(tmp_p1, m_p1, pow_p1);
-				mpz_set(m_p1, tmp_p1);
-			}
-		}
-
-		mpz_powm(a_p1, a_p1, m_p1, n_p1);
-		mpz_sub(tmp_p1, a_p1, one_p1);
-		mpz_gcd(d_p1, tmp_p1, n_p1);
-		if (mpz_cmp_ui(d_p1, 1) == 0 || mpz_cmp(d_p1, n_p1) == 0) {
-			mpz_clears(n_p1, a_p1, d_p1, one_p1, tmp_p1, exp_p1, m_p1, nullptr);
-			break;
-		}
-
-		mpz_divexact(tmp_p1, n_p1, d_p1);
-		p_hexstr = mpz_get_str(nullptr, 16, d_p1);
-		q_hexstr = mpz_get_str(nullptr, 16, tmp_p1);
-		BN_hex2bn(&p_rsa, p_hexstr);
-		BN_hex2bn(&q_rsa, q_hexstr);
-		mpz_clears(n_p1, a_p1, d_p1, m_p1, one_p1, exp_p1, tmp_p1, nullptr);
-		break;
-	}
-	case rsa::attack::williams_p1: {
-		mpz_t n_p1;
-		mpz_t d_p1;
-		mpz_t m_p1;
-		mpz_t one_p1;
-		mpz_t exp_p1;
-		mpz_t ures_p1;
-		mpz_t vres_p1;
-		mpz_t ubase_p1;
-		mpz_t vbase_p1;
-		mpz_t tmp_p1;
-		mpz_inits(n_p1, d_p1, m_p1, one_p1, exp_p1, ures_p1, vres_p1, ubase_p1, vbase_p1, tmp_p1, nullptr);
-		mpz_set_str(n_p1, n_hexstr, 16);
-		mpz_set_ui(m_p1, 1);
-		mpz_set_ui(one_p1, 1);
-		mpz_set_ui(ures_p1, 0);
-		mpz_set_ui(vres_p1, 2);
-		mpz_set_ui(ubase_p1, 1);
-		mpz_set_ui(vbase_p1, 3);
-		auto primecheck_p1 = [](uint64_t value) {
-			for (uint64_t i = 2; i * i <= value; ++i) {
-				if (value % i == 0) {
-					return false;
-				}
-			}
-
-			return true;
-		};
-
-		auto lucas_square = [](mpz_t u, mpz_t v, mpz_t n) {
-			mpz_t u2, v2;
-			mpz_inits(u2, v2, nullptr);
-			mpz_mul(u2, u, v);
-			mpz_mod(u2, u2, n);
-			mpz_mul(v2, v, v);
-			mpz_sub_ui(v2, v2, 2);
-			mpz_mod(v2, v2, n);
-			mpz_set(u, u2);
-			mpz_set(v, v2);
-			mpz_clears(u2, v2, nullptr);
-		};
-
-		auto lucas_cross = [](mpz_t u1, mpz_t v1, mpz_t u2, mpz_t v2, mpz_t n) {
-			mpz_t t1, t2, t3, t4;
-			mpz_inits(t1, t2, t3, t4, nullptr);
-			mpz_mul(t1, u1, v2);
-			mpz_mul(t2, u2, v1);
-			mpz_add(t1, t1, t2);
-			if (mpz_odd_p(t1)) {
-				mpz_add(t1, t1, n);
-			}
-
-			mpz_divexact_ui(t1, t1, 2);
-			mpz_mod(t1, t1, n);
-			mpz_mul(t3, v1, v2);
-			mpz_mul(t4, u1, u2);
-			mpz_mul_ui(t4, t4, 5);
-			mpz_add(t3, t3, t4);
-			if (mpz_odd_p(t3)) {
-				mpz_add(t3, t3, n);
-			}
-
-			mpz_divexact_ui(t3, t3, 2);
-			mpz_mod(t3, t3, n);
-			mpz_set(u1, t1);
-			mpz_set(v1, t3);
-			mpz_clears(t1, t2, t3, t4, nullptr);
-		};
-
-		uint64_t max_p1 = std::stoull(property_singleton::instance().parse({"decryption", "rsa", "williams-p1-iteration"}));
-		for (uint64_t i = 2; i < max_p1; ++i) {
-			if (primecheck_p1(i)) {
-				uint64_t pow_p1 = i;
-				while (pow_p1 * i < max_p1) {
-					pow_p1 *= i;
-				}
-
-				mpz_mul_ui(tmp_p1, m_p1, pow_p1);
-				mpz_set(m_p1, tmp_p1);
-			}
-		}
-
-		mpz_set(exp_p1, m_p1);
-		for (uint64_t i = 0; i < mpz_sizeinbase(exp_p1, 2); ++i) {
-			lucas_square(ures_p1, vres_p1, n_p1);
-			if (mpz_tstbit(exp_p1, mpz_sizeinbase(exp_p1, 2) - i - 1)) {
-				lucas_cross(ures_p1, vres_p1, ubase_p1, vbase_p1, n_p1);
-			}
-		}
-
-		mpz_sub_ui(tmp_p1, vres_p1, 2);
-		mpz_gcd(d_p1, tmp_p1, n_p1);
-		if (mpz_cmp_ui(d_p1, 1) == 0 || mpz_cmp(d_p1, n_p1) == 0) {
-			mpz_clears(n_p1, d_p1, m_p1, one_p1, exp_p1, ures_p1, vres_p1, ubase_p1, vbase_p1, tmp_p1, nullptr);
-			break;
-		}
-
-		mpz_divexact(tmp_p1, n_p1, d_p1);
-		p_hexstr = mpz_get_str(nullptr, 16, d_p1);
-		q_hexstr = mpz_get_str(nullptr, 16, tmp_p1);
-		BN_hex2bn(&p_rsa, p_hexstr);
-		BN_hex2bn(&q_rsa, q_hexstr);
-		mpz_clears(n_p1, d_p1, m_p1, one_p1, exp_p1, ures_p1, vres_p1, ubase_p1, vbase_p1, tmp_p1, nullptr);
-		break;
-	}
+	case rsa::attack::trial: trial(n_hexstr, &p_hexstr, &q_hexstr); break;
+	case rsa::attack::fermat: fermat(n_hexstr, &p_hexstr, &q_hexstr); break;
+	case rsa::attack::pollards_rho: pollards_rho(n_hexstr, &p_hexstr, &q_hexstr); break;
+	case rsa::attack::pollards_p1: pollards_p1(n_hexstr, &p_hexstr, &q_hexstr); break;
+	case rsa::attack::williams_p1: williams_p1(n_hexstr, &p_hexstr, &q_hexstr); break;
 	default:
 		LOG_ARGUMENT(algorithm);
 		RETURN_CLEANUP(retcode, -7);
 	}
-
+	// clang-format on
+	p_rsa = BN_new();
+	q_rsa = BN_new();
+	BN_hex2bn(&p_rsa, p_hexstr);
+	BN_hex2bn(&q_rsa, q_hexstr);
 	if (BN_is_zero(p_rsa)) {
 		LOG_CONDITION(BN_is_zero == 1);
 		RETURN_CLEANUP(retcode, -8);
 	}
 
+	ctx_rsa = BN_CTX_new();
 	phi_rsa = BN_new();
 	p1_rsa = BN_new();
 	q1_rsa = BN_new();
@@ -527,6 +268,296 @@ cleanup:
 	// clang-format on
 	LOG_EXIT();
 	return retcode;
+}
+
+int8_t decryption_rsa::trial(const char *modulus, char **prime1, char **prime2) {
+	LOG_ENTER();
+	mpz_t n_trial;
+	mpz_t p_trial;
+	mpz_t q_trial;
+	mpz_t d_trial;
+	mpz_t r_trial;
+	mpz_inits(n_trial, p_trial, q_trial, d_trial, r_trial, nullptr);
+	mpz_set_str(n_trial, modulus, 16);
+	mpz_set_ui(d_trial, 2);
+	uint64_t max_trial = std::stoull(property_singleton::instance().parse({"decryption", "rsa", "trial-iteration"}));
+	for (uint64_t i = 0; i < max_trial; ++i) {
+		mpz_mod(r_trial, n_trial, d_trial);
+		if (mpz_cmp_ui(r_trial, 0) == 0) {
+			mpz_set(p_trial, d_trial);
+			mpz_tdiv_q(q_trial, n_trial, d_trial);
+			break;
+		}
+
+		mpz_add_ui(d_trial, d_trial, 1);
+	}
+
+	*prime1 = mpz_get_str(nullptr, 16, p_trial);
+	*prime2 = mpz_get_str(nullptr, 16, q_trial);
+	mpz_clears(n_trial, p_trial, q_trial, d_trial, r_trial, nullptr);
+	LOG_EXIT();
+	return 0;
+}
+
+int8_t decryption_rsa::fermat(const char *modulus, char **prime1, char **prime2) {
+	LOG_ENTER();
+	mpz_t n_fermat;
+	mpz_t p_fermat;
+	mpz_t q_fermat;
+	mpz_t a_fermat;
+	mpz_t b_fermat;
+	mpz_t b2_fermat;
+	mpz_t tmp_fermat;
+	mpz_inits(n_fermat, p_fermat, q_fermat, a_fermat, b_fermat, b2_fermat, tmp_fermat, nullptr);
+	mpz_set_str(n_fermat, modulus, 16);
+	mpz_sqrt(a_fermat, n_fermat);
+	mpz_mul(tmp_fermat, a_fermat, a_fermat);
+	if (mpz_cmp(tmp_fermat, n_fermat) < 0) {
+		mpz_add_ui(a_fermat, a_fermat, 1);
+	}
+
+	uint64_t max_fermat = std::stoull(property_singleton::instance().parse({"decryption", "rsa", "fermat-iteration"}));
+	for (uint64_t i = 0; i < max_fermat; ++i) {
+		mpz_mul(b2_fermat, a_fermat, a_fermat);
+		mpz_sub(b2_fermat, b2_fermat, n_fermat);
+		if (mpz_perfect_square_p(b2_fermat)) {
+			mpz_sqrt(b_fermat, b2_fermat);
+			mpz_sub(p_fermat, a_fermat, b_fermat);
+			mpz_add(q_fermat, a_fermat, b_fermat);
+			break;
+		}
+
+		mpz_add_ui(a_fermat, a_fermat, 1);
+	}
+
+	*prime1 = mpz_get_str(nullptr, 16, p_fermat);
+	*prime2 = mpz_get_str(nullptr, 16, q_fermat);
+	mpz_clears(n_fermat, p_fermat, q_fermat, a_fermat, b_fermat, b2_fermat, tmp_fermat, nullptr);
+	LOG_EXIT();
+	return 0;
+}
+
+int8_t decryption_rsa::pollards_rho(const char *modulus, char **prime1, char **prime2) {
+	LOG_ENTER();
+	mpz_t n_rho;
+	mpz_t p_rho;
+	mpz_t q_rho;
+	mpz_t a_rho;
+	mpz_t b_rho;
+	mpz_t d_rho;
+	mpz_t one_rho;
+	mpz_t absub_rho;
+	mpz_t tmp_rho;
+	mpz_inits(n_rho, p_rho, q_rho, a_rho, b_rho, d_rho, one_rho, absub_rho, tmp_rho, nullptr);
+	mpz_set_str(n_rho, modulus, 16);
+	mpz_set_ui(a_rho, 2);
+	mpz_set_ui(b_rho, 2);
+	mpz_set_ui(d_rho, 1);
+	mpz_set_ui(one_rho, 1);
+	auto iteration_rho = [&](mpz_t result, const mpz_t value) {
+		mpz_mul(tmp_rho, value, value);
+		mpz_add(tmp_rho, tmp_rho, one_rho);
+		mpz_mod(result, tmp_rho, n_rho);
+	};
+
+	uint64_t max_rho = std::stoull(property_singleton::instance().parse({"decryption", "rsa", "pollards-rho-iteration"}));
+	for (uint64_t i = 0; i < max_rho; ++i) {
+		iteration_rho(a_rho, a_rho);
+		iteration_rho(tmp_rho, b_rho);
+		iteration_rho(b_rho, tmp_rho);
+		mpz_cmp(a_rho, b_rho) > 0 ? mpz_sub(absub_rho, a_rho, b_rho) : mpz_sub(absub_rho, b_rho, a_rho);
+		mpz_gcd(d_rho, absub_rho, n_rho);
+		if (mpz_cmp(d_rho, one_rho) != 0) {
+			break;
+		}
+	}
+
+	mpz_set(p_rho, d_rho);
+	mpz_divexact(q_rho, n_rho, d_rho);
+	if (mpz_cmp(p_rho, one_rho) == 0 ||
+	    mpz_cmp(q_rho, one_rho) == 0) {
+		mpz_clears(n_rho, p_rho, q_rho, a_rho, b_rho, d_rho, tmp_rho, one_rho, absub_rho, nullptr);
+		LOG_CONDITION(mpz_cmp == 0);
+		LOG_EXIT();
+		return -1;
+	}
+
+	*prime1 = mpz_get_str(nullptr, 16, p_rho);
+	*prime2 = mpz_get_str(nullptr, 16, q_rho);
+	mpz_clears(n_rho, p_rho, q_rho, a_rho, b_rho, d_rho, one_rho, absub_rho, tmp_rho, nullptr);
+	LOG_EXIT();
+	return 0;
+}
+
+int8_t decryption_rsa::pollards_p1(const char *modulus, char **prime1, char **prime2) {
+	LOG_ENTER();
+	mpz_t n_p1;
+	mpz_t p_p1;
+	mpz_t q_p1;
+	mpz_t a_p1;
+	mpz_t d_p1;
+	mpz_t m_p1;
+	mpz_t one_p1;
+	mpz_t exp_p1;
+	mpz_t tmp_p1;
+	mpz_inits(n_p1, p_p1, q_p1, a_p1, d_p1, m_p1, one_p1, exp_p1, tmp_p1, nullptr);
+	mpz_set_str(n_p1, modulus, 16);
+	mpz_set_ui(a_p1, 2);
+	mpz_set_ui(m_p1, 1);
+	mpz_set_ui(one_p1, 1);
+	auto primecheck_p1 = [](uint64_t value) {
+		for (uint64_t i = 2; i * i <= value; ++i) {
+			if (value % i == 0) {
+				return false;
+			}
+		}
+
+		return true;
+	};
+
+	uint64_t max_p1 = std::stoull(property_singleton::instance().parse({"decryption", "rsa", "pollards-p1-iteration"}));
+	for (uint64_t i = 2; i < max_p1; ++i) {
+		if (primecheck_p1(i)) {
+			uint64_t pow_p1 = i;
+			while (pow_p1 * i < max_p1) {
+				pow_p1 *= i;
+			}
+
+			mpz_mul_ui(tmp_p1, m_p1, pow_p1);
+			mpz_set(m_p1, tmp_p1);
+		}
+	}
+
+	mpz_powm(a_p1, a_p1, m_p1, n_p1);
+	mpz_sub(tmp_p1, a_p1, one_p1);
+	mpz_gcd(d_p1, tmp_p1, n_p1);
+	mpz_set(p_p1, d_p1);
+	mpz_divexact(q_p1, n_p1, d_p1);
+	if (mpz_cmp(p_p1, one_p1) == 0 ||
+	    mpz_cmp(q_p1, one_p1) == 0) {
+		mpz_clears(n_p1, p_p1, q_p1, a_p1, d_p1, m_p1, one_p1, exp_p1, tmp_p1, nullptr);
+		LOG_CONDITION(mpz_cmp == 0);
+		LOG_EXIT();
+		return -1;
+	}
+
+	*prime1 = mpz_get_str(nullptr, 16, p_p1);
+	*prime2 = mpz_get_str(nullptr, 16, q_p1);
+	mpz_clears(n_p1, p_p1, q_p1, a_p1, d_p1, m_p1, one_p1, exp_p1, tmp_p1, nullptr);
+	LOG_EXIT();
+	return 0;
+}
+
+int8_t decryption_rsa::williams_p1(const char *modulus, char **prime1, char **prime2) {
+	LOG_ENTER();
+	mpz_t n_p1;
+	mpz_t p_p1;
+	mpz_t q_p1;
+	mpz_t d_p1;
+	mpz_t m_p1;
+	mpz_t one_p1;
+	mpz_t exp_p1;
+	mpz_t ures_p1;
+	mpz_t vres_p1;
+	mpz_t ubase_p1;
+	mpz_t vbase_p1;
+	mpz_t tmp_p1;
+	mpz_inits(n_p1, p_p1, q_p1, d_p1, m_p1, one_p1, exp_p1, ures_p1, vres_p1, ubase_p1, vbase_p1, tmp_p1, nullptr);
+	mpz_set_str(n_p1, modulus, 16);
+	mpz_set_ui(m_p1, 1);
+	mpz_set_ui(one_p1, 1);
+	mpz_set_ui(ures_p1, 0);
+	mpz_set_ui(vres_p1, 2);
+	mpz_set_ui(ubase_p1, 1);
+	mpz_set_ui(vbase_p1, 3);
+	auto primecheck_p1 = [](uint64_t value) {
+		for (uint64_t i = 2; i * i <= value; ++i) {
+			if (value % i == 0) {
+				return false;
+			}
+		}
+
+		return true;
+	};
+
+	auto lucas_square = [](mpz_t u, mpz_t v, mpz_t n) {
+		mpz_t u2, v2;
+		mpz_inits(u2, v2, nullptr);
+		mpz_mul(u2, u, v);
+		mpz_mod(u2, u2, n);
+		mpz_mul(v2, v, v);
+		mpz_sub_ui(v2, v2, 2);
+		mpz_mod(v2, v2, n);
+		mpz_set(u, u2);
+		mpz_set(v, v2);
+		mpz_clears(u2, v2, nullptr);
+	};
+
+	auto lucas_cross = [](mpz_t u1, mpz_t v1, mpz_t u2, mpz_t v2, mpz_t n) {
+		mpz_t t1, t2, t3, t4;
+		mpz_inits(t1, t2, t3, t4, nullptr);
+		mpz_mul(t1, u1, v2);
+		mpz_mul(t2, u2, v1);
+		mpz_add(t1, t1, t2);
+		if (mpz_odd_p(t1)) {
+			mpz_add(t1, t1, n);
+		}
+
+		mpz_divexact_ui(t1, t1, 2);
+		mpz_mod(t1, t1, n);
+		mpz_mul(t3, v1, v2);
+		mpz_mul(t4, u1, u2);
+		mpz_mul_ui(t4, t4, 5);
+		mpz_add(t3, t3, t4);
+		if (mpz_odd_p(t3)) {
+			mpz_add(t3, t3, n);
+		}
+
+		mpz_divexact_ui(t3, t3, 2);
+		mpz_mod(t3, t3, n);
+		mpz_set(u1, t1);
+		mpz_set(v1, t3);
+		mpz_clears(t1, t2, t3, t4, nullptr);
+	};
+
+	uint64_t max_p1 = std::stoull(property_singleton::instance().parse({"decryption", "rsa", "williams-p1-iteration"}));
+	for (uint64_t i = 2; i < max_p1; ++i) {
+		if (primecheck_p1(i)) {
+			uint64_t pow_p1 = i;
+			while (pow_p1 * i < max_p1) {
+				pow_p1 *= i;
+			}
+
+			mpz_mul_ui(tmp_p1, m_p1, pow_p1);
+			mpz_set(m_p1, tmp_p1);
+		}
+	}
+
+	mpz_set(exp_p1, m_p1);
+	for (uint64_t i = 0; i < mpz_sizeinbase(exp_p1, 2); ++i) {
+		lucas_square(ures_p1, vres_p1, n_p1);
+		if (mpz_tstbit(exp_p1, mpz_sizeinbase(exp_p1, 2) - i - 1)) {
+			lucas_cross(ures_p1, vres_p1, ubase_p1, vbase_p1, n_p1);
+		}
+	}
+
+	mpz_sub_ui(tmp_p1, vres_p1, 2);
+	mpz_gcd(d_p1, tmp_p1, n_p1);
+	mpz_set(p_p1, d_p1);
+	mpz_divexact(q_p1, n_p1, d_p1);
+	if (mpz_cmp(p_p1, one_p1) == 0 ||
+	    mpz_cmp(q_p1, one_p1) == 0) {
+		mpz_clears(n_p1, p_p1, q_p1, d_p1, m_p1, one_p1, exp_p1, ures_p1, vres_p1, ubase_p1, vbase_p1, tmp_p1, nullptr);
+		LOG_CONDITION(mpz_cmp == 0);
+		LOG_EXIT();
+		return -1;
+	}
+
+	*prime1 = mpz_get_str(nullptr, 16, p_p1);
+	*prime2 = mpz_get_str(nullptr, 16, q_p1);
+	mpz_clears(n_p1, p_p1, q_p1, d_p1, m_p1, one_p1, exp_p1, ures_p1, vres_p1, ubase_p1, vbase_p1, tmp_p1, nullptr);
+	LOG_EXIT();
+	return 0;
 }
 
 int8_t decryption_rsa::decryption(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) {
