@@ -209,11 +209,11 @@ int8_t decryption_rsa::calckey(const std::string &public_key, rsa::attack algori
 	OSSL_PARAM_BLD_push_BN(param_bld, OSSL_PKEY_PARAM_RSA_N, n_rsa);
 	OSSL_PARAM_BLD_push_BN(param_bld, OSSL_PKEY_PARAM_RSA_E, e_rsa);
 	OSSL_PARAM_BLD_push_BN(param_bld, OSSL_PKEY_PARAM_RSA_D, d_rsa);
-	OSSL_PARAM_BLD_push_BN(param_bld, "rsa-coefficient1", coefficient_rsa);
-	OSSL_PARAM_BLD_push_BN(param_bld, "rsa-factor1", p_rsa);
-	OSSL_PARAM_BLD_push_BN(param_bld, "rsa-factor2", q_rsa);
-	OSSL_PARAM_BLD_push_BN(param_bld, "rsa-exponent1", exponent1_rsa);
-	OSSL_PARAM_BLD_push_BN(param_bld, "rsa-exponent2", exponent2_rsa);
+	OSSL_PARAM_BLD_push_BN(param_bld, OSSL_PKEY_PARAM_RSA_COEFFICIENT1, coefficient_rsa);
+	OSSL_PARAM_BLD_push_BN(param_bld, OSSL_PKEY_PARAM_RSA_FACTOR1, p_rsa);
+	OSSL_PARAM_BLD_push_BN(param_bld, OSSL_PKEY_PARAM_RSA_FACTOR2, q_rsa);
+	OSSL_PARAM_BLD_push_BN(param_bld, OSSL_PKEY_PARAM_RSA_EXPONENT1, exponent1_rsa);
+	OSSL_PARAM_BLD_push_BN(param_bld, OSSL_PKEY_PARAM_RSA_EXPONENT2, exponent2_rsa);
 	mem = BIO_new(BIO_s_mem());
 	if (mem == nullptr) {
 		LOG_CONDITION(BIO_new == nullptr);
