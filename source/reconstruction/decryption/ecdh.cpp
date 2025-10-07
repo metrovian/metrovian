@@ -94,8 +94,18 @@ int8_t decryption_ecdh::calckey(const std::string &public_key, ecdh::attack algo
 	BIGNUM *p_ecdh = nullptr;
 	BIGNUM *a_ecdh = nullptr;
 	BIGNUM *b_ecdh = nullptr;
-	BIGNUM *x_ecdh = nullptr;
-	BIGNUM *y_ecdh = nullptr;
+	BIGNUM *px_ecdh = nullptr;
+	BIGNUM *py_ecdh = nullptr;
+	BIGNUM *gx_ecdh = nullptr;
+	BIGNUM *gy_ecdh = nullptr;
+	uint8_t *g_ecdh = nullptr;
+	size_t len_ecdh = 0;
+	char *dx_hexstr = nullptr;
+	char *dy_hexstr = nullptr;
+	char *px_hexstr = nullptr;
+	char *py_hexstr = nullptr;
+	char *gx_hexstr = nullptr;
+	char *gy_hexstr = nullptr;
 	bio = BIO_new_mem_buf(public_key.data(), static_cast<int32_t>(public_key.size()));
 	if (bio == nullptr) {
 		LOG_CONDITION(BIO_new_mem_buf == nullptr);
@@ -120,8 +130,8 @@ int8_t decryption_ecdh::calckey(const std::string &public_key, ecdh::attack algo
 	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_P, &p_ecdh);
 	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_A, &a_ecdh);
 	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_B, &b_ecdh);
-	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_PUB_X, &x_ecdh);
-	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_PUB_Y, &y_ecdh);
+	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_PUB_X, &px_ecdh);
+	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_PUB_Y, &py_ecdh);
 	if (p_ecdh == nullptr) {
 		LOG_CONDITION(EVP_PKEY_get_bn_param(OSSL_PKEY_PARAM_EC_P) == nullptr);
 		RETURN_CLEANUP(retcode, -5);
@@ -131,13 +141,27 @@ int8_t decryption_ecdh::calckey(const std::string &public_key, ecdh::attack algo
 	} else if (b_ecdh == nullptr) {
 		LOG_CONDITION(EVP_PKEY_get_bn_param(OSSL_PKEY_PARAM_EC_B) == nullptr);
 		RETURN_CLEANUP(retcode, -7);
-	} else if (x_ecdh == nullptr) {
+	} else if (px_ecdh == nullptr) {
 		LOG_CONDITION(EVP_PKEY_get_bn_param(OSSL_PKEY_PARAM_EC_PUB_X) == nullptr);
 		RETURN_CLEANUP(retcode, -8);
-	} else if (y_ecdh == nullptr) {
+	} else if (py_ecdh == nullptr) {
 		LOG_CONDITION(EVP_PKEY_get_bn_param(OSSL_PKEY_PARAM_EC_PUB_Y) == nullptr);
 		RETURN_CLEANUP(retcode, -9);
 	}
+
+	if (EVP_PKEY_get_octet_string_param(pkey_public, OSSL_PKEY_PARAM_EC_GENERATOR, nullptr, 0, &len_ecdh) != 0) {
+		LOG_CONDITION(EVP_PKEY_get_octet_string_param(OSSL_PKEY_PARAM_EC_GENERATOR) != 0);
+		RETURN_CLEANUP(retcode, -10);
+	}
+
+	g_ecdh = (unsigned char *)OPENSSL_malloc(len_ecdh);
+	if (EVP_PKEY_get_octet_string_param(pkey_public, OSSL_PKEY_PARAM_EC_GENERATOR, g_ecdh, len_ecdh, &len_ecdh) != 0) {
+		LOG_CONDITION(EVP_PKEY_get_octet_string_param(OSSL_PKEY_PARAM_EC_GENERATOR) != 0);
+		RETURN_CLEANUP(retcode, -11);
+	}
+
+	gx_ecdh = BN_bin2bn(g_ecdh + 1, (len_ecdh - 1) / 2, nullptr);
+	gy_ecdh = BN_bin2bn(g_ecdh + 1 + (len_ecdh - 1) / 2, (len_ecdh - 1) / 2, nullptr);
 
 cleanup:
 	// clang-format off
@@ -147,11 +171,20 @@ cleanup:
 	if (pkey_public) EVP_PKEY_free(pkey_public);
 	if (pkey_private) EVP_PKEY_free(pkey_private);
 	if (ctx_ecdh) BN_CTX_free(ctx_ecdh);
-	if (p_ecdh) BN_free(p_ecdh);
-	if (a_ecdh) BN_free(a_ecdh);
-	if (b_ecdh) BN_free(b_ecdh);
-	if (x_ecdh) BN_free(x_ecdh);
-	if (y_ecdh) BN_free(y_ecdh);
+	if (p_ecdh) BN_clear_free(p_ecdh);
+	if (a_ecdh) BN_clear_free(a_ecdh);
+	if (b_ecdh) BN_clear_free(b_ecdh);
+	if (px_ecdh) BN_clear_free(px_ecdh);
+	if (py_ecdh) BN_clear_free(py_ecdh);
+	if (gx_ecdh) BN_clear_free(gx_ecdh);
+	if (gy_ecdh) BN_clear_free(gy_ecdh);
+	if (g_ecdh) OPENSSL_free(g_ecdh);
+	if (dx_hexstr) OPENSSL_free(dx_hexstr);
+	if (dy_hexstr) OPENSSL_free(dy_hexstr);
+	if (px_hexstr) OPENSSL_free(px_hexstr);
+	if (py_hexstr) OPENSSL_free(py_hexstr);
+	if (gx_hexstr) OPENSSL_free(gx_hexstr);
+	if (gy_hexstr) OPENSSL_free(gy_hexstr);
 	// clang-format on
 	LOG_EXIT();
 	return 0;
