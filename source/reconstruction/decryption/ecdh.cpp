@@ -78,6 +78,85 @@ int8_t decryption_ecdh::setkey(const std::string &private_key) {
 	return 0;
 }
 
+int8_t decryption_ecdh::calckey(const std::vector<uint8_t> &public_key, ecdh::attack algorithm) {
+	return calckey(base64(public_key), algorithm);
+}
+
+int8_t decryption_ecdh::calckey(const std::string &public_key, ecdh::attack algorithm) {
+	LOG_ENTER();
+	int8_t retcode = 0;
+	BIO *bio = nullptr;
+	EVP_PKEY_CTX *ctx_public = nullptr;
+	EVP_PKEY_CTX *ctx_private = nullptr;
+	EVP_PKEY *pkey_public = nullptr;
+	EVP_PKEY *pkey_private = nullptr;
+	BN_CTX *ctx_ecdh = nullptr;
+	BIGNUM *p_ecdh = nullptr;
+	BIGNUM *a_ecdh = nullptr;
+	BIGNUM *b_ecdh = nullptr;
+	BIGNUM *x_ecdh = nullptr;
+	BIGNUM *y_ecdh = nullptr;
+	bio = BIO_new_mem_buf(public_key.data(), static_cast<int32_t>(public_key.size()));
+	if (bio == nullptr) {
+		LOG_CONDITION(BIO_new_mem_buf == nullptr);
+		RETURN_CLEANUP(retcode, -1);
+	}
+
+	pkey_public = PEM_read_bio_PUBKEY(bio, nullptr, nullptr, nullptr);
+	if (pkey_public == nullptr) {
+		LOG_CONDITION(PEM_read_bio_PUBKEY == nullptr);
+		RETURN_CLEANUP(retcode, -2);
+	}
+
+	ctx_public = EVP_PKEY_CTX_new(pkey_public, nullptr);
+	if (ctx_public == nullptr) {
+		LOG_CONDITION(EVP_PKEY_CTX_new == nullptr);
+		RETURN_CLEANUP(retcode, -3);
+	} else if (EVP_PKEY_get_base_id(pkey_public) != EVP_PKEY_EC) {
+		LOG_CONDITION(EVP_PKEY_get_base_id != EVP_PKEY_EC);
+		RETURN_CLEANUP(retcode, -4);
+	}
+
+	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_P, &p_ecdh);
+	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_A, &a_ecdh);
+	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_B, &b_ecdh);
+	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_PUB_X, &x_ecdh);
+	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_PUB_Y, &y_ecdh);
+	if (p_ecdh == nullptr) {
+		LOG_CONDITION(EVP_PKEY_get_bn_param(OSSL_PKEY_PARAM_EC_P) == nullptr);
+		RETURN_CLEANUP(retcode, -5);
+	} else if (a_ecdh == nullptr) {
+		LOG_CONDITION(EVP_PKEY_get_bn_param(OSSL_PKEY_PARAM_EC_A) == nullptr);
+		RETURN_CLEANUP(retcode, -6);
+	} else if (b_ecdh == nullptr) {
+		LOG_CONDITION(EVP_PKEY_get_bn_param(OSSL_PKEY_PARAM_EC_B) == nullptr);
+		RETURN_CLEANUP(retcode, -7);
+	} else if (x_ecdh == nullptr) {
+		LOG_CONDITION(EVP_PKEY_get_bn_param(OSSL_PKEY_PARAM_EC_PUB_X) == nullptr);
+		RETURN_CLEANUP(retcode, -8);
+	} else if (y_ecdh == nullptr) {
+		LOG_CONDITION(EVP_PKEY_get_bn_param(OSSL_PKEY_PARAM_EC_PUB_Y) == nullptr);
+		RETURN_CLEANUP(retcode, -9);
+	}
+
+cleanup:
+	// clang-format off
+	if (bio) bio = nullptr;
+	if (ctx_public) EVP_PKEY_CTX_free(ctx_public);
+	if (ctx_private) EVP_PKEY_CTX_free(ctx_private);
+	if (pkey_public) EVP_PKEY_free(pkey_public);
+	if (pkey_private) EVP_PKEY_free(pkey_private);
+	if (ctx_ecdh) BN_CTX_free(ctx_ecdh);
+	if (p_ecdh) BN_free(p_ecdh);
+	if (a_ecdh) BN_free(a_ecdh);
+	if (b_ecdh) BN_free(b_ecdh);
+	if (x_ecdh) BN_free(x_ecdh);
+	if (y_ecdh) BN_free(y_ecdh);
+	// clang-format on
+	LOG_EXIT();
+	return 0;
+}
+
 int8_t decryption_ecdh::decryption(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) {
 	LOG_ENTER();
 	const uint8_t *ptr = private_key_.data();
