@@ -254,16 +254,16 @@ cleanup:
 	if (p_rsa) BN_clear_free(p_rsa);
 	if (q_rsa) BN_clear_free(q_rsa);
 	if (d_rsa) BN_clear_free(d_rsa);
-	if (n_rsa) BN_free(n_rsa);
-	if (e_rsa) BN_free(e_rsa);
-	if (coefficient_rsa) BN_free(coefficient_rsa);
-	if (exponent1_rsa) BN_free(exponent1_rsa);
-	if (exponent2_rsa) BN_free(exponent2_rsa);
+	if (n_rsa) BN_clear_free(n_rsa);
+	if (e_rsa) BN_clear_free(e_rsa);
+	if (coefficient_rsa) BN_clear_free(coefficient_rsa);
+	if (exponent1_rsa) BN_clear_free(exponent1_rsa);
+	if (exponent2_rsa) BN_clear_free(exponent2_rsa);
 	if (param_bld) OSSL_PARAM_BLD_free(param_bld);
 	if (param) OSSL_PARAM_free(param);
 	if (mem) BIO_free(mem);
-	if (p_hexstr) free(p_hexstr);
-	if (q_hexstr) free(q_hexstr);
+	if (p_hexstr) OPENSSL_free(p_hexstr);
+	if (q_hexstr) OPENSSL_free(q_hexstr);
 	if (n_hexstr) OPENSSL_free(n_hexstr);
 	// clang-format on
 	LOG_EXIT();
