@@ -74,11 +74,11 @@ void command_ecdh_public::run() {
 						}
 					}
 				} else {
-					// std::string pem = engine.pem();
-					// if (write_text(out_, pem) == 0) {
-					// 	std::cout << pem << std::endl;
-					// 	return;
-					// }
+					std::string pem = engine.pem();
+					if (write_text(out_, pem) == 0) {
+						std::cout << pem << std::endl;
+						return;
+					}
 				}
 			}
 		}

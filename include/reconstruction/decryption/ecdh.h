@@ -35,6 +35,9 @@ protected: /* parameter */
 	std::vector<uint8_t> private_key_;
 	std::vector<uint8_t> public_key_;
 
+public: /* pem */
+	std::string pem();
+
 public: /* setter */
 	int8_t setkey(const std::vector<uint8_t> &private_key);
 	int8_t setkey(const std::string &private_key);
@@ -44,7 +47,7 @@ public: /* attack */
 	int8_t calckey(const std::string &public_key, ecdh::attack algorithm);
 
 protected: /* attack */
-	int8_t trial(const ecdh::point *public_key, ecdh::point *private_key);
+	int8_t trial(const ecdh::point *public_key, const ecdh::point *generator, char **scalar);
 
 protected: /* abstract */
 	virtual int8_t decryption(const std::vector<uint8_t> &public_key, std::vector<uint8_t> &shared_key) override final;
