@@ -35,6 +35,10 @@ bool ecdh::point::operator!=(const ecdh::point &rhs) const {
 	return true;
 }
 
+ecdh::point ecdh::point::operator+(const ecdh::point &rhs) const {
+	return ecdh::point(*this) += rhs;
+}
+
 ecdh::point &ecdh::point::operator+=(const ecdh::point &rhs) {
 	if (this->curve_ != rhs.curve_) {
 		LOG_ARGUMENT(curve);
@@ -107,10 +111,6 @@ ecdh::point &ecdh::point::operator+=(const ecdh::point &rhs) {
 	mpz_set(y_, y);
 	mpz_clears(x, y, lambda, num, denom, inverse, tmp, nullptr);
 	return *this;
-}
-
-ecdh::point ecdh::point::operator+(const ecdh::point &rhs) const {
-	return ecdh::point(*this) += rhs;
 }
 
 ecdh::point &ecdh::point::operator=(const ecdh::point &rhs) {
