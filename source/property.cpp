@@ -45,6 +45,7 @@ property_singleton::property_singleton() {
 			parser_["decryption"]["rsa"]["pollards-rho-iteration"] = 1000000;
 			parser_["decryption"]["rsa"]["pollards-p1-iteration"] = 100000;
 			parser_["decryption"]["rsa"]["williams-p1-iteration"] = 100000;
+			parser_["decryption"]["ecdh"]["trial-iteration"] = 1000000;
 			parser_["optimization"]["thread-max"] = 8;
 			parser_["optimization"]["derivative-step"] = 1.000E-5;
 			parser_["optimization"]["damp-step"] = 1.000E-3;
