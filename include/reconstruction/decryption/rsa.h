@@ -9,7 +9,7 @@ enum class attack : uint8_t {
 	pollards_p1 = 3,
 	williams_p1 = 4,
 };
-};
+}; // namespace rsa
 
 class decryption_rsa : public decryption_abstract {
 protected: /* parameter */
