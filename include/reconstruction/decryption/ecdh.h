@@ -20,8 +20,8 @@ struct point {
 	curve *curve_;
 	bool operator==(const point &rhs) const;
 	bool operator!=(const point &rhs) const;
-	point &operator+=(const point &rhs);
 	point operator+(const point &rhs) const;
+	point &operator+=(const point &rhs);
 	point &operator=(const point &rhs);
 	point(const point &rhs);
 	point(BIGNUM *x, BIGNUM *y, curve *curve);
