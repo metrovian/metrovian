@@ -445,7 +445,7 @@ cleanup:
 	if (point_private) delete point_private;
 	// clang-format on
 	LOG_EXIT();
-	return 0;
+	return retcode;
 }
 
 int8_t decryption_ecdh::trial(const ecdh::point *public_key, const ecdh::point *generator, char **scalar) {
