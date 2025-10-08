@@ -20,8 +20,8 @@ protected: /* parameter */
 	std::string private_pem_;
 
 public: /* abstract */
-	virtual void setup(CLI::App *parent) override;
-	virtual void run() override;
+	virtual void setup(CLI::App *parent) override final;
+	virtual void run() override final;
 };
 
 class command_rsa_public : public command_rsa {
