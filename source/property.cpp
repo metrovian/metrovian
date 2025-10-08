@@ -31,28 +31,47 @@ property_singleton &property_singleton::instance() {
 	return instance_;
 }
 
+void property_singleton::load_default() {
+	default_["decryption"]["rsa"]["trial-iteration"] = 1000000;
+	default_["decryption"]["rsa"]["fermat-iteration"] = 1000000;
+	default_["decryption"]["rsa"]["pollards-rho-iteration"] = 1000000;
+	default_["decryption"]["rsa"]["pollards-p1-iteration"] = 100000;
+	default_["decryption"]["rsa"]["williams-p1-iteration"] = 100000;
+	default_["decryption"]["ecdh"]["trial-iteration"] = 1000000;
+	default_["optimization"]["thread-max"] = 8;
+	default_["optimization"]["derivative-step"] = 1.000E-5;
+	default_["optimization"]["damp-step"] = 1.000E-3;
+	default_["optimization"]["increase-step"] = 1.000E+1;
+	default_["optimization"]["decrease-step"] = 1.000E+1;
+}
+
+void property_singleton::merge_default(nlohmann::ordered_json &target, const nlohmann::ordered_json &source) {
+	for (auto &[key, value] : source.items()) {
+		if (target.contains(key) == false) {
+			target[key] = value;
+		} else if (target[key].is_object() == true) {
+			if (value.is_object() == true) {
+				merge_default(target[key], value);
+			}
+		}
+	}
+}
+
 property_singleton::property_singleton() {
+	load_default();
 	std::string path = std::string(std::getenv("HOME")) + PATH_PROPERTY;
 	std::ifstream ifs(path);
 	if (ifs.is_open() == true) {
 		ifs >> parser_;
 		ifs.close();
 	} else {
-		std::ofstream ofs(path);
-		if (ofs.is_open() == true) {
-			parser_["decryption"]["rsa"]["trial-iteration"] = 1000000;
-			parser_["decryption"]["rsa"]["fermat-iteration"] = 1000000;
-			parser_["decryption"]["rsa"]["pollards-rho-iteration"] = 1000000;
-			parser_["decryption"]["rsa"]["pollards-p1-iteration"] = 100000;
-			parser_["decryption"]["rsa"]["williams-p1-iteration"] = 100000;
-			parser_["decryption"]["ecdh"]["trial-iteration"] = 1000000;
-			parser_["optimization"]["thread-max"] = 8;
-			parser_["optimization"]["derivative-step"] = 1.000E-5;
-			parser_["optimization"]["damp-step"] = 1.000E-3;
-			parser_["optimization"]["increase-step"] = 1.000E+1;
-			parser_["optimization"]["decrease-step"] = 1.000E+1;
-			ofs << parser_.dump(8);
-			ofs.close();
-		}
+		parser_ = default_;
+	}
+
+	merge_default(parser_, default_);
+	std::ofstream ofs(path);
+	if (ofs.is_open() == true) {
+		ofs << parser_.dump(8);
+		ofs.close();
 	}
 }
