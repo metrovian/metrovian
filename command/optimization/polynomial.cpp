@@ -1,4 +1,4 @@
-#include "command/optimization/polynomial.h"
+#include "optimization/polynomial.h"
 #include "reconstruction/optimization/polynomial.h"
 #include "predefined.h"
 

@@ -1,6 +1,6 @@
 #pragma once
-#include "command/abstract.h"
-#include "command/optimization/user.h"
+#include "abstract.h"
+#include "optimization/user.h"
 
 namespace transcendental {
 enum class function : uint8_t;

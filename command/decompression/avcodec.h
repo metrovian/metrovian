@@ -1,10 +1,9 @@
 #pragma once
-#include "command/abstract.h"
-#include "command/optimization/user.h"
+#include "abstract.h"
 
-class command_polynomial : public command_user {
+class command_avcodec : public command_abstract {
 protected: /* parameter */
-	uint8_t model_;
+	std::string in_;
 
 public: /* abstract */
 	virtual void setup(CLI::App *parent) override final;

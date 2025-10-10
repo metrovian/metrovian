@@ -1,9 +1,10 @@
 #pragma once
-#include "command/abstract.h"
+#include "abstract.h"
+#include "optimization/user.h"
 
-class command_avcodec : public command_abstract {
+class command_rational : public command_user {
 protected: /* parameter */
-	std::string in_;
+	std::vector<uint8_t> model_;
 
 public: /* abstract */
 	virtual void setup(CLI::App *parent) override final;

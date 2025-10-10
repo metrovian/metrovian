@@ -1,4 +1,4 @@
-#include "command/abstract.h"
+#include "abstract.h"
 #include "predefined.h"
 
 int8_t command_abstract::read_binary(const std::string &path, std::vector<uint8_t> &binary) {

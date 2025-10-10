@@ -1,4 +1,4 @@
-#include "command/decryption/rsa.h"
+#include "decryption/rsa.h"
 #include "reconstruction/decryption/rsa.h"
 #include "predefined.h"
 
