@@ -1,10 +1,10 @@
-#include "command/optimization/user.h"
-#include "reconstruction/optimization/user.h"
+#include "optimization/rational.h"
+#include "reconstruction/optimization/rational.h"
 #include "predefined.h"
 
-void command_user::setup(CLI::App *parent) {
-	auto command = parent->add_subcommand("user", "USER optimization")->group("OPTIMIZATION");
-	command->add_option("-f, --func", function_, "user-defined function")->required();
+void command_rational::setup(CLI::App *parent) {
+	auto command = parent->add_subcommand("rational", "RATIONAL optimization")->group("OPTIMIZATION");
+	command->add_option("-f, --func", model_, "rational-approximated function")->required()->expected(2);
 	command->add_option("-i, --in", in_, "measured csv");
 	command->add_option("-n, --iter", iter_, "iteration max")->default_val<size_t>(1000);
 	command->add_option("-e, --eps", eps_, "iteration epsilon")->default_val<double>(1.000E-15);
@@ -13,9 +13,9 @@ void command_user::setup(CLI::App *parent) {
 	return;
 }
 
-void command_user::run() {
-	optimization_user engine;
-	if (engine.import_function(function_).length() > 0) {
+void command_rational::run() {
+	optimization_rational engine;
+	if (engine.import_function(model_).length() > 0) {
 		Eigen::VectorXd domain;
 		Eigen::VectorXd range;
 		Eigen::VectorXd params = engine.export_parameters();

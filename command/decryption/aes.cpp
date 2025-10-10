@@ -1,4 +1,4 @@
-#include "command/decryption/aes.h"
+#include "decryption/aes.h"
 #include "reconstruction/decryption/aes.h"
 #include "predefined.h"
 

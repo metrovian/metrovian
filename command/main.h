@@ -1,5 +1,5 @@
 #pragma once
-#include "command/abstract.h"
+#include "abstract.h"
 
 class interface_singleton {
 protected: /* command parser */

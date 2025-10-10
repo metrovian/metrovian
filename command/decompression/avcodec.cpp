@@ -1,4 +1,4 @@
-#include "command/decompression/avcodec.h"
+#include "decompression/avcodec.h"
 #include "reconstruction/decompression/avcodec.h"
 #include "predefined.h"
 

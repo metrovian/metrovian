@@ -1,4 +1,4 @@
-#include "command/decryption/ecdh.h"
+#include "decryption/ecdh.h"
 #include "reconstruction/decryption/ecdh.h"
 #include "predefined.h"
 
