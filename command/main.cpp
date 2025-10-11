@@ -4,7 +4,6 @@
 #include "optimization/sinusoidal.h"
 #include "optimization/transcendental.h"
 #include "optimization/user.h"
-#include "decryption/aes.h"
 #include "decryption/rsa.h"
 #include "decryption/ecdh.h"
 #include "decompression/avcodec.h"
