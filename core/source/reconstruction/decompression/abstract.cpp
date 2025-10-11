@@ -142,7 +142,7 @@ void decompression_abstract::decompress(const std::string &path) {
 	producer_thread_.join();
 	consumer_thread_.join();
 	queue_state_.store(0);
-	close(avcodec_params);
+	close();
 	avformat_close_input(&avformat_ctx);
 	LOG_EXIT();
 	return;

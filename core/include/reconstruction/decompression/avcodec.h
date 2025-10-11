@@ -8,6 +8,6 @@ protected: /* context */
 
 protected: /* abstract */
 	virtual int8_t open(AVCodecParameters *params) override final;
-	virtual int8_t close(AVCodecParameters *params) override final;
+	virtual int8_t close() override final;
 	virtual std::vector<uint8_t> decompression(const std::vector<uint8_t> &payload, AVCodecParameters *params) override final;
 };

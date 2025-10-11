@@ -38,7 +38,7 @@ Eigen::VectorXd optimization_abstract::import_parameters(const Eigen::VectorXd &
 double optimization_abstract::residual(const double domain, const double range) {
 	mu::Parser parser;
 	parser.DefineVar("t", const_cast<double *>(&domain));
-	for (size_t i = 0; i < params_.size(); ++i) {
+	for (Eigen::Index i = 0; i < params_.size(); ++i) {
 		parser.DefineVar("c" + std::to_string(i), &params_[i]);
 	}
 
@@ -49,7 +49,7 @@ double optimization_abstract::residual(const double domain, const double range) 
 double optimization_abstract::residual(const double domain, const double range, const Eigen::VectorXd &params) {
 	mu::Parser parser;
 	parser.DefineVar("t", const_cast<double *>(&domain));
-	for (size_t i = 0; i < params.size(); ++i) {
+	for (Eigen::Index i = 0; i < params.size(); ++i) {
 		parser.DefineVar("c" + std::to_string(i), const_cast<double *>(&params[i]));
 	}
 
@@ -59,7 +59,7 @@ double optimization_abstract::residual(const double domain, const double range, 
 
 Eigen::VectorXd optimization_abstract::residual(const Eigen::VectorXd &domain, const Eigen::VectorXd &range) {
 	Eigen::VectorXd residuals(domain.size());
-	for (size_t i = 0; i < domain.size(); ++i) {
+	for (Eigen::Index i = 0; i < domain.size(); ++i) {
 		residuals[i] = residual(domain[i], range[i]);
 	}
 
@@ -68,7 +68,7 @@ Eigen::VectorXd optimization_abstract::residual(const Eigen::VectorXd &domain, c
 
 Eigen::VectorXd optimization_abstract::residual(const Eigen::VectorXd &domain, const Eigen::VectorXd &range, const Eigen::VectorXd &params) {
 	Eigen::VectorXd residuals(domain.size());
-	for (size_t i = 0; i < domain.size(); ++i) {
+	for (Eigen::Index i = 0; i < domain.size(); ++i) {
 		residuals[i] = residual(domain[i], range[i], params);
 	}
 
@@ -144,10 +144,10 @@ Eigen::VectorXd optimization_abstract::calibrate(const Eigen::VectorXd &domain, 
 Eigen::VectorXd optimization_abstract::estimate(const Eigen::VectorXd &domain) {
 	LOG_ENTER();
 	Eigen::VectorXd estimation(domain.size());
-	for (size_t i = 0; i < domain.size(); ++i) {
+	for (Eigen::Index i = 0; i < domain.size(); ++i) {
 		mu::Parser parser;
 		parser.DefineVar("x", const_cast<double *>(&domain[i]));
-		for (size_t j = 0; j < params_.size(); ++j) {
+		for (Eigen::Index j = 0; j < params_.size(); ++j) {
 			parser.DefineVar("c" + std::to_string(j + 1), &params_[j]);
 		}
 

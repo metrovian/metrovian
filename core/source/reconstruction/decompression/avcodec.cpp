@@ -29,7 +29,7 @@ int8_t decompression_avcodec::open(AVCodecParameters *params) {
 	return 0;
 }
 
-int8_t decompression_avcodec::close(AVCodecParameters *params) {
+int8_t decompression_avcodec::close() {
 	avcodec_free_context(&avcodec_ctx_);
 	return 0;
 }
