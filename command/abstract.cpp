@@ -97,7 +97,7 @@ int8_t command_abstract::write_vector(const std::string &path, Eigen::VectorXd &
 		return -2;
 	}
 
-	for (size_t i = 0; i < domain.size(); ++i) {
+	for (Eigen::Index i = 0; i < domain.size(); ++i) {
 		ofs << domain[i] << delimiter << range[i] << std::endl;
 	}
 

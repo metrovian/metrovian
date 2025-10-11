@@ -47,6 +47,6 @@ public: /* abstract */
 
 protected: /* abstract */
 	virtual int8_t open(AVCodecParameters *params) = 0;
-	virtual int8_t close(AVCodecParameters *params) = 0;
+	virtual int8_t close() = 0;
 	virtual std::vector<uint8_t> decompression(const std::vector<uint8_t> &payload, AVCodecParameters *params) = 0;
 };
