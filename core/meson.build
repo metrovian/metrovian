@@ -1,0 +1,27 @@
+# metrovian core
+src_core = files(
+  'source/operation/desa.cpp',
+  'source/reconstruction/decompression/abstract.cpp',
+  'source/reconstruction/decompression/avcodec.cpp',
+  'source/reconstruction/decryption/abstract.cpp',
+  'source/reconstruction/decryption/aes.cpp',
+  'source/reconstruction/decryption/ecdh.cpp',
+  'source/reconstruction/decryption/rsa.cpp',
+  'source/reconstruction/optimization/abstract.cpp',
+  'source/reconstruction/optimization/polynomial.cpp',
+  'source/reconstruction/optimization/rational.cpp',
+  'source/reconstruction/optimization/sinusoidal.cpp',
+  'source/reconstruction/optimization/transcendental.cpp',
+  'source/reconstruction/optimization/user.cpp',
+  'source/property.cpp')
+
+lib_core = static_library(
+  'metrovian-core',
+  src_core,
+  include_directories: inc_core,
+  dependencies: dep_common)
+
+dep_core = declare_dependency(
+  link_with: lib_core,
+  include_directories: inc_core,
+  dependencies: dep_common)
