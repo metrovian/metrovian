@@ -27,5 +27,5 @@ protected: /* operation */
 	    const Eigen::VectorXd &frequency,
 	    const Eigen::VectorXcd &spectrum,
 	    Eigen::VectorXd &domain,
-	    Eigen::VectorXcd &range);
+	    Eigen::VectorXcd &range) override final;
 };
