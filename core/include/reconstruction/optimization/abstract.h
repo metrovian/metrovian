@@ -40,7 +40,7 @@ public: /* calibration */
 	Eigen::VectorXd estimate(const Eigen::VectorXd &domain);
 
 public: /* abstract */
-	~optimization_abstract() {}
+	virtual ~optimization_abstract() {}
 
 protected: /* abstract */
 	virtual double step_derivative();
