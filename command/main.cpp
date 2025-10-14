@@ -24,7 +24,7 @@ void interface_singleton::load_command_parser() {
 	auto formatter = std::make_shared<CLI::Formatter>();
 	formatter->column_width(40);
 	command_parser_.formatter(formatter);
-	command_parser_.get_option("--help")->description("HELP command");
+	command_parser_.get_option("--help")->description("");
 }
 
 void interface_singleton::load_stdout() {
