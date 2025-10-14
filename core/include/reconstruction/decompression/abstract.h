@@ -8,6 +8,7 @@
 #include <mutex>
 #include <queue>
 #include <thread>
+#include <fstream>
 #include <sstream>
 #include <string>
 #include <stdint.h>
@@ -38,6 +39,7 @@ protected: /* playback queue */
 
 public: /* overload */
 	void decompress(const std::string &path);
+	void decompress(const std::string &path, const std::string &record);
 
 public: /* constructor */
 	decompression_abstract();

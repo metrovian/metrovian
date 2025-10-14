@@ -4,6 +4,7 @@
 class command_avcodec : public command_abstract {
 protected: /* parameter */
 	std::string in_;
+	std::string out_;
 
 public: /* abstract */
 	virtual void setup(CLI::App *parent) override final;
