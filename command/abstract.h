@@ -22,7 +22,7 @@ protected: /* subcommand */
 	int8_t select_subcommand();
 
 public: /* abstract */
-	~command_abstract() {}
+	virtual ~command_abstract() {}
 
 public: /* abstract */
 	virtual void setup(CLI::App *parent) = 0;
