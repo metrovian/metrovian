@@ -6,7 +6,6 @@ src_core = files(
   'source/reconstruction/decompression/abstract.cpp',
   'source/reconstruction/decompression/avcodec.cpp',
   'source/reconstruction/decryption/abstract.cpp',
-  'source/reconstruction/decryption/aes.cpp',
   'source/reconstruction/decryption/ecdh.cpp',
   'source/reconstruction/decryption/rsa.cpp',
   'source/reconstruction/optimization/abstract.cpp',
