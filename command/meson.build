@@ -15,4 +15,6 @@ executable(
   'metrovian',
   src_command,
   include_directories: inc_core,
-  dependencies: [dep_core])
+  dependencies: [dep_core],
+  install : true, 
+  install_dir : '/usr/local/bin/')
