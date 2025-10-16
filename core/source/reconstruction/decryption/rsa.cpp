@@ -578,11 +578,10 @@ int8_t decryption_rsa::decryption(const std::vector<uint8_t> &cipher, std::vecto
 		return -2;
 	}
 
-	int32_t pkey_bits = EVP_PKEY_get_bits(pkey);
-	if (EVP_PKEY_decrypt_init(ctx) <= 0) {
+	if (EVP_PKEY_sign_init(ctx) <= 0) {
 		EVP_PKEY_CTX_free(ctx);
 		EVP_PKEY_free(pkey);
-		LOG_CONDITION(EVP_PKEY_decrypt_init <= 0);
+		LOG_CONDITION(EVP_PKEY_sign_init <= 0);
 		LOG_EXIT();
 		return -3;
 	}
@@ -590,34 +589,34 @@ int8_t decryption_rsa::decryption(const std::vector<uint8_t> &cipher, std::vecto
 	if (EVP_PKEY_CTX_set_rsa_padding(ctx, RSA_PKCS1_PADDING) <= 0) {
 		EVP_PKEY_CTX_free(ctx);
 		EVP_PKEY_free(pkey);
-		LOG_CONDITION(EVP_PKEY_CTX_set_rsa_padding(RSA_PKCS1_PADDING) <= 0);
+		LOG_CONDITION(EVP_PKEY_CTX_set_rsa_padding <= 0);
 		LOG_EXIT();
 		return -4;
 	}
 
-	size_t len_update = 0;
-	if (EVP_PKEY_decrypt(ctx, nullptr, &len_update, cipher.data(), cipher.size()) <= 0) {
+	size_t len_sign = 0;
+	if (EVP_PKEY_sign(ctx, nullptr, &len_sign, cipher.data(), cipher.size()) <= 0) {
 		EVP_PKEY_CTX_free(ctx);
 		EVP_PKEY_free(pkey);
-		LOG_CONDITION(EVP_PKEY_decrypt <= 0);
+		LOG_CONDITION(EVP_PKEY_sign <= 0);
 		LOG_EXIT();
 		return -5;
 	}
 
-	plain.resize(len_update);
-	if (EVP_PKEY_decrypt(ctx, plain.data(), &len_update, cipher.data(), cipher.size()) <= 0) {
+	plain.resize(len_sign);
+	if (EVP_PKEY_sign(ctx, plain.data(), &len_sign, cipher.data(), cipher.size()) <= 0) {
 		EVP_PKEY_CTX_free(ctx);
 		EVP_PKEY_free(pkey);
-		LOG_CONDITION(EVP_PKEY_decrypt <= 0);
+		LOG_CONDITION(EVP_PKEY_sign <= 0);
 		LOG_EXIT();
 		return -6;
 	}
 
-	plain.resize(len_update);
+	plain.resize(len_sign);
 	EVP_PKEY_CTX_free(ctx);
 	EVP_PKEY_free(pkey);
-	spdlog::debug("rsa-{} cipher: \"{}\"", pkey_bits, base64(cipher));
-	spdlog::debug("rsa-{} plain:  \"{}\"", pkey_bits, base64(plain));
+	spdlog::debug("rsa cipher: \"{}\"", base64(cipher));
+	spdlog::debug("rsa plain:  \"{}\"", base64(plain));
 	LOG_EXIT();
 	return 0;
 }

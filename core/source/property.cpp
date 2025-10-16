@@ -37,7 +37,7 @@ void property_singleton::load_default() {
 	default_["decryption"]["rsa"]["pollards-rho-iteration"] = 1000000;
 	default_["decryption"]["rsa"]["pollards-p1-iteration"] = 100000;
 	default_["decryption"]["rsa"]["williams-p1-iteration"] = 100000;
-	default_["decryption"]["ecdh"]["trial-iteration"] = 1000000;
+	default_["decryption"]["ecdsa"]["trial-iteration"] = 1000000;
 	default_["optimization"]["thread-max"] = 8;
 	default_["optimization"]["derivative-step"] = 1.000E-5;
 	default_["optimization"]["damp-step"] = 1.000E-3;

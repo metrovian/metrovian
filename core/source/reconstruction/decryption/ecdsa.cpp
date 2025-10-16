@@ -1,8 +1,8 @@
-#include "reconstruction/decryption/ecdh.h"
+#include "reconstruction/decryption/ecdsa.h"
 #include "property.h"
 #include "predefined.h"
 
-ecdh::curve::curve(BIGNUM *p, BIGNUM *a, BIGNUM *b) {
+ecdsa::curve::curve(BIGNUM *p, BIGNUM *a, BIGNUM *b) {
 	char *p_hexstr = BN_bn2hex(p);
 	char *a_hexstr = BN_bn2hex(a);
 	char *b_hexstr = BN_bn2hex(b);
@@ -15,15 +15,15 @@ ecdh::curve::curve(BIGNUM *p, BIGNUM *a, BIGNUM *b) {
 	OPENSSL_free(b_hexstr);
 }
 
-ecdh::curve::~curve() {
+ecdsa::curve::~curve() {
 	mpz_clears(p_, a_, b_, nullptr);
 }
 
-bool ecdh::point::operator==(const ecdh::point &rhs) const {
+bool ecdsa::point::operator==(const ecdsa::point &rhs) const {
 	return !(*this != rhs);
 }
 
-bool ecdh::point::operator!=(const ecdh::point &rhs) const {
+bool ecdsa::point::operator!=(const ecdsa::point &rhs) const {
 	if (mpz_cmp(x_, rhs.x_) == 0) {
 		if (mpz_cmp(y_, rhs.y_) == 0) {
 			if (curve_ == rhs.curve_) {
@@ -35,11 +35,11 @@ bool ecdh::point::operator!=(const ecdh::point &rhs) const {
 	return true;
 }
 
-ecdh::point ecdh::point::operator+(const ecdh::point &rhs) const {
-	return ecdh::point(*this) += rhs;
+ecdsa::point ecdsa::point::operator+(const ecdsa::point &rhs) const {
+	return ecdsa::point(*this) += rhs;
 }
 
-ecdh::point &ecdh::point::operator+=(const ecdh::point &rhs) {
+ecdsa::point &ecdsa::point::operator+=(const ecdsa::point &rhs) {
 	if (this->curve_ != rhs.curve_) {
 		LOG_ARGUMENT(curve);
 		return *this;
@@ -113,21 +113,21 @@ ecdh::point &ecdh::point::operator+=(const ecdh::point &rhs) {
 	return *this;
 }
 
-ecdh::point &ecdh::point::operator=(const ecdh::point &rhs) {
+ecdsa::point &ecdsa::point::operator=(const ecdsa::point &rhs) {
 	mpz_set(x_, rhs.x_);
 	mpz_set(y_, rhs.y_);
 	curve_ = rhs.curve_;
 	return *this;
 }
 
-ecdh::point::point(const ecdh::point &rhs) {
+ecdsa::point::point(const ecdsa::point &rhs) {
 	mpz_inits(x_, y_, nullptr);
 	mpz_set(x_, rhs.x_);
 	mpz_set(y_, rhs.y_);
 	curve_ = rhs.curve_;
 }
 
-ecdh::point::point(BIGNUM *x, BIGNUM *y, ecdh::curve *curve) {
+ecdsa::point::point(BIGNUM *x, BIGNUM *y, ecdsa::curve *curve) {
 	char *x_hexstr = BN_bn2hex(x);
 	char *y_hexstr = BN_bn2hex(y);
 	mpz_inits(x_, y_, nullptr);
@@ -138,18 +138,18 @@ ecdh::point::point(BIGNUM *x, BIGNUM *y, ecdh::curve *curve) {
 	OPENSSL_free(y_hexstr);
 }
 
-ecdh::point::point() {
+ecdsa::point::point() {
 	mpz_inits(x_, y_, nullptr);
 	mpz_set_ui(x_, 0);
 	mpz_set_ui(y_, 0);
 	curve_ = nullptr;
 }
 
-ecdh::point::~point() {
+ecdsa::point::~point() {
 	mpz_clears(x_, y_, nullptr);
 }
 
-std::string decryption_ecdh::pem() {
+std::string decryption_ecdsa::pem() {
 	LOG_ENTER();
 	const uint8_t *ptr = private_key_.data();
 	EVP_PKEY *pkey = d2i_PrivateKey(EVP_PKEY_EC, nullptr, &ptr, private_key_.size());
@@ -192,7 +192,7 @@ std::string decryption_ecdh::pem() {
 	return pem_key;
 }
 
-int8_t decryption_ecdh::setkey(const std::vector<uint8_t> &private_key) {
+int8_t decryption_ecdsa::setkey(const std::vector<uint8_t> &private_key) {
 	LOG_ENTER();
 	const uint8_t *ptr = private_key.data();
 	EVP_PKEY *pkey = d2i_AutoPrivateKey(nullptr, &ptr, static_cast<int64_t>(private_key.size()));
@@ -230,7 +230,7 @@ int8_t decryption_ecdh::setkey(const std::vector<uint8_t> &private_key) {
 	return 0;
 }
 
-int8_t decryption_ecdh::setkey(const std::string &private_key) {
+int8_t decryption_ecdsa::setkey(const std::string &private_key) {
 	BIO *bio = BIO_new_mem_buf(private_key.data(), static_cast<int32_t>(private_key.size()));
 	if (bio == nullptr) {
 		LOG_CONDITION(BIO_new_mem_buf == nullptr);
@@ -269,11 +269,11 @@ int8_t decryption_ecdh::setkey(const std::string &private_key) {
 	return 0;
 }
 
-int8_t decryption_ecdh::calckey(const std::vector<uint8_t> &public_key, ecdh::attack algorithm) {
+int8_t decryption_ecdsa::calckey(const std::vector<uint8_t> &public_key, ecdsa::attack algorithm) {
 	return calckey(base64(public_key), algorithm);
 }
 
-int8_t decryption_ecdh::calckey(const std::string &public_key, ecdh::attack algorithm) {
+int8_t decryption_ecdsa::calckey(const std::string &public_key, ecdsa::attack algorithm) {
 	LOG_ENTER();
 	int8_t retcode = 0;
 	BIO *bio = nullptr;
@@ -281,17 +281,17 @@ int8_t decryption_ecdh::calckey(const std::string &public_key, ecdh::attack algo
 	EVP_PKEY_CTX *ctx_private = nullptr;
 	EVP_PKEY *pkey_public = nullptr;
 	EVP_PKEY *pkey_private = nullptr;
-	BIGNUM *d_ecdh = nullptr;
-	BIGNUM *p_ecdh = nullptr;
-	BIGNUM *a_ecdh = nullptr;
-	BIGNUM *b_ecdh = nullptr;
-	BIGNUM *px_ecdh = nullptr;
-	BIGNUM *py_ecdh = nullptr;
-	BIGNUM *gx_ecdh = nullptr;
-	BIGNUM *gy_ecdh = nullptr;
-	uint8_t *g_ecdh = nullptr;
+	BIGNUM *d_ecdsa = nullptr;
+	BIGNUM *p_ecdsa = nullptr;
+	BIGNUM *a_ecdsa = nullptr;
+	BIGNUM *b_ecdsa = nullptr;
+	BIGNUM *px_ecdsa = nullptr;
+	BIGNUM *py_ecdsa = nullptr;
+	BIGNUM *gx_ecdsa = nullptr;
+	BIGNUM *gy_ecdsa = nullptr;
+	uint8_t *g_ecdsa = nullptr;
 	uint8_t *pub_oct = nullptr;
-	size_t len_ecdh = 0;
+	size_t len_ecdsa = 0;
 	size_t len_oct = 0;
 	size_t len_name = 64;
 	OSSL_PARAM_BLD *param_bld = nullptr;
@@ -300,9 +300,9 @@ int8_t decryption_ecdh::calckey(const std::string &public_key, ecdh::attack algo
 	BUF_MEM *buf_mem = nullptr;
 	char *d_hexstr = nullptr;
 	char *curve_name = nullptr;
-	ecdh::curve *curve = nullptr;
-	ecdh::point *point_public = nullptr;
-	ecdh::point *point_private = nullptr;
+	ecdsa::curve *curve = nullptr;
+	ecdsa::point *point_public = nullptr;
+	ecdsa::point *point_private = nullptr;
 	bio = BIO_new_mem_buf(public_key.data(), static_cast<int32_t>(public_key.size()));
 	if (bio == nullptr) {
 		LOG_CONDITION(BIO_new_mem_buf == nullptr);
@@ -324,64 +324,64 @@ int8_t decryption_ecdh::calckey(const std::string &public_key, ecdh::attack algo
 		RETURN_CLEANUP(retcode, -4);
 	}
 
-	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_P, &p_ecdh);
-	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_A, &a_ecdh);
-	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_B, &b_ecdh);
-	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_PUB_X, &px_ecdh);
-	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_PUB_Y, &py_ecdh);
-	if (p_ecdh == nullptr) {
+	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_P, &p_ecdsa);
+	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_A, &a_ecdsa);
+	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_B, &b_ecdsa);
+	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_PUB_X, &px_ecdsa);
+	EVP_PKEY_get_bn_param(pkey_public, OSSL_PKEY_PARAM_EC_PUB_Y, &py_ecdsa);
+	if (p_ecdsa == nullptr) {
 		LOG_CONDITION(EVP_PKEY_get_bn_param(OSSL_PKEY_PARAM_EC_P) == nullptr);
 		RETURN_CLEANUP(retcode, -5);
-	} else if (a_ecdh == nullptr) {
+	} else if (a_ecdsa == nullptr) {
 		LOG_CONDITION(EVP_PKEY_get_bn_param(OSSL_PKEY_PARAM_EC_A) == nullptr);
 		RETURN_CLEANUP(retcode, -6);
-	} else if (b_ecdh == nullptr) {
+	} else if (b_ecdsa == nullptr) {
 		LOG_CONDITION(EVP_PKEY_get_bn_param(OSSL_PKEY_PARAM_EC_B) == nullptr);
 		RETURN_CLEANUP(retcode, -7);
-	} else if (px_ecdh == nullptr) {
+	} else if (px_ecdsa == nullptr) {
 		LOG_CONDITION(EVP_PKEY_get_bn_param(OSSL_PKEY_PARAM_EC_PUB_X) == nullptr);
 		RETURN_CLEANUP(retcode, -8);
-	} else if (py_ecdh == nullptr) {
+	} else if (py_ecdsa == nullptr) {
 		LOG_CONDITION(EVP_PKEY_get_bn_param(OSSL_PKEY_PARAM_EC_PUB_Y) == nullptr);
 		RETURN_CLEANUP(retcode, -9);
 	}
 
-	if (EVP_PKEY_get_octet_string_param(pkey_public, OSSL_PKEY_PARAM_EC_GENERATOR, nullptr, 0, &len_ecdh) == 0) {
+	if (EVP_PKEY_get_octet_string_param(pkey_public, OSSL_PKEY_PARAM_EC_GENERATOR, nullptr, 0, &len_ecdsa) == 0) {
 		LOG_CONDITION(EVP_PKEY_get_octet_string_param(OSSL_PKEY_PARAM_EC_GENERATOR) == 0);
 		RETURN_CLEANUP(retcode, -10);
 	}
 
-	g_ecdh = (unsigned char *)OPENSSL_malloc(len_ecdh);
-	if (EVP_PKEY_get_octet_string_param(pkey_public, OSSL_PKEY_PARAM_EC_GENERATOR, g_ecdh, len_ecdh, &len_ecdh) == 0) {
+	g_ecdsa = (unsigned char *)OPENSSL_malloc(len_ecdsa);
+	if (EVP_PKEY_get_octet_string_param(pkey_public, OSSL_PKEY_PARAM_EC_GENERATOR, g_ecdsa, len_ecdsa, &len_ecdsa) == 0) {
 		LOG_CONDITION(EVP_PKEY_get_octet_string_param(OSSL_PKEY_PARAM_EC_GENERATOR) == 0);
 		RETURN_CLEANUP(retcode, -11);
 	}
 
-	gx_ecdh = BN_bin2bn(g_ecdh + 1, (len_ecdh - 1) / 2, nullptr);
-	gy_ecdh = BN_bin2bn(g_ecdh + 1 + (len_ecdh - 1) / 2, (len_ecdh - 1) / 2, nullptr);
-	curve = new ecdh::curve(p_ecdh, a_ecdh, b_ecdh);
-	point_public = new ecdh::point(px_ecdh, py_ecdh, curve);
-	point_private = new ecdh::point(gx_ecdh, gy_ecdh, curve);
+	gx_ecdsa = BN_bin2bn(g_ecdsa + 1, (len_ecdsa - 1) / 2, nullptr);
+	gy_ecdsa = BN_bin2bn(g_ecdsa + 1 + (len_ecdsa - 1) / 2, (len_ecdsa - 1) / 2, nullptr);
+	curve = new ecdsa::curve(p_ecdsa, a_ecdsa, b_ecdsa);
+	point_public = new ecdsa::point(px_ecdsa, py_ecdsa, curve);
+	point_private = new ecdsa::point(gx_ecdsa, gy_ecdsa, curve);
 	// clang-format off
 	switch (algorithm) {
-	case ecdh::attack::trial: trial(point_public, point_private, &d_hexstr); break;
+	case ecdsa::attack::trial: trial(point_public, point_private, &d_hexstr); break;
 	default:
 		LOG_ARGUMENT(algorithm);
 		RETURN_CLEANUP(retcode, -12);
 	}
 	// clang-format on
-	d_ecdh = BN_new();
-	BN_hex2bn(&d_ecdh, d_hexstr);
-	if (BN_is_zero(d_ecdh) == 1) {
+	d_ecdsa = BN_new();
+	BN_hex2bn(&d_ecdsa, d_hexstr);
+	if (BN_is_zero(d_ecdsa) == 1) {
 		LOG_CONDITION(BN_is_zero == 1);
 		RETURN_CLEANUP(retcode, -13);
 	}
 
-	len_oct = (BN_num_bits(px_ecdh) + 7) / 8;
+	len_oct = (BN_num_bits(px_ecdsa) + 7) / 8;
 	pub_oct = (unsigned char *)OPENSSL_malloc(len_oct * 2 + 1);
 	pub_oct[0] = 0x04;
-	BN_bn2binpad(px_ecdh, pub_oct + 1, len_oct);
-	BN_bn2binpad(py_ecdh, pub_oct + 1 + len_oct, len_oct);
+	BN_bn2binpad(px_ecdsa, pub_oct + 1, len_oct);
+	BN_bn2binpad(py_ecdsa, pub_oct + 1 + len_oct, len_oct);
 	curve_name = (char *)OPENSSL_malloc(len_name);
 	if (EVP_PKEY_get_utf8_string_param(pkey_public, OSSL_PKEY_PARAM_GROUP_NAME, curve_name, len_name, &len_name) == 0) {
 		LOG_CONDITION(EVP_PKEY_get_utf8_string_param(OSSL_PKEY_PARAM_GROUP_NAME) == 0);
@@ -390,7 +390,7 @@ int8_t decryption_ecdh::calckey(const std::string &public_key, ecdh::attack algo
 
 	param_bld = OSSL_PARAM_BLD_new();
 	ctx_private = EVP_PKEY_CTX_new_from_name(nullptr, "EC", nullptr);
-	OSSL_PARAM_BLD_push_BN(param_bld, OSSL_PKEY_PARAM_PRIV_KEY, d_ecdh);
+	OSSL_PARAM_BLD_push_BN(param_bld, OSSL_PKEY_PARAM_PRIV_KEY, d_ecdsa);
 	OSSL_PARAM_BLD_push_octet_string(param_bld, OSSL_PKEY_PARAM_PUB_KEY, pub_oct, len_oct * 2 + 1);
 	OSSL_PARAM_BLD_push_utf8_string(param_bld, OSSL_PKEY_PARAM_GROUP_NAME, curve_name, len_name);
 	mem = BIO_new(BIO_s_mem());
@@ -426,15 +426,15 @@ cleanup:
 	if (ctx_private) EVP_PKEY_CTX_free(ctx_private);
 	if (pkey_public) EVP_PKEY_free(pkey_public);
 	if (pkey_private) EVP_PKEY_free(pkey_private);
-	if (d_ecdh) BN_clear_free(d_ecdh);
-	if (p_ecdh) BN_clear_free(p_ecdh);
-	if (a_ecdh) BN_clear_free(a_ecdh);
-	if (b_ecdh) BN_clear_free(b_ecdh);
-	if (px_ecdh) BN_clear_free(px_ecdh);
-	if (py_ecdh) BN_clear_free(py_ecdh);
-	if (gx_ecdh) BN_clear_free(gx_ecdh);
-	if (gy_ecdh) BN_clear_free(gy_ecdh);
-	if (g_ecdh) OPENSSL_free(g_ecdh);
+	if (d_ecdsa) BN_clear_free(d_ecdsa);
+	if (p_ecdsa) BN_clear_free(p_ecdsa);
+	if (a_ecdsa) BN_clear_free(a_ecdsa);
+	if (b_ecdsa) BN_clear_free(b_ecdsa);
+	if (px_ecdsa) BN_clear_free(px_ecdsa);
+	if (py_ecdsa) BN_clear_free(py_ecdsa);
+	if (gx_ecdsa) BN_clear_free(gx_ecdsa);
+	if (gy_ecdsa) BN_clear_free(gy_ecdsa);
+	if (g_ecdsa) OPENSSL_free(g_ecdsa);
 	if (pub_oct) OPENSSL_free(pub_oct);
 	if (param_bld) OSSL_PARAM_BLD_free(param_bld);
 	if (param) OSSL_PARAM_free(param);
@@ -448,14 +448,14 @@ cleanup:
 	return retcode;
 }
 
-int8_t decryption_ecdh::trial(const ecdh::point *public_key, const ecdh::point *generator, char **scalar) {
+int8_t decryption_ecdsa::trial(const ecdsa::point *public_key, const ecdsa::point *generator, char **scalar) {
 	LOG_ENTER();
 	mpz_t d;
 	mpz_init(d);
 	mpz_set_ui(d, 0);
-	ecdh::point point_private = *generator;
-	ecdh::point point_generator = *generator;
-	uint64_t max = std::stoull(property_singleton::instance().parse({"decryption", "ecdh", "trial-iteration"}));
+	ecdsa::point point_private = *generator;
+	ecdsa::point point_generator = *generator;
+	uint64_t max = std::stoull(property_singleton::instance().parse({"decryption", "ecdsa", "trial-iteration"}));
 	for (uint64_t i = 0; i < max; ++i) {
 		if (point_private == *public_key) {
 			mpz_set_ui(d, i + 1);
@@ -471,7 +471,7 @@ int8_t decryption_ecdh::trial(const ecdh::point *public_key, const ecdh::point *
 	return 0;
 }
 
-int8_t decryption_ecdh::decryption(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) {
+int8_t decryption_ecdsa::decryption(const std::vector<uint8_t> &cipher, std::vector<uint8_t> &plain) {
 	LOG_ENTER();
 	const uint8_t *ptr = private_key_.data();
 	EVP_PKEY *pkey = d2i_AutoPrivateKey(nullptr, &ptr, static_cast<int64_t>(private_key_.size()));
@@ -481,68 +481,45 @@ int8_t decryption_ecdh::decryption(const std::vector<uint8_t> &cipher, std::vect
 		return -1;
 	}
 
-	const uint8_t *ptr_peer = cipher.data();
-	EVP_PKEY *pkey_peer = d2i_PUBKEY(nullptr, &ptr_peer, static_cast<int64_t>(cipher.size()));
-	if (pkey_peer == nullptr) {
+	EVP_PKEY_CTX *ctx = EVP_PKEY_CTX_new(pkey, nullptr);
+	if (ctx == nullptr) {
 		EVP_PKEY_free(pkey);
-		LOG_CONDITION(d2i_PUBKEY == nullptr);
+		LOG_CONDITION(EVP_PKEY_CTX_new == nullptr);
 		LOG_EXIT();
 		return -2;
 	}
 
-	EVP_PKEY_CTX *ctx = EVP_PKEY_CTX_new(pkey, nullptr);
-	if (ctx == nullptr) {
+	if (EVP_PKEY_sign_init(ctx) <= 0) {
+		EVP_PKEY_CTX_free(ctx);
 		EVP_PKEY_free(pkey);
-		EVP_PKEY_free(pkey_peer);
-		LOG_CONDITION(EVP_PKEY_CTX_new == nullptr);
+		LOG_CONDITION(EVP_PKEY_sign_init <= 0);
 		LOG_EXIT();
 		return -3;
 	}
 
-	if (EVP_PKEY_derive_init(ctx) <= 0) {
+	size_t len_sign = 0;
+	if (EVP_PKEY_sign(ctx, nullptr, &len_sign, cipher.data(), cipher.size()) <= 0) {
 		EVP_PKEY_CTX_free(ctx);
 		EVP_PKEY_free(pkey);
-		EVP_PKEY_free(pkey_peer);
-		LOG_CONDITION(EVP_PKEY_derive_init <= 0);
+		LOG_CONDITION(EVP_PKEY_sign <= 0);
 		LOG_EXIT();
 		return -4;
 	}
 
-	if (EVP_PKEY_derive_set_peer(ctx, pkey_peer) <= 0) {
+	plain.resize(len_sign);
+	if (EVP_PKEY_sign(ctx, plain.data(), &len_sign, cipher.data(), cipher.size()) <= 0) {
 		EVP_PKEY_CTX_free(ctx);
 		EVP_PKEY_free(pkey);
-		EVP_PKEY_free(pkey_peer);
-		LOG_CONDITION(EVP_PKEY_derive_set_peer <= 0);
+		LOG_CONDITION(EVP_PKEY_sign <= 0);
 		LOG_EXIT();
 		return -5;
 	}
 
-	size_t len_derive = 0;
-	if (EVP_PKEY_derive(ctx, nullptr, &len_derive) <= 0) {
-		EVP_PKEY_CTX_free(ctx);
-		EVP_PKEY_free(pkey);
-		EVP_PKEY_free(pkey_peer);
-		LOG_CONDITION(EVP_PKEY_derive <= 0);
-		LOG_EXIT();
-		return -6;
-	}
-
-	plain.resize(len_derive);
-	if (EVP_PKEY_derive(ctx, plain.data(), &len_derive) <= 0) {
-		EVP_PKEY_CTX_free(ctx);
-		EVP_PKEY_free(pkey);
-		EVP_PKEY_free(pkey_peer);
-		LOG_CONDITION(EVP_PKEY_derive <= 0);
-		LOG_EXIT();
-		return -7;
-	}
-
-	plain.resize(len_derive);
+	plain.resize(len_sign);
 	EVP_PKEY_CTX_free(ctx);
 	EVP_PKEY_free(pkey);
-	EVP_PKEY_free(pkey_peer);
-	spdlog::debug("ecdh cipher: \"{}\"", base64(cipher));
-	spdlog::debug("ecdh plain: \"{}\"", base64(plain));
+	spdlog::debug("ecdsa cipher: \"{}\"", base64(cipher));
+	spdlog::debug("ecdsa plain:  \"{}\"", base64(plain));
 	LOG_EXIT();
 	return 0;
 }
