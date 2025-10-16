@@ -1,7 +1,7 @@
 # metrovian command
 src_command = files(
   'decompression/avcodec.cpp',
-  'decryption/ecdh.cpp',
+  'decryption/ecdsa.cpp',
   'decryption/rsa.cpp',
   'optimization/polynomial.cpp',
   'optimization/rational.cpp',

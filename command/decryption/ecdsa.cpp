@@ -1,16 +1,16 @@
-#include "decryption/ecdh.h"
-#include "reconstruction/decryption/ecdh.h"
+#include "decryption/ecdsa.h"
+#include "reconstruction/decryption/ecdsa.h"
 #include "predefined.h"
 
-void command_ecdh::setup(CLI::App *parent) {
-	command_parser_ = parent->add_subcommand("ecdh", "ECDH decryption")->group("DECRYPTION");
+void command_ecdsa::setup(CLI::App *parent) {
+	command_parser_ = parent->add_subcommand("ecdsa", "ECDSA decryption")->group("DECRYPTION");
 	command_parser_->callback([this]() { run(); });
-	setup_subcommand(std::make_unique<command_ecdh_private>());
-	setup_subcommand(std::make_unique<command_ecdh_public>());
+	setup_subcommand(std::make_unique<command_ecdsa_private>());
+	setup_subcommand(std::make_unique<command_ecdsa_public>());
 	return;
 }
 
-void command_ecdh::run() {
+void command_ecdsa::run() {
 	if (select_subcommand() == 0) {
 		throw CLI::CallForHelp();
 	}
@@ -18,8 +18,8 @@ void command_ecdh::run() {
 	return;
 }
 
-void command_ecdh_private::setup(CLI::App *parent) {
-	auto command = parent->add_subcommand("private", "ECDH decryption")->group("DECRYPTION");
+void command_ecdsa_private::setup(CLI::App *parent) {
+	auto command = parent->add_subcommand("private", "ECDSA decryption")->group("DECRYPTION");
 	command->add_option("-p, --pem", private_pem_, "private pem")->required();
 	command->add_option("-i, --in", in_, "ciphertext binary")->required();
 	command->add_option("-o, --out", out_, "plaintext binary")->required();
@@ -27,8 +27,8 @@ void command_ecdh_private::setup(CLI::App *parent) {
 	return;
 }
 
-void command_ecdh_private::run() {
-	decryption_ecdh engine;
+void command_ecdsa_private::run() {
+	decryption_ecdsa engine;
 	std::string private_key;
 	if (read_text(private_pem_, private_key) == 0) {
 		if (engine.setkey(private_key) == 0) {
@@ -46,19 +46,19 @@ void command_ecdh_private::run() {
 	}
 }
 
-void command_ecdh_public::setup(CLI::App *parent) {
-	auto command = parent->add_subcommand("public", "ECDH-EXPLOIT decryption");
+void command_ecdsa_public::setup(CLI::App *parent) {
+	auto command = parent->add_subcommand("public", "ECDSA-EXPLOIT decryption");
 	command->add_option("-p, --pem", public_pem_, "public pem")->required();
 	command->add_option("-m, --method", method_, "attack method")->required();
 	command->add_option("-i, --in", in_, "ciphertext binary");
 	command->add_option("-o, --out", out_, "plaintext binary")->required();
 	command->callback([this]() { run(); });
-	map_.insert(std::make_pair<std::string, ecdh::attack>("trial", ecdh::attack::trial));
+	map_.insert(std::make_pair<std::string, ecdsa::attack>("trial", ecdsa::attack::trial));
 }
 
-void command_ecdh_public::run() {
+void command_ecdsa_public::run() {
 	if (map_.find(method_) != map_.end()) {
-		decryption_ecdh engine;
+		decryption_ecdsa engine;
 		std::string public_key;
 		if (read_text(public_pem_, public_key) == 0) {
 			if (engine.calckey(public_key, map_[method_]) == 0) {

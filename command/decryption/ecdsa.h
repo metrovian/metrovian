@@ -1,11 +1,11 @@
 #pragma once
 #include "abstract.h"
 
-namespace ecdh {
+namespace ecdsa {
 enum class attack : uint8_t;
 };
 
-class command_ecdh : public command_abstract {
+class command_ecdsa : public command_abstract {
 protected: /* parameter */
 	std::string private_pem_;
 	std::string in_;
@@ -16,7 +16,7 @@ public: /* abstract */
 	virtual void run() override;
 };
 
-class command_ecdh_private : public command_ecdh {
+class command_ecdsa_private : public command_ecdsa {
 protected: /* parameter */
 	std::string private_pem_;
 
@@ -25,11 +25,11 @@ public: /* abstract */
 	virtual void run() override final;
 };
 
-class command_ecdh_public : public command_ecdh {
+class command_ecdsa_public : public command_ecdsa {
 protected: /* parameter */
 	std::string public_pem_;
 	std::string method_;
-	std::unordered_map<std::string, ecdh::attack> map_;
+	std::unordered_map<std::string, ecdsa::attack> map_;
 
 public: /* abstract */
 	virtual void setup(CLI::App *parent) override final;

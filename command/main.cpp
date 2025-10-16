@@ -5,7 +5,7 @@
 #include "optimization/transcendental.h"
 #include "optimization/user.h"
 #include "decryption/rsa.h"
-#include "decryption/ecdh.h"
+#include "decryption/ecdsa.h"
 #include "decompression/avcodec.h"
 #include "predefined.h"
 
@@ -54,7 +54,7 @@ int32_t main(int argc, char **argv) {
 	interface_singleton::instance().command_setup(std::make_unique<command_transcendental>());
 	interface_singleton::instance().command_setup(std::make_unique<command_user>());
 	interface_singleton::instance().command_setup(std::make_unique<command_rsa>());
-	interface_singleton::instance().command_setup(std::make_unique<command_ecdh>());
+	interface_singleton::instance().command_setup(std::make_unique<command_ecdsa>());
 	interface_singleton::instance().command_setup(std::make_unique<command_avcodec>());
 	interface_singleton::instance().command_parse(argc, argv);
 	return 0;
