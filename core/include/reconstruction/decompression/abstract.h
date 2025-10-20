@@ -24,6 +24,10 @@ extern "C" {
 }
 
 class decompression_abstract {
+protected: /* playback info */
+	uint16_t channels_ = 0;
+	uint32_t sample_rate_ = 0;
+
 protected: /* playback queue */
 	std::thread producer_thread_;
 	std::thread consumer_thread_;
@@ -48,7 +52,7 @@ public: /* abstract */
 	virtual ~decompression_abstract();
 
 protected: /* abstract */
-	virtual int8_t open(AVCodecParameters *params) = 0;
+	virtual int8_t open(const std::string &path) = 0;
 	virtual int8_t close() = 0;
-	virtual std::vector<uint8_t> decompression(const std::vector<uint8_t> &payload, AVCodecParameters *params) = 0;
+	virtual std::vector<uint8_t> decompression(const std::vector<uint8_t> &payload) = 0;
 };
