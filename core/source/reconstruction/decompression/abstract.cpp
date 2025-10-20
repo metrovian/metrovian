@@ -1,4 +1,5 @@
 #include "reconstruction/decompression/abstract.h"
+#include "property.h"
 #include "predefined.h"
 
 void decompression_abstract::push(std::vector<uint8_t> &payload) {
@@ -33,6 +34,7 @@ void decompression_abstract::decompress(const std::string &path) {
 	LOG_ENTER();
 	producer_thread_ = std::thread([&]() { open(path); });
 	consumer_thread_ = std::thread([&]() {
+		usleep(std::stoul(property_singleton::instance().parse({"decompression", "playback-delay"})));
 		snd_pcm_t *pcm_handle = nullptr;
 		snd_pcm_hw_params_t *pcm_params = nullptr;
 		int32_t retcode = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
@@ -92,6 +94,7 @@ void decompression_abstract::decompress(const std::string &path, const std::stri
 	LOG_ENTER();
 	producer_thread_ = std::thread([&]() { open(path); });
 	consumer_thread_ = std::thread([&]() {
+		usleep(std::stoul(property_singleton::instance().parse({"decompression", "playback-delay"})));
 		std::ofstream wav_record(record, std::ios::binary);
 		if (wav_record.is_open() == false) {
 			LOG_CONDITION(wav_record.is_open() == false);
