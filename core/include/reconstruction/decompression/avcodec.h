@@ -1,7 +1,7 @@
 #pragma once
-#include "reconstruction/decompression/abstract.h"
+#include "reconstruction/decompression/audio.h"
 
-class decompression_avcodec : public decompression_abstract {
+class decompression_avcodec : public decompression_audio {
 protected: /* context */
 	AVCodec *avcodec_ = nullptr;
 	AVFormatContext *avformat_ctx_ = nullptr;

@@ -1,0 +1,124 @@
+#include "reconstruction/decompression/audio.h"
+#include "property.h"
+#include "predefined.h"
+
+void decompression_audio::decompress(const std::string &path) {
+	LOG_ENTER();
+	producer_thread_ = std::thread([&]() { open(path); });
+	consumer_thread_ = std::thread([&]() {
+		usleep(std::stoul(property_singleton::instance().parse({"decompression", "playback-delay"})));
+		snd_pcm_t *pcm_handle = nullptr;
+		snd_pcm_hw_params_t *pcm_params = nullptr;
+		int32_t retcode = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
+		if (retcode < 0) {
+			LOG_CONDITION(snd_pcm_open < 0);
+			return;
+		}
+
+		snd_pcm_hw_params_malloc(&pcm_params);
+		snd_pcm_hw_params_any(pcm_handle, pcm_params);
+		snd_pcm_hw_params_set_access(pcm_handle, pcm_params, SND_PCM_ACCESS_RW_INTERLEAVED);
+		snd_pcm_hw_params_set_format(pcm_handle, pcm_params, SND_PCM_FORMAT_S16_LE);
+		snd_pcm_hw_params_set_channels(pcm_handle, pcm_params, channels_);
+		snd_pcm_hw_params_set_rate(pcm_handle, pcm_params, sample_rate_, 0);
+		snd_pcm_hw_params(pcm_handle, pcm_params);
+		snd_pcm_hw_params_free(pcm_params);
+		snd_pcm_prepare(pcm_handle);
+		while (queue_state_.load() != 0) {
+			std::vector<uint8_t> pcm;
+			pop(pcm);
+			if (pcm.size() == 0) {
+				break;
+			}
+
+			const int16_t *pcm_data = reinterpret_cast<const int16_t *>(pcm.data());
+			size_t pcm_frames = pcm.size() / (channels_ * sizeof(int16_t));
+			while (pcm_frames > 0) {
+				retcode = snd_pcm_writei(pcm_handle, pcm_data, pcm_frames);
+				if (retcode == -EPIPE) {
+					snd_pcm_prepare(pcm_handle);
+					LOG_CONDITION(snd_pcm_writei == -EPIPE);
+					continue;
+				} else if (retcode < 0) {
+					LOG_CONDITION(snd_pcm_writei < 0);
+					break;
+				}
+
+				pcm_data += retcode * channels_;
+				pcm_frames -= retcode;
+			}
+		}
+
+		snd_pcm_drain(pcm_handle);
+		snd_pcm_close(pcm_handle);
+		return;
+	});
+
+	producer_thread_.join();
+	consumer_thread_.join();
+	queue_state_.store(0);
+	close();
+	LOG_EXIT();
+	return;
+}
+
+void decompression_audio::decompress(const std::string &path, const std::string &record) {
+	LOG_ENTER();
+	producer_thread_ = std::thread([&]() { open(path); });
+	consumer_thread_ = std::thread([&]() {
+		usleep(std::stoul(property_singleton::instance().parse({"decompression", "playback-delay"})));
+		std::ofstream wav_record(record, std::ios::binary);
+		if (wav_record.is_open() == false) {
+			LOG_CONDITION(wav_record.is_open() == false);
+			return;
+		}
+
+		uint16_t audio_format = 1;     // PCM
+		uint16_t bits_per_sample = 16; // AV_SAMPLE_FMT_S16
+		uint32_t byte_rate = sample_rate_ * channels_ * 2;
+		uint16_t block_align = channels_ * 2;
+		uint32_t data_size = 0;
+		uint32_t chunk_size = 36;
+		uint32_t subchunk_size = 16;
+		auto write_header = [&]() {
+			wav_record.seekp(0, std::ios::beg);
+			wav_record.write("RIFF", 4);
+			wav_record.write(reinterpret_cast<const char *>(&chunk_size), 4);
+			wav_record.write("WAVE", 4);
+			wav_record.write("fmt ", 4);
+			wav_record.write(reinterpret_cast<const char *>(&subchunk_size), 4);
+			wav_record.write(reinterpret_cast<const char *>(&audio_format), 2);
+			wav_record.write(reinterpret_cast<const char *>(&channels_), 2);
+			wav_record.write(reinterpret_cast<const char *>(&sample_rate_), 4);
+			wav_record.write(reinterpret_cast<const char *>(&byte_rate), 4);
+			wav_record.write(reinterpret_cast<const char *>(&block_align), 2);
+			wav_record.write(reinterpret_cast<const char *>(&bits_per_sample), 2);
+			wav_record.write("data", 4);
+			wav_record.write(reinterpret_cast<const char *>(&data_size), 4);
+		};
+
+		write_header();
+		while (queue_state_.load() != 0) {
+			std::vector<uint8_t> pcm;
+			pop(pcm);
+			if (pcm.empty()) {
+				break;
+			}
+
+			wav_record.write(reinterpret_cast<const char *>(pcm.data()), pcm.size());
+			data_size += static_cast<uint32_t>(pcm.size());
+			chunk_size += static_cast<uint32_t>(pcm.size());
+		}
+
+		write_header();
+		wav_record.close();
+		return;
+	});
+
+	producer_thread_.join();
+	consumer_thread_.join();
+	queue_state_.store(0);
+	close();
+	LOG_EXIT();
+	return;
+}

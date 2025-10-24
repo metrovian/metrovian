@@ -4,6 +4,7 @@ src_core = files(
   'source/operation/desa.cpp',
   'source/operation/fft.cpp',
   'source/reconstruction/decompression/abstract.cpp',
+  'source/reconstruction/decompression/audio.cpp',
   'source/reconstruction/decompression/avcodec.cpp',
   'source/reconstruction/decryption/abstract.cpp',
   'source/reconstruction/decryption/ecdsa.cpp',
