@@ -24,11 +24,11 @@ extern "C" {
 }
 
 class decompression_abstract {
-protected: /* playback info */
+protected: /* parameter */
 	uint16_t channels_ = 0;
 	uint32_t sample_rate_ = 0;
 
-protected: /* playback queue */
+protected: /* payload queue */
 	std::thread producer_thread_;
 	std::thread consumer_thread_;
 	std::queue<std::vector<uint8_t>> queue_;
@@ -36,14 +36,14 @@ protected: /* playback queue */
 	std::mutex queue_mutex_;
 	std::condition_variable queue_cvar_;
 
-protected: /* playback queue */
+protected: /* payload queue */
 	void push(std::vector<uint8_t> &payload);
 	void pop(std::vector<uint8_t> &payload);
 	void clear();
 
 public: /* overload */
-	void decompress(const std::string &path);
-	void decompress(const std::string &path, const std::string &record);
+	virtual void decompress(const std::string &path) = 0;
+	virtual void decompress(const std::string &path, const std::string &record) = 0;
 
 public: /* constructor */
 	decompression_abstract();
