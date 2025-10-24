@@ -24,10 +24,6 @@ extern "C" {
 }
 
 class decompression_abstract {
-protected: /* parameter */
-	uint16_t channels_ = 0;
-	uint32_t sample_rate_ = 0;
-
 protected: /* payload queue */
 	std::thread producer_thread_;
 	std::thread consumer_thread_;
