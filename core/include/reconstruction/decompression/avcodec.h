@@ -1,6 +1,14 @@
 #pragma once
 #include "reconstruction/decompression/audio.h"
 
+extern "C" {
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+#include <libavutil/frame.h>
+#include <libavutil/mem.h>
+#include <libswresample/swresample.h>
+}
+
 class decompression_avcodec : public decompression_audio {
 protected: /* context */
 	AVCodec *avcodec_ = nullptr;

@@ -2,11 +2,6 @@
 #include "reconstruction/decompression/abstract.h"
 
 extern "C" {
-#include <libavformat/avformat.h>
-#include <libavcodec/avcodec.h>
-#include <libavutil/frame.h>
-#include <libavutil/mem.h>
-#include <libswresample/swresample.h>
 #include <alsa/asoundlib.h>
 }
 
