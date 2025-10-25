@@ -25,6 +25,7 @@ void interface_singleton::load_command_parser() {
 	formatter->column_width(40);
 	command_parser_.formatter(formatter);
 	command_parser_.get_option("--help")->description("");
+	command_parser_.set_version_flag("--version, -v", std::string(__DATE__ " " __TIME__));
 }
 
 void interface_singleton::load_stdout() {
