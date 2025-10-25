@@ -14,15 +14,6 @@
 #include <stdint.h>
 #include <spdlog/spdlog.h>
 
-extern "C" {
-#include <libavformat/avformat.h>
-#include <libavcodec/avcodec.h>
-#include <libavutil/frame.h>
-#include <libavutil/mem.h>
-#include <libswresample/swresample.h>
-#include <alsa/asoundlib.h>
-}
-
 class decompression_abstract {
 protected: /* payload queue */
 	std::thread producer_thread_;
