@@ -16,6 +16,7 @@ src_core = files(
   'source/reconstruction/optimization/transcendental.cpp',
   'source/reconstruction/optimization/user.cpp',
   'source/synthesis/abstract.cpp',
+  'source/synthesis/sin.cpp',
   'source/property.cpp')
 
 lib_core = static_library(

@@ -7,6 +7,7 @@
 #include <atomic>
 #include <map>
 #include <mutex>
+#include <cmath>
 #include <string>
 #include <vector>
 #include <functional>
@@ -34,7 +35,8 @@ protected: /* control */
 	uint8_t sustain_ = 0;
 
 public: /* setter */
-	int8_t keysize(uint64_t size);
+	int8_t keysize(uint64_t note);
+	int8_t keysample(std::vector<int16_t> &pcm, uint64_t note);
 
 public: /* control */
 	int8_t keydown(uint8_t vel, uint64_t note);
@@ -73,15 +75,12 @@ protected: /* manager */
 	synthesis::player player_;
 
 public: /* overload */
-	int8_t synthesize(const std::string &path);
-	int8_t synthesize(const std::string &path, std::string &score);
-
-public: /* constructor */
-	synthesis_abstract();
+	int8_t synthesize(std::string score);
+	int8_t synthesize();
 
 public: /* abstract */
 	virtual ~synthesis_abstract() {}
 
 protected: /* abstract */
-	virtual void synthesis(const std::string &path) {}
+	virtual void synthesis(uint64_t note, uint64_t period) = 0;
 };
