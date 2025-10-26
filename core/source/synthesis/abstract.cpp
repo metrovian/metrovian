@@ -2,8 +2,13 @@
 #include "property.h"
 #include "predefined.h"
 
-int8_t synthesis::muxer::keysize(uint64_t size) {
-	key_.resize(size);
+int8_t synthesis::muxer::keysize(uint64_t note) {
+	key_.resize(note);
+	return 0;
+}
+
+int8_t synthesis::muxer::keysample(std::vector<int16_t> &pcm, uint64_t note) {
+	key_[note].sample_ = pcm;
 	return 0;
 }
 
@@ -65,8 +70,8 @@ int8_t synthesis::sequencer::open(synthesis::muxer *ptr) {
 	    SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE,
 	    SND_SEQ_PORT_TYPE_MIDI_GENERIC | SND_SEQ_PORT_TYPE_APPLICATION);
 
-	int32_t client = std::stoi(property_singleton::instance().parse({"synthesis", "hardware", "client"}));
-	int32_t cport = std::stoi(property_singleton::instance().parse({"synthesis", "hardware", "port"}));
+	int32_t client = std::stoi(property_singleton::instance().parse({"synthesis", "client"}));
+	int32_t cport = std::stoi(property_singleton::instance().parse({"synthesis", "port"}));
 	if (port < 0) {
 		snd_seq_close(handle);
 		LOG_CONDITION(snd_seq_create_simple_port < 0);
@@ -120,8 +125,8 @@ int8_t synthesis::player::open(synthesis::muxer *ptr) {
 		handle,
 		SND_PCM_FORMAT_S16_LE,
 		SND_PCM_ACCESS_RW_INTERLEAVED,
-		1,
-		44100,
+		std::stoul(property_singleton::instance().parse({"synthesis", "channel"})),
+		std::stoul(property_singleton::instance().parse({"synthesis", "sample-rate"})),
 		1,
 		0) < 0) {
 		LOG_CONDITION(snd_pcm_set_params < 0);
@@ -143,10 +148,14 @@ int8_t synthesis::player::close() {
 	return 0;
 }
 
-synthesis_abstract::synthesis_abstract() {
-	muxer_.keysize(88);
+int8_t synthesis_abstract::synthesize() {
+	synthesis(
+	    std::stoull(property_singleton::instance().parse({"synthesis", "note"})),
+	    std::stoull(property_singleton::instance().parse({"synthesis", "period"})));
+
 	std::thread sequencer = std::thread([&]() { sequencer_.open(&muxer_); });
 	std::thread player = std::thread([&]() { player_.open(&muxer_); });
 	sequencer.join();
 	player.join();
+	return 0;
 }

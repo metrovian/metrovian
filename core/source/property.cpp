@@ -39,13 +39,17 @@ void property_singleton::load_default() {
 	default_["decryption"]["rsa"]["williams-p1-iteration"] = 100000;
 	default_["decryption"]["ecdsa"]["trial-iteration"] = 1000000;
 	default_["decompression"]["playback-delay"] = 1000000;
-	default_["synthesis"]["hardware"]["client"] = 20;
-	default_["synthesis"]["hardware"]["port"] = 0;
 	default_["optimization"]["thread-max"] = 8;
 	default_["optimization"]["derivative-step"] = 1.000E-5;
 	default_["optimization"]["damp-step"] = 1.000E-3;
 	default_["optimization"]["increase-step"] = 1.000E+1;
 	default_["optimization"]["decrease-step"] = 1.000E+1;
+	default_["synthesis"]["client"] = 20;
+	default_["synthesis"]["port"] = 0;
+	default_["synthesis"]["channel"] = 1;
+	default_["synthesis"]["sample-rate"] = 44100;
+	default_["synthesis"]["note"] = 88;
+	default_["synthesis"]["period"] = 10;
 }
 
 void property_singleton::merge_default(nlohmann::ordered_json &target, const nlohmann::ordered_json &source) {
