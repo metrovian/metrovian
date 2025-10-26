@@ -39,6 +39,8 @@ void property_singleton::load_default() {
 	default_["decryption"]["rsa"]["williams-p1-iteration"] = 100000;
 	default_["decryption"]["ecdsa"]["trial-iteration"] = 1000000;
 	default_["decompression"]["playback-delay"] = 1000000;
+	default_["synthesis"]["hardware"]["client"] = 20;
+	default_["synthesis"]["hardware"]["port"] = 0;
 	default_["optimization"]["thread-max"] = 8;
 	default_["optimization"]["derivative-step"] = 1.000E-5;
 	default_["optimization"]["damp-step"] = 1.000E-3;
