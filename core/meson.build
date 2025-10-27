@@ -16,6 +16,7 @@ src_core = files(
   'source/reconstruction/optimization/transcendental.cpp',
   'source/reconstruction/optimization/user.cpp',
   'source/synthesis/abstract.cpp',
+  'source/synthesis/saw.cpp',
   'source/synthesis/sin.cpp',
   'source/synthesis/square.cpp',
   'source/property.cpp')
