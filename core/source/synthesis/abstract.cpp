@@ -59,7 +59,11 @@ std::vector<int16_t> synthesis::muxer::mux(uint64_t len) {
 int8_t synthesis::sequencer::open(synthesis::muxer *ptr) {
 	LOG_ENTER();
 	snd_seq_t *handle = nullptr;
-	if (snd_seq_open(&handle, "default", SND_SEQ_OPEN_INPUT, 0) < 0) {
+	if (snd_seq_open(
+		&handle,
+		property_singleton::instance().parse({"alsa", "sequencer", "name"}).c_str(),
+		SND_SEQ_OPEN_INPUT,
+		0) < 0) {
 		LOG_CONDITION(snd_seq_open < 0);
 		return -1;
 	}
@@ -70,8 +74,8 @@ int8_t synthesis::sequencer::open(synthesis::muxer *ptr) {
 	    SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE,
 	    SND_SEQ_PORT_TYPE_MIDI_GENERIC | SND_SEQ_PORT_TYPE_APPLICATION);
 
-	int32_t client = std::stoi(property_singleton::instance().parse({"synthesis", "client"}));
-	int32_t cport = std::stoi(property_singleton::instance().parse({"synthesis", "port"}));
+	int32_t client = std::stoull(property_singleton::instance().parse({"alsa", "sequencer", "client"}));
+	int32_t cport = std::stoull(property_singleton::instance().parse({"alsa", "sequencer", "port"}));
 	if (port < 0) {
 		snd_seq_close(handle);
 		LOG_CONDITION(snd_seq_create_simple_port < 0);
@@ -116,7 +120,11 @@ int8_t synthesis::sequencer::close() {
 int8_t synthesis::player::open(synthesis::muxer *ptr) {
 	LOG_ENTER();
 	snd_pcm_t *handle = nullptr;
-	if (snd_pcm_open(&handle, "default", SND_PCM_STREAM_PLAYBACK, 0) < 0) {
+	if (snd_pcm_open(
+		&handle,
+		property_singleton::instance().parse({"alsa", "player", "name"}).c_str(),
+		SND_PCM_STREAM_PLAYBACK,
+		0) < 0) {
 		LOG_CONDITION(snd_pcm_open < 0);
 		return -1;
 	}
@@ -125,8 +133,8 @@ int8_t synthesis::player::open(synthesis::muxer *ptr) {
 		handle,
 		SND_PCM_FORMAT_S16_LE,
 		SND_PCM_ACCESS_RW_INTERLEAVED,
-		std::stoul(property_singleton::instance().parse({"synthesis", "channel"})),
-		std::stoul(property_singleton::instance().parse({"synthesis", "sample-rate"})),
+		std::stoul(property_singleton::instance().parse({"alsa", "player", "channel"})),
+		std::stoul(property_singleton::instance().parse({"alsa", "player", "sample-rate"})),
 		1,
 		0) < 0) {
 		snd_pcm_drain(handle);
@@ -152,7 +160,7 @@ int8_t synthesis::player::open(synthesis::muxer *ptr) {
 				break;
 			}
 
-			data += frames * std::stoul(property_singleton::instance().parse({"synthesis", "channel"}));
+			data += frames * std::stoul(property_singleton::instance().parse({"alsa", "player", "channel"}));
 			write -= frames;
 		}
 	}
