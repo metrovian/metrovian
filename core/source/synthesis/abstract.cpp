@@ -117,7 +117,7 @@ int8_t synthesis::player::open(synthesis::muxer *ptr) {
 	LOG_ENTER();
 	snd_pcm_t *handle = nullptr;
 	if (snd_pcm_open(&handle, "default", SND_PCM_STREAM_PLAYBACK, 0) < 0) {
-		LOG_CONDITION(snd_seq_open < 0);
+		LOG_CONDITION(snd_pcm_open < 0);
 		return -1;
 	}
 
