@@ -49,7 +49,7 @@ int8_t decompression_avcodec::open(const std::string &path) {
 		return -6;
 	}
 
-	channels_ = static_cast<uint16_t>(avcodec_params_->ch_layout.nb_channels);
+	channel_ = static_cast<uint16_t>(avcodec_params_->ch_layout.nb_channels);
 	sample_rate_ = static_cast<uint32_t>(avcodec_params_->sample_rate);
 	if (avcodec_open2(avcodec_ctx_, avcodec_, nullptr) < 0) {
 		avformat_close_input(&avformat_ctx_);

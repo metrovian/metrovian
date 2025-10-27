@@ -7,7 +7,7 @@ extern "C" {
 
 class decompression_audio : public decompression_abstract {
 protected: /* parameter */
-	uint16_t channels_ = 0;
+	uint16_t channel_ = 0;
 	uint32_t sample_rate_ = 0;
 
 public: /* overload */
