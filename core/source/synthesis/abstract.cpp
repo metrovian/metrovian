@@ -133,8 +133,8 @@ int8_t synthesis::player::open(synthesis::muxer *ptr) {
 		handle,
 		SND_PCM_FORMAT_S16_LE,
 		SND_PCM_ACCESS_RW_INTERLEAVED,
-		CONFIG_INT32("alsa", "player", "channel"),
-		CONFIG_INT32("alsa", "player", "sample-rate"),
+		CONFIG_UINT32("alsa", "player", "channel"),
+		CONFIG_UINT32("alsa", "player", "sample-rate"),
 		1,
 		0) < 0) {
 		snd_pcm_drain(handle);
