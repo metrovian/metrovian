@@ -136,7 +136,7 @@ int8_t synthesis::player::open(synthesis::muxer *ptr) {
 		CONFIG_UINT32("synthesis", "channel"),
 		CONFIG_UINT32("synthesis", "sample-rate"),
 		1,
-		0) < 0) {
+		5000) < 0) {
 		snd_pcm_drain(handle);
 		snd_pcm_close(handle);
 		LOG_CONDITION(snd_pcm_set_params < 0);
