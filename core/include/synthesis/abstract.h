@@ -75,8 +75,8 @@ protected: /* manager */
 	synthesis::player player_;
 
 public: /* overload */
-	int8_t synthesize(std::string score);
 	int8_t synthesize();
+	int8_t synthesize(std::string score);
 
 public: /* abstract */
 	virtual ~synthesis_abstract() {}
