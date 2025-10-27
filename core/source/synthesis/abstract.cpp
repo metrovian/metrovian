@@ -61,7 +61,7 @@ int8_t synthesis::sequencer::open(synthesis::muxer *ptr) {
 	snd_seq_t *handle = nullptr;
 	if (snd_seq_open(
 		&handle,
-		property_singleton::instance().parse({"alsa", "sequencer", "name"}).c_str(),
+		CONFIG_STRING("alsa", "sequencer", "name").c_str(),
 		SND_SEQ_OPEN_INPUT,
 		0) < 0) {
 		LOG_CONDITION(snd_seq_open < 0);
@@ -74,8 +74,8 @@ int8_t synthesis::sequencer::open(synthesis::muxer *ptr) {
 	    SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE,
 	    SND_SEQ_PORT_TYPE_MIDI_GENERIC | SND_SEQ_PORT_TYPE_APPLICATION);
 
-	int32_t client = std::stoull(property_singleton::instance().parse({"alsa", "sequencer", "client"}));
-	int32_t cport = std::stoull(property_singleton::instance().parse({"alsa", "sequencer", "port"}));
+	int32_t client = CONFIG_INT32("alsa", "sequencer", "client");
+	int32_t cport = CONFIG_INT32("alsa", "sequencer", "port");
 	if (port < 0) {
 		snd_seq_close(handle);
 		LOG_CONDITION(snd_seq_create_simple_port < 0);
@@ -122,7 +122,7 @@ int8_t synthesis::player::open(synthesis::muxer *ptr) {
 	snd_pcm_t *handle = nullptr;
 	if (snd_pcm_open(
 		&handle,
-		property_singleton::instance().parse({"alsa", "player", "name"}).c_str(),
+		CONFIG_STRING("alsa", "player", "name").c_str(),
 		SND_PCM_STREAM_PLAYBACK,
 		0) < 0) {
 		LOG_CONDITION(snd_pcm_open < 0);
@@ -133,8 +133,8 @@ int8_t synthesis::player::open(synthesis::muxer *ptr) {
 		handle,
 		SND_PCM_FORMAT_S16_LE,
 		SND_PCM_ACCESS_RW_INTERLEAVED,
-		std::stoul(property_singleton::instance().parse({"alsa", "player", "channel"})),
-		std::stoul(property_singleton::instance().parse({"alsa", "player", "sample-rate"})),
+		CONFIG_INT32("alsa", "player", "channel"),
+		CONFIG_INT32("alsa", "player", "sample-rate"),
 		1,
 		0) < 0) {
 		snd_pcm_drain(handle);
@@ -160,7 +160,7 @@ int8_t synthesis::player::open(synthesis::muxer *ptr) {
 				break;
 			}
 
-			data += frames * std::stoul(property_singleton::instance().parse({"alsa", "player", "channel"}));
+			data += frames * CONFIG_INT32("alsa", "player", "channel");
 			write -= frames;
 		}
 	}
@@ -178,8 +178,8 @@ int8_t synthesis::player::close() {
 
 int8_t synthesis_abstract::synthesize() {
 	synthesis(
-	    std::stoull(property_singleton::instance().parse({"synthesis", "note"})),
-	    std::stoull(property_singleton::instance().parse({"synthesis", "period"})));
+	    CONFIG_UINT64("synthesis", "note"),
+	    CONFIG_UINT64("synthesis", "period"));
 
 	std::thread sequencer = std::thread([&]() { sequencer_.open(&muxer_); });
 	std::thread player = std::thread([&]() { player_.open(&muxer_); });
