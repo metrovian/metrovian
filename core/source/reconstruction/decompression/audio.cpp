@@ -4,8 +4,8 @@
 
 void decompression_audio::decompress(const std::string &path) {
 	LOG_ENTER();
-	producer_thread_ = std::thread([&]() { open(path); });
-	consumer_thread_ = std::thread([&]() {
+	std::thread producer = std::thread([&]() { open(path); });
+	std::thread consumer = std::thread([&]() {
 		usleep(std::stoul(property_singleton::instance().parse({"decompression", "playback-delay"})));
 		snd_pcm_t *pcm_handle = nullptr;
 		snd_pcm_hw_params_t *pcm_params = nullptr;
@@ -54,8 +54,8 @@ void decompression_audio::decompress(const std::string &path) {
 		return;
 	});
 
-	producer_thread_.join();
-	consumer_thread_.join();
+	producer.join();
+	consumer.join();
 	queue_state_.store(0);
 	close();
 	LOG_EXIT();
@@ -64,8 +64,8 @@ void decompression_audio::decompress(const std::string &path) {
 
 void decompression_audio::decompress(const std::string &path, const std::string &record) {
 	LOG_ENTER();
-	producer_thread_ = std::thread([&]() { open(path); });
-	consumer_thread_ = std::thread([&]() {
+	std::thread producer = std::thread([&]() { open(path); });
+	std::thread consumer = std::thread([&]() {
 		usleep(std::stoul(property_singleton::instance().parse({"decompression", "playback-delay"})));
 		std::ofstream wav_record(record, std::ios::binary);
 		if (wav_record.is_open() == false) {
@@ -115,8 +115,8 @@ void decompression_audio::decompress(const std::string &path, const std::string 
 		return;
 	});
 
-	producer_thread_.join();
-	consumer_thread_.join();
+	producer.join();
+	consumer.join();
 	queue_state_.store(0);
 	close();
 	LOG_EXIT();
