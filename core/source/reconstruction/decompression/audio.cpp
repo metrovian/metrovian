@@ -6,27 +6,27 @@ void decompression_audio::decompress(const std::string &path) {
 	LOG_ENTER();
 	std::thread producer = std::thread([&]() { open(path); });
 	std::thread consumer = std::thread([&]() {
-		usleep(std::stoul(property_singleton::instance().parse({"decompression", "playback-delay"})));
-		snd_pcm_t *pcm_handle = nullptr;
-		snd_pcm_hw_params_t *pcm_params = nullptr;
+		usleep(CONFIG_UINT32("decompression", "playback-delay"));
+		snd_pcm_t *handle = nullptr;
+		snd_pcm_hw_params_t *params = nullptr;
 		if (snd_pcm_open(
-			&pcm_handle,
-			property_singleton::instance().parse({"alsa", "player", "name"}).c_str(),
+			&handle,
+			CONFIG_STRING("alsa", "player", "name").c_str(),
 			SND_PCM_STREAM_PLAYBACK,
 			0) < 0) {
 			LOG_CONDITION(snd_pcm_open < 0);
 			return;
 		}
 
-		snd_pcm_hw_params_malloc(&pcm_params);
-		snd_pcm_hw_params_any(pcm_handle, pcm_params);
-		snd_pcm_hw_params_set_access(pcm_handle, pcm_params, SND_PCM_ACCESS_RW_INTERLEAVED);
-		snd_pcm_hw_params_set_format(pcm_handle, pcm_params, SND_PCM_FORMAT_S16_LE);
-		snd_pcm_hw_params_set_channels(pcm_handle, pcm_params, channels_);
-		snd_pcm_hw_params_set_rate(pcm_handle, pcm_params, sample_rate_, 0);
-		snd_pcm_hw_params(pcm_handle, pcm_params);
-		snd_pcm_hw_params_free(pcm_params);
-		snd_pcm_prepare(pcm_handle);
+		snd_pcm_hw_params_malloc(&params);
+		snd_pcm_hw_params_any(handle, params);
+		snd_pcm_hw_params_set_access(handle, params, SND_PCM_ACCESS_RW_INTERLEAVED);
+		snd_pcm_hw_params_set_format(handle, params, SND_PCM_FORMAT_S16_LE);
+		snd_pcm_hw_params_set_channels(handle, params, channel_);
+		snd_pcm_hw_params_set_rate(handle, params, sample_rate_, 0);
+		snd_pcm_hw_params(handle, params);
+		snd_pcm_hw_params_free(params);
+		snd_pcm_prepare(handle);
 		while (queue_state_.load() != 0) {
 			std::vector<uint8_t> pcm;
 			pop(pcm);
@@ -34,26 +34,26 @@ void decompression_audio::decompress(const std::string &path) {
 				break;
 			}
 
-			const int16_t *pcm_data = reinterpret_cast<const int16_t *>(pcm.data());
-			uint64_t pcm_frames = pcm.size() / (channels_ * sizeof(int16_t));
-			while (pcm_frames > 0) {
-				int32_t retcode = snd_pcm_writei(pcm_handle, pcm_data, pcm_frames);
-				if (retcode == -EPIPE) {
-					snd_pcm_prepare(pcm_handle);
+			const int16_t *data = reinterpret_cast<const int16_t *>(pcm.data());
+			uint64_t write = pcm.size() / (channel_ * sizeof(int16_t));
+			while (write > 0) {
+				snd_pcm_sframes_t frames = snd_pcm_writei(handle, data, write);
+				if (frames == -EPIPE) {
+					snd_pcm_prepare(handle);
 					LOG_WARN(snd_pcm_writei == -EPIPE);
 					continue;
-				} else if (retcode < 0) {
+				} else if (frames < 0) {
 					LOG_CONDITION(snd_pcm_writei < 0);
 					break;
 				}
 
-				pcm_data += retcode * channels_;
-				pcm_frames -= retcode;
+				data += frames * channel_;
+				write -= frames;
 			}
 		}
 
-		snd_pcm_drain(pcm_handle);
-		snd_pcm_close(pcm_handle);
+		snd_pcm_drain(handle);
+		snd_pcm_close(handle);
 		return;
 	});
 
@@ -69,7 +69,7 @@ void decompression_audio::decompress(const std::string &path, const std::string 
 	LOG_ENTER();
 	std::thread producer = std::thread([&]() { open(path); });
 	std::thread consumer = std::thread([&]() {
-		usleep(std::stoul(property_singleton::instance().parse({"decompression", "playback-delay"})));
+		usleep(CONFIG_UINT32("decompression", "playback-delay"));
 		std::ofstream wav_record(record, std::ios::binary);
 		if (wav_record.is_open() == false) {
 			LOG_CONDITION(wav_record.is_open() == false);
@@ -78,8 +78,8 @@ void decompression_audio::decompress(const std::string &path, const std::string 
 
 		uint16_t audio_format = 1;     // PCM
 		uint16_t bits_per_sample = 16; // AV_SAMPLE_FMT_S16
-		uint32_t byte_rate = sample_rate_ * channels_ * 2;
-		uint16_t block_align = channels_ * 2;
+		uint32_t byte_rate = sample_rate_ * channel_ * 2;
+		uint16_t block_align = channel_ * 2;
 		uint32_t data_size = 0;
 		uint32_t chunk_size = 36;
 		uint32_t subchunk_size = 16;
@@ -91,7 +91,7 @@ void decompression_audio::decompress(const std::string &path, const std::string 
 			wav_record.write("fmt ", 4);
 			wav_record.write(reinterpret_cast<const char *>(&subchunk_size), 4);
 			wav_record.write(reinterpret_cast<const char *>(&audio_format), 2);
-			wav_record.write(reinterpret_cast<const char *>(&channels_), 2);
+			wav_record.write(reinterpret_cast<const char *>(&channel_), 2);
 			wav_record.write(reinterpret_cast<const char *>(&sample_rate_), 4);
 			wav_record.write(reinterpret_cast<const char *>(&byte_rate), 4);
 			wav_record.write(reinterpret_cast<const char *>(&block_align), 2);
