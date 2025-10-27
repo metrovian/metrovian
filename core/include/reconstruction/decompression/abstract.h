@@ -16,8 +16,6 @@
 
 class decompression_abstract {
 protected: /* payload queue */
-	std::thread producer_thread_;
-	std::thread consumer_thread_;
 	std::queue<std::vector<uint8_t>> queue_;
 	std::atomic<uint8_t> queue_state_;
 	std::mutex queue_mutex_;
