@@ -129,6 +129,8 @@ int8_t synthesis::player::open(synthesis::muxer *ptr) {
 		std::stoul(property_singleton::instance().parse({"synthesis", "sample-rate"})),
 		1,
 		0) < 0) {
+		snd_pcm_drain(handle);
+		snd_pcm_close(handle);
 		LOG_CONDITION(snd_pcm_set_params < 0);
 		return -1;
 	}
@@ -136,9 +138,27 @@ int8_t synthesis::player::open(synthesis::muxer *ptr) {
 	muxer_ = ptr;
 	state_.store(1);
 	while (state_.load() != 0) {
-		snd_pcm_writei(handle, muxer_->mux(64).data(), 64);
+		std::vector<int16_t> output = muxer_->mux(32);
+		int16_t *data = output.data();
+		uint64_t write = output.size();
+		while (write > 0) {
+			snd_pcm_sframes_t frames = snd_pcm_writei(handle, data, write);
+			if (frames == -EPIPE) {
+				snd_pcm_prepare(handle);
+				LOG_CONDITION(snd_pcm_writei == -EPIPE);
+				continue;
+			} else if (frames < 0) {
+				LOG_CONDITION(snd_pcm_writei < 0);
+				break;
+			}
+
+			data += frames * std::stoul(property_singleton::instance().parse({"synthesis", "channel"}));
+			write -= frames;
+		}
 	}
 
+	snd_pcm_drain(handle);
+	snd_pcm_close(handle);
 	LOG_EXIT();
 	return 0;
 }
