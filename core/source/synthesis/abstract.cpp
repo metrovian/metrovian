@@ -145,7 +145,7 @@ int8_t synthesis::player::open(synthesis::muxer *ptr) {
 			snd_pcm_sframes_t frames = snd_pcm_writei(handle, data, write);
 			if (frames == -EPIPE) {
 				snd_pcm_prepare(handle);
-				LOG_CONDITION(snd_pcm_writei == -EPIPE);
+				LOG_WARN(snd_pcm_writei == -EPIPE);
 				continue;
 			} else if (frames < 0) {
 				LOG_CONDITION(snd_pcm_writei < 0);

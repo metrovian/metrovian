@@ -37,7 +37,7 @@ void decompression_audio::decompress(const std::string &path) {
 				retcode = snd_pcm_writei(pcm_handle, pcm_data, pcm_frames);
 				if (retcode == -EPIPE) {
 					snd_pcm_prepare(pcm_handle);
-					LOG_CONDITION(snd_pcm_writei == -EPIPE);
+					LOG_WARN(snd_pcm_writei == -EPIPE);
 					continue;
 				} else if (retcode < 0) {
 					LOG_CONDITION(snd_pcm_writei < 0);
