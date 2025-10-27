@@ -32,6 +32,15 @@ property_singleton &property_singleton::instance() {
 }
 
 void property_singleton::load_default() {
+	/* alsa player */
+	default_["alsa"]["player"]["name"] = "default";
+	default_["alsa"]["player"]["channel"] = 1;
+	default_["alsa"]["player"]["sample-rate"] = 44100;
+	/* alsa sequencer */
+	default_["alsa"]["sequencer"]["name"] = "default";
+	default_["alsa"]["sequencer"]["client"] = 20;
+	default_["alsa"]["sequencer"]["port"] = 0;
+	/* core */
 	default_["decryption"]["rsa"]["trial-iteration"] = 1000000;
 	default_["decryption"]["rsa"]["fermat-iteration"] = 1000000;
 	default_["decryption"]["rsa"]["pollards-rho-iteration"] = 1000000;
@@ -44,10 +53,6 @@ void property_singleton::load_default() {
 	default_["optimization"]["damp-step"] = 1.000E-3;
 	default_["optimization"]["increase-step"] = 1.000E+1;
 	default_["optimization"]["decrease-step"] = 1.000E+1;
-	default_["synthesis"]["client"] = 20;
-	default_["synthesis"]["port"] = 0;
-	default_["synthesis"]["channel"] = 1;
-	default_["synthesis"]["sample-rate"] = 44100;
 	default_["synthesis"]["note"] = 88;
 	default_["synthesis"]["period"] = 10;
 }

@@ -9,8 +9,11 @@ void decompression_audio::decompress(const std::string &path) {
 		usleep(std::stoul(property_singleton::instance().parse({"decompression", "playback-delay"})));
 		snd_pcm_t *pcm_handle = nullptr;
 		snd_pcm_hw_params_t *pcm_params = nullptr;
-		int32_t retcode = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
-		if (retcode < 0) {
+		if (snd_pcm_open(
+			&pcm_handle,
+			property_singleton::instance().parse({"alsa", "player", "name"}).c_str(),
+			SND_PCM_STREAM_PLAYBACK,
+			0) < 0) {
 			LOG_CONDITION(snd_pcm_open < 0);
 			return;
 		}
@@ -32,9 +35,9 @@ void decompression_audio::decompress(const std::string &path) {
 			}
 
 			const int16_t *pcm_data = reinterpret_cast<const int16_t *>(pcm.data());
-			size_t pcm_frames = pcm.size() / (channels_ * sizeof(int16_t));
+			uint64_t pcm_frames = pcm.size() / (channels_ * sizeof(int16_t));
 			while (pcm_frames > 0) {
-				retcode = snd_pcm_writei(pcm_handle, pcm_data, pcm_frames);
+				int32_t retcode = snd_pcm_writei(pcm_handle, pcm_data, pcm_frames);
 				if (retcode == -EPIPE) {
 					snd_pcm_prepare(pcm_handle);
 					LOG_WARN(snd_pcm_writei == -EPIPE);
