@@ -4,7 +4,7 @@
 
 void synthesis_saw::synthesis(uint64_t note, uint64_t period) {
 	LOG_ENTER();
-	uint64_t sample_rate = CONFIG_UINT64("alsa", "player", "sample-rate");
+	uint64_t sample_rate = CONFIG_UINT64("synthesis", "sample-rate");
 	std::vector<int16_t> sample(sample_rate * period, 0);
 	muxer_.keysize(note);
 	for (uint64_t i = 0; i < note; ++i) {
