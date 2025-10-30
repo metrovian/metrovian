@@ -280,7 +280,7 @@ int8_t decryption_rsa::trial(const char *modulus, char **prime1, char **prime2) 
 	mpz_inits(n, p, q, d, r, nullptr);
 	mpz_set_str(n, modulus, 16);
 	mpz_set_ui(d, 2);
-	uint64_t max = std::stoull(property_singleton::instance().parse({"decryption", "rsa", "trial-iteration"}));
+	uint64_t max = CONFIG_UINT64("decryption", "rsa", "trial-iteration");
 	for (uint64_t i = 0; i < max; ++i) {
 		mpz_mod(r, n, d);
 		if (mpz_cmp_ui(r, 0) == 0) {
@@ -316,7 +316,7 @@ int8_t decryption_rsa::fermat(const char *modulus, char **prime1, char **prime2)
 		mpz_add_ui(a, a, 1);
 	}
 
-	uint64_t max = std::stoull(property_singleton::instance().parse({"decryption", "rsa", "fermat-iteration"}));
+	uint64_t max = CONFIG_UINT64("decryption", "rsa", "fermat-iteration");
 	for (uint64_t i = 0; i < max; ++i) {
 		mpz_mul(b2, a, a);
 		mpz_sub(b2, b2, n);
@@ -360,7 +360,7 @@ int8_t decryption_rsa::pollards_rho(const char *modulus, char **prime1, char **p
 		mpz_mod(result, tmp, n);
 	};
 
-	uint64_t max_rho = std::stoull(property_singleton::instance().parse({"decryption", "rsa", "pollards-rho-iteration"}));
+	uint64_t max_rho = CONFIG_UINT64("decryption", "rsa", "pollards-rho-iteration");
 	for (uint64_t i = 0; i < max_rho; ++i) {
 		iteration_rho(a, a);
 		iteration_rho(tmp, b);
@@ -415,7 +415,7 @@ int8_t decryption_rsa::pollards_p1(const char *modulus, char **prime1, char **pr
 		return true;
 	};
 
-	uint64_t max = std::stoull(property_singleton::instance().parse({"decryption", "rsa", "pollards-p1-iteration"}));
+	uint64_t max = CONFIG_UINT64("decryption", "rsa", "pollards-p1-iteration");
 	for (uint64_t i = 2; i < max; ++i) {
 		if (primecheck_p1(i)) {
 			uint64_t pow = i;
@@ -520,7 +520,7 @@ int8_t decryption_rsa::williams_p1(const char *modulus, char **prime1, char **pr
 		mpz_clears(t1, t2, t3, t4, nullptr);
 	};
 
-	uint64_t max = std::stoull(property_singleton::instance().parse({"decryption", "rsa", "williams-p1-iteration"}));
+	uint64_t max = CONFIG_UINT64("decryption", "rsa", "williams-p1-iteration");
 	for (uint64_t i = 2; i < max; ++i) {
 		if (primecheck_p1(i)) {
 			uint64_t pow = i;
