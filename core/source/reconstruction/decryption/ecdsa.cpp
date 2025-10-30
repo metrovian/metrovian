@@ -455,7 +455,7 @@ int8_t decryption_ecdsa::trial(const ecdsa::point *public_key, const ecdsa::poin
 	mpz_set_ui(d, 0);
 	ecdsa::point point_private = *generator;
 	ecdsa::point point_generator = *generator;
-	uint64_t max = std::stoull(property_singleton::instance().parse({"decryption", "ecdsa", "trial-iteration"}));
+	uint64_t max = CONFIG_UINT64("decryption", "ecdsa", "trial-iteration");
 	for (uint64_t i = 0; i < max; ++i) {
 		if (point_private == *public_key) {
 			mpz_set_ui(d, i + 1);
