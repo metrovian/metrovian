@@ -6,7 +6,7 @@ void synthesis_sin::synthesis(uint64_t note, uint64_t period) {
 	LOG_ENTER();
 	uint64_t sample_rate = CONFIG_UINT64("synthesis", "sample-rate");
 	std::vector<int16_t> sample(sample_rate * period, 0);
-	muxer_.keysize(note);
+	resize(note);
 	for (uint64_t i = 0; i < note; ++i) {
 		for (uint64_t j = 0; j < sample.size(); ++j) {
 			double time = static_cast<double>(j) / sample_rate;
@@ -15,7 +15,7 @@ void synthesis_sin::synthesis(uint64_t note, uint64_t period) {
 			sample[j] = static_cast<int16_t>(std::sin(phase * (M_PI * 2.000E+0)) * 3276);
 		}
 
-		muxer_.keysample(sample, i);
+		resample(i, sample);
 	}
 
 	LOG_EXIT();

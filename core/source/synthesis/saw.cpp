@@ -6,7 +6,7 @@ void synthesis_saw::synthesis(uint64_t note, uint64_t period) {
 	LOG_ENTER();
 	uint64_t sample_rate = CONFIG_UINT64("synthesis", "sample-rate");
 	std::vector<int16_t> sample(sample_rate * period, 0);
-	muxer_.keysize(note);
+	resize(note);
 	for (uint64_t i = 0; i < note; ++i) {
 		for (uint64_t j = 0; j < sample.size(); ++j) {
 			double time = static_cast<double>(j) / sample_rate;
@@ -19,7 +19,7 @@ void synthesis_saw::synthesis(uint64_t note, uint64_t period) {
 			}
 		}
 
-		muxer_.keysample(sample, i);
+		resample(i, sample);
 	}
 
 	LOG_EXIT();
