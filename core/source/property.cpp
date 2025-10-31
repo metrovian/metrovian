@@ -37,6 +37,7 @@ void property_singleton::load_default() {
 	default_["alsa"]["sequencer"]["name"] = "default";
 	default_["alsa"]["sequencer"]["client"] = 20;
 	default_["alsa"]["sequencer"]["port"] = 0;
+	default_["alsa"]["sequencer"]["mux-length"] = 32;
 	/* core */
 	default_["decryption"]["rsa"]["trial-iteration"] = 1000000;
 	default_["decryption"]["rsa"]["fermat-iteration"] = 1000000;
