@@ -166,13 +166,27 @@ std::vector<int16_t> decompression_producer::produce() {
 	return pcm;
 }
 
+uint16_t decompression_audio::channel() {
+	return dynamic_cast<decompression_producer *>(producer_.get())->channel();
+}
+
+uint32_t decompression_audio::sample_rate() {
+	return dynamic_cast<decompression_producer *>(producer_.get())->sample_rate();
+}
+
+void decompression_audio::prepare(const std::string &path) {
+	dynamic_cast<decompression_producer *>(producer_.get())->seturi(path);
+	return;
+}
+
 void decompression_audio::decompress(const std::string &path) {
 	LOG_ENTER();
 	create();
-	dynamic_cast<decompression_producer *>(producer_.get())->seturi(path);
-	consumer_ = std::make_unique<sound_player>(
-	    dynamic_cast<decompression_producer *>(producer_.get())->channel(),
-	    dynamic_cast<decompression_producer *>(producer_.get())->sample_rate());
+	prepare(path);
+	consumer_ =
+	    std::make_unique<sound_player>(
+		channel(),
+		sample_rate());
 
 	run(sound::pipeline::common);
 	LOG_EXIT();
@@ -182,11 +196,12 @@ void decompression_audio::decompress(const std::string &path) {
 void decompression_audio::decompress(const std::string &path, const std::string &record) {
 	LOG_ENTER();
 	create();
-	dynamic_cast<decompression_producer *>(producer_.get())->seturi(path);
-	consumer_ = std::make_unique<sound_writer>(
-	    record,
-	    dynamic_cast<decompression_producer *>(producer_.get())->channel(),
-	    dynamic_cast<decompression_producer *>(producer_.get())->sample_rate());
+	prepare(path);
+	consumer_ =
+	    std::make_unique<sound_writer>(
+		record,
+		channel(),
+		sample_rate());
 
 	run(sound::pipeline::common);
 	LOG_EXIT();
