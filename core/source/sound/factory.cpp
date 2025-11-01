@@ -77,10 +77,11 @@ void sound_factory::create() {
 }
 
 void sound_factory::run(sound::pipeline type) {
+	std::vector<std::jthread> trds;
 	switch (type) {
 	case sound::pipeline::common:
-		std::jthread(&sound_factory::thread_producer, this);
-		std::jthread(&sound_factory::thread_consumer, this);
+		trds.push_back(std::jthread(&sound_factory::thread_producer, this));
+		trds.push_back(std::jthread(&sound_factory::thread_consumer, this));
 		break;
 	case sound::pipeline::sync:
 		std::jthread(&sound_factory::thread_sync, this);
