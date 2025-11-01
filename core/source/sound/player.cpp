@@ -47,7 +47,7 @@ int8_t sound_player::close() {
 
 void sound_player::consume(std::vector<int16_t> &payload) {
 	int16_t *data = payload.data();
-	uint64_t write = payload.size();
+	uint64_t write = payload.size() / channel_;
 	while (write > 0) {
 		snd_pcm_sframes_t frames = snd_pcm_writei(handle_, data, write);
 		if (frames == -EPIPE) {
