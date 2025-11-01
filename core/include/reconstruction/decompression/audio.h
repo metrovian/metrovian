@@ -23,7 +23,7 @@ protected: /* context */
 protected: /* paramter */
 	int32_t stream_ = 0;
 
-public: /* getter */
+public: /* property */
 	uint16_t channel();
 	uint32_t sample_rate();
 
@@ -42,6 +42,13 @@ public: /* abstract */
 };
 
 class decompression_audio : public decompression_abstract, public sound_factory {
+protected: /* property */
+	uint16_t channel();
+	uint32_t sample_rate();
+
+protected: /* setter */
+	void prepare(const std::string &path);
+
 public: /* overload */
 	virtual void decompress(const std::string &path) override final;
 	virtual void decompress(const std::string &path, const std::string &record) override final;
