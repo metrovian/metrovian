@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <iostream>
+#include <fstream>
 #include <thread>
 #include <atomic>
 #include <map>
@@ -24,6 +25,9 @@ public: /* constructor */
 	    uint16_t channel,
 	    uint32_t sample_rate)
 	    : channel_(channel), sample_rate_(sample_rate) {}
+
+public: /* abstract */
+	virtual ~sound_abstract() {}
 
 public: /* abstract */
 	virtual int8_t open() = 0;
@@ -49,5 +53,5 @@ public: /* constructor */
 	    : sound_abstract(channel, sample_rate) {}
 
 public: /* abstract */
-	virtual void consume(std::vector<int16_t> &payload) = 0;
+	virtual void consume(std::vector<int16_t> &pcm) = 0;
 };

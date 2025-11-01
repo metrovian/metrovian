@@ -1,19 +1,19 @@
 #include "sound/factory.h"
 #include "predefined.h"
 
-void sound_factory::push(std::vector<int16_t> &payload) {
+void sound_factory::push(std::vector<int16_t> &pcm) {
 	std::unique_lock<std::mutex> lock(queue_mutex_);
-	queue_.push(payload);
+	queue_.push(pcm);
 	lock.unlock();
 	queue_cvar_.notify_one();
 	return;
 }
 
-void sound_factory::pop(std::vector<int16_t> &payload) {
+void sound_factory::pop(std::vector<int16_t> &pcm) {
 	std::unique_lock<std::mutex> lock(queue_mutex_);
 	queue_cvar_.wait(lock, [&]() { return (queue_.empty() == 0) || (queue_state_.load() != 1); });
 	if (queue_.empty() == 0) {
-		payload = queue_.front();
+		pcm = queue_.front();
 		queue_.pop();
 	}
 
@@ -34,6 +34,10 @@ void sound_factory::thread_producer() {
 	queue_state_.store(1);
 	while (queue_state_.load() == 1) {
 		std::vector<int16_t> pcm = producer_->produce();
+		if (pcm.empty()) {
+			break;
+		}
+
 		push(pcm);
 	}
 

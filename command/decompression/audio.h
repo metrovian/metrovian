@@ -1,7 +1,7 @@
 #pragma once
 #include "abstract.h"
 
-class command_avcodec : public command_abstract {
+class command_audio : public command_abstract {
 protected: /* parameter */
 	std::string in_;
 	std::string out_;

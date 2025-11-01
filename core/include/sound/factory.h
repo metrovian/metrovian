@@ -20,8 +20,8 @@ protected: /* threadsafe queue */
 	std::condition_variable queue_cvar_;
 
 protected: /* threadsafe queue */
-	void push(std::vector<int16_t> &payload);
-	void pop(std::vector<int16_t> &payload);
+	void push(std::vector<int16_t> &pcm);
+	void pop(std::vector<int16_t> &pcm);
 	void clear();
 
 protected: /* thread */
