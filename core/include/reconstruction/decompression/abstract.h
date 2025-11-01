@@ -15,29 +15,10 @@
 #include <spdlog/spdlog.h>
 
 class decompression_abstract {
-protected: /* payload queue */
-	std::queue<std::vector<uint8_t>> queue_;
-	std::atomic<uint8_t> queue_state_;
-	std::mutex queue_mutex_;
-	std::condition_variable queue_cvar_;
-
-protected: /* payload queue */
-	void push(std::vector<uint8_t> &payload);
-	void pop(std::vector<uint8_t> &payload);
-	void clear();
-
 public: /* overload */
 	virtual void decompress(const std::string &path) = 0;
 	virtual void decompress(const std::string &path, const std::string &record) = 0;
 
-public: /* constructor */
-	decompression_abstract();
-
 public: /* abstract */
-	virtual ~decompression_abstract();
-
-protected: /* abstract */
-	virtual int8_t open(const std::string &path) = 0;
-	virtual int8_t close() = 0;
-	virtual std::vector<uint8_t> decompression(const std::vector<uint8_t> &payload) = 0;
+	virtual ~decompression_abstract() {}
 };

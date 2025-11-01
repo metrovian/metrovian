@@ -2,126 +2,201 @@
 #include "property.h"
 #include "predefined.h"
 
+uint16_t decompression_producer::channel() {
+	return channel_;
+}
+
+uint32_t decompression_producer::sample_rate() {
+	return sample_rate_;
+}
+
+void decompression_producer::seturi(const std::string &path) {
+	LOG_ENTER();
+	if (avformat_open_input(&avformat_ctx_, path.c_str(), nullptr, nullptr) != 0) {
+		LOG_CONDITION(avformat_open_input != 0);
+		LOG_EXIT();
+		return;
+	}
+
+	if (avformat_find_stream_info(avformat_ctx_, nullptr) < 0) {
+		avformat_close_input(&avformat_ctx_);
+		LOG_CONDITION(avformat_find_stream_info < 0);
+		LOG_EXIT();
+		return;
+	}
+
+	int64_t stream_index = -1;
+	for (uint32_t i = 0; i < avformat_ctx_->nb_streams; ++i) {
+		if (avformat_ctx_->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
+			stream_index = static_cast<int64_t>(i);
+			break;
+		}
+	}
+
+	if (stream_index < 0) {
+		avformat_close_input(&avformat_ctx_);
+		LOG_CONDITION(codec_type != AVMEDIA_TYPE_AUDIO);
+		LOG_EXIT();
+		return;
+	}
+
+	avcodec_params_ = avformat_ctx_->streams[stream_index]->codecpar;
+	stream_ = static_cast<int32_t>(stream_index);
+	channel_ = static_cast<uint16_t>(avcodec_params_->ch_layout.nb_channels);
+	sample_rate_ = static_cast<uint32_t>(avcodec_params_->sample_rate);
+	LOG_EXIT();
+	return;
+}
+
+int8_t decompression_producer::open() {
+	LOG_ENTER();
+	avcodec_ = const_cast<AVCodec *>(avcodec_find_decoder(avcodec_params_->codec_id));
+	if (avcodec_ == nullptr) {
+		avformat_close_input(&avformat_ctx_);
+		LOG_CONDITION(avcodec_find_decoder == nullptr);
+		LOG_EXIT();
+		return -1;
+	}
+
+	avcodec_ctx_ = avcodec_alloc_context3(avcodec_);
+	if (avcodec_ctx_ == nullptr) {
+		avformat_close_input(&avformat_ctx_);
+		LOG_CONDITION(avcodec_alloc_context3 == nullptr);
+		LOG_EXIT();
+		return -2;
+	}
+
+	if (avcodec_parameters_to_context(avcodec_ctx_, avcodec_params_) < 0) {
+		avformat_close_input(&avformat_ctx_);
+		avcodec_free_context(&avcodec_ctx_);
+		LOG_CONDITION(avcodec_parameters_to_context < 0);
+		LOG_EXIT();
+		return -3;
+	}
+
+	if (avcodec_open2(avcodec_ctx_, avcodec_, nullptr) < 0) {
+		avformat_close_input(&avformat_ctx_);
+		avcodec_free_context(&avcodec_ctx_);
+		LOG_CONDITION(avcodec_open2 < 0);
+		LOG_EXIT();
+		return -4;
+	}
+
+	LOG_EXIT();
+	return 0;
+}
+
+int8_t decompression_producer::close() {
+	LOG_ENTER();
+	avformat_close_input(&avformat_ctx_);
+	avcodec_free_context(&avcodec_ctx_);
+	LOG_EXIT();
+	return 0;
+}
+
+std::vector<int16_t> decompression_producer::produce() {
+	std::vector<int16_t> pcm;
+	AVFrame *avframe = av_frame_alloc();
+	AVPacket *avpacket = av_packet_alloc();
+	while (av_read_frame(avformat_ctx_, avpacket) == 0) {
+		if (avpacket->stream_index == stream_) {
+			break;
+		}
+
+		av_packet_unref(avpacket);
+	}
+
+	SwrContext *swr_ctx = nullptr;
+	swr_alloc_set_opts2(
+	    &swr_ctx,
+	    &avcodec_params_->ch_layout,
+	    AV_SAMPLE_FMT_S16,
+	    avcodec_params_->sample_rate,
+	    &avcodec_params_->ch_layout,
+	    static_cast<AVSampleFormat>(avcodec_params_->format),
+	    avcodec_params_->sample_rate,
+	    0,
+	    nullptr);
+
+	if (swr_ctx == nullptr) {
+		av_frame_free(&avframe);
+		av_packet_free(&avpacket);
+		LOG_CONDITION(swr_ctx == nullptr);
+		return std::vector<int16_t>();
+	} else if (swr_init(swr_ctx) < 0) {
+		swr_free(&swr_ctx);
+		av_frame_free(&avframe);
+		av_packet_free(&avpacket);
+		LOG_CONDITION(swr_init < 0);
+		return std::vector<int16_t>();
+	}
+
+	if (avcodec_send_packet(avcodec_ctx_, avpacket) == 0) {
+		while (avcodec_receive_frame(avcodec_ctx_, avframe) == 0) {
+			int32_t rescale_samples =
+			    av_rescale_rnd(
+				swr_get_delay(swr_ctx, avcodec_params_->sample_rate) + avframe->nb_samples,
+				avcodec_params_->sample_rate,
+				avcodec_params_->sample_rate,
+				AV_ROUND_UP);
+
+			std::vector<int16_t> converted(rescale_samples * avcodec_params_->ch_layout.nb_channels);
+			int32_t converted_samples =
+			    swr_convert(
+				swr_ctx,
+				reinterpret_cast<uint8_t **>(&converted),
+				rescale_samples,
+				const_cast<const uint8_t **>(avframe->data),
+				avframe->nb_samples);
+
+			if (converted_samples > 0) {
+				pcm.insert(
+				    pcm.end(),
+				    converted.begin(),
+				    converted.begin() + converted_samples * avcodec_params_->ch_layout.nb_channels);
+			}
+
+			av_frame_unref(avframe);
+		}
+	}
+
+	swr_free(&swr_ctx);
+	av_frame_free(&avframe);
+	av_packet_free(&avpacket);
+	return pcm;
+}
+
 void decompression_audio::decompress(const std::string &path) {
 	LOG_ENTER();
-	std::thread producer = std::thread([&]() { open(path); });
-	std::thread consumer = std::thread([&]() {
-		usleep(CONFIG_UINT32("decompression", "playback-delay"));
-		snd_pcm_t *handle = nullptr;
-		snd_pcm_hw_params_t *params = nullptr;
-		if (snd_pcm_open(
-			&handle,
-			CONFIG_STRING("alsa", "player", "name").c_str(),
-			SND_PCM_STREAM_PLAYBACK,
-			0) < 0) {
-			LOG_CONDITION(snd_pcm_open < 0);
-			return;
-		}
+	create();
+	dynamic_cast<decompression_producer *>(producer_.get())->seturi(path);
+	consumer_ = std::make_unique<sound_player>(
+	    dynamic_cast<decompression_producer *>(producer_.get())->channel(),
+	    dynamic_cast<decompression_producer *>(producer_.get())->sample_rate());
 
-		snd_pcm_hw_params_malloc(&params);
-		snd_pcm_hw_params_any(handle, params);
-		snd_pcm_hw_params_set_access(handle, params, SND_PCM_ACCESS_RW_INTERLEAVED);
-		snd_pcm_hw_params_set_format(handle, params, SND_PCM_FORMAT_S16_LE);
-		snd_pcm_hw_params_set_channels(handle, params, channel_);
-		snd_pcm_hw_params_set_rate(handle, params, sample_rate_, 0);
-		snd_pcm_hw_params(handle, params);
-		snd_pcm_hw_params_free(params);
-		snd_pcm_prepare(handle);
-		while (queue_state_.load() != 0) {
-			std::vector<uint8_t> pcm;
-			pop(pcm);
-			if (pcm.size() == 0) {
-				break;
-			}
-
-			const int16_t *data = reinterpret_cast<const int16_t *>(pcm.data());
-			uint64_t write = pcm.size() / (channel_ * sizeof(int16_t));
-			while (write > 0) {
-				snd_pcm_sframes_t frames = snd_pcm_writei(handle, data, write);
-				if (frames == -EPIPE) {
-					snd_pcm_prepare(handle);
-					LOG_WARN(snd_pcm_writei == -EPIPE);
-					continue;
-				} else if (frames < 0) {
-					LOG_CONDITION(snd_pcm_writei < 0);
-					break;
-				}
-
-				data += frames * channel_;
-				write -= frames;
-			}
-		}
-
-		snd_pcm_drain(handle);
-		snd_pcm_close(handle);
-		return;
-	});
-
-	producer.join();
-	consumer.join();
-	queue_state_.store(0);
-	close();
+	run(sound::pipeline::common);
 	LOG_EXIT();
 	return;
 }
 
 void decompression_audio::decompress(const std::string &path, const std::string &record) {
 	LOG_ENTER();
-	std::thread producer = std::thread([&]() { open(path); });
-	std::thread consumer = std::thread([&]() {
-		usleep(CONFIG_UINT32("decompression", "playback-delay"));
-		std::ofstream wav_record(record, std::ios::binary);
-		if (wav_record.is_open() == false) {
-			LOG_CONDITION(wav_record.is_open() == false);
-			return;
-		}
+	create();
+	dynamic_cast<decompression_producer *>(producer_.get())->seturi(path);
+	consumer_ = std::make_unique<sound_writer>(
+	    record,
+	    dynamic_cast<decompression_producer *>(producer_.get())->channel(),
+	    dynamic_cast<decompression_producer *>(producer_.get())->sample_rate());
 
-		uint16_t audio_format = 1;     // PCM
-		uint16_t bits_per_sample = 16; // AV_SAMPLE_FMT_S16
-		uint32_t byte_rate = sample_rate_ * channel_ * 2;
-		uint16_t block_align = channel_ * 2;
-		uint32_t data_size = 0;
-		uint32_t chunk_size = 36;
-		uint32_t subchunk_size = 16;
-		auto write_header = [&]() {
-			wav_record.seekp(0, std::ios::beg);
-			wav_record.write("RIFF", 4);
-			wav_record.write(reinterpret_cast<const char *>(&chunk_size), 4);
-			wav_record.write("WAVE", 4);
-			wav_record.write("fmt ", 4);
-			wav_record.write(reinterpret_cast<const char *>(&subchunk_size), 4);
-			wav_record.write(reinterpret_cast<const char *>(&audio_format), 2);
-			wav_record.write(reinterpret_cast<const char *>(&channel_), 2);
-			wav_record.write(reinterpret_cast<const char *>(&sample_rate_), 4);
-			wav_record.write(reinterpret_cast<const char *>(&byte_rate), 4);
-			wav_record.write(reinterpret_cast<const char *>(&block_align), 2);
-			wav_record.write(reinterpret_cast<const char *>(&bits_per_sample), 2);
-			wav_record.write("data", 4);
-			wav_record.write(reinterpret_cast<const char *>(&data_size), 4);
-		};
-
-		write_header();
-		while (queue_state_.load() != 0) {
-			std::vector<uint8_t> pcm;
-			pop(pcm);
-			if (pcm.empty()) {
-				break;
-			}
-
-			wav_record.write(reinterpret_cast<const char *>(pcm.data()), pcm.size());
-			data_size += static_cast<uint32_t>(pcm.size());
-			chunk_size += static_cast<uint32_t>(pcm.size());
-		}
-
-		write_header();
-		wav_record.close();
-		return;
-	});
-
-	producer.join();
-	consumer.join();
-	queue_state_.store(0);
-	close();
+	run(sound::pipeline::common);
 	LOG_EXIT();
 	return;
+}
+
+std::unique_ptr<sound_producer> decompression_audio::create_producer() {
+	return std::make_unique<decompression_producer>();
+}
+
+std::unique_ptr<sound_consumer> decompression_audio::create_consumer() {
+	return nullptr;
 }

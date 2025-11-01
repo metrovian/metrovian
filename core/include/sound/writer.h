@@ -1,19 +1,21 @@
 #pragma once
 #include "sound/abstract.h"
 
-extern "C" {
-#include <alsa/asoundlib.h>
-}
+class sound_writer : public sound_consumer {
+protected: /* output */
+	std::ofstream output_;
+	std::string path_;
 
-class sound_player : public sound_consumer {
-protected: /* handle */
-	snd_pcm_t *handle_ = nullptr;
+protected: /* parameter */
+	uint32_t chunk_ = 36;
+	uint32_t data_ = 0;
 
 public: /* constructor */
-	sound_player(
+	sound_writer(
+	    const std::string &path,
 	    uint16_t channel,
 	    uint32_t sample_rate)
-	    : sound_consumer(channel, sample_rate) {}
+	    : sound_consumer(channel, sample_rate), path_(path) {}
 
 public: /* abstract */
 	virtual int8_t open() override final;
