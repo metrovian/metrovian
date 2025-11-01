@@ -6,7 +6,7 @@
 #include "optimization/user.h"
 #include "decryption/rsa.h"
 #include "decryption/ecdsa.h"
-#include "decompression/avcodec.h"
+#include "decompression/audio.h"
 #include "predefined.h"
 
 int8_t interface_singleton::command_parse(int argc, char **argv) {
@@ -56,7 +56,7 @@ int32_t main(int argc, char **argv) {
 	interface_singleton::instance().command_setup(std::make_unique<command_user>());
 	interface_singleton::instance().command_setup(std::make_unique<command_rsa>());
 	interface_singleton::instance().command_setup(std::make_unique<command_ecdsa>());
-	interface_singleton::instance().command_setup(std::make_unique<command_avcodec>());
+	interface_singleton::instance().command_setup(std::make_unique<command_audio>());
 	interface_singleton::instance().command_parse(argc, argv);
 	return 0;
 }
