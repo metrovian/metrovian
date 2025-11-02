@@ -52,7 +52,8 @@ void property_singleton::load_default() {
 	default_["optimization"]["decrease-step"] = 1.000E+1;
 	default_["synthesis"]["channel"] = 1;
 	default_["synthesis"]["sample-rate"] = 44100;
-	default_["synthesis"]["note"] = 88;
+	default_["synthesis"]["note-min"] = 21;
+	default_["synthesis"]["note-max"] = 108;
 	default_["synthesis"]["period"] = 10;
 }
 

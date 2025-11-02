@@ -16,7 +16,7 @@ public: /* abstract */
 	virtual ~synthesis_abstract() {}
 
 protected: /* abstract */
-	virtual void synthesis(uint64_t note, uint64_t period) = 0;
+	virtual void synthesis(uint64_t min, uint64_t max, uint64_t period) = 0;
 
 protected: /* abstract */
 	virtual std::unique_ptr<sound_producer> create_producer() override final;
