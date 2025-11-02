@@ -10,7 +10,7 @@ void command_music::setup(CLI::App *parent) {
 	command->callback([this]() { run(); });
 	map_.insert(std::make_pair<std::string, music::waveform>("sin", music::waveform::sin));
 	map_.insert(std::make_pair<std::string, music::waveform>("saw", music::waveform::saw));
-	map_.insert(std::make_pair<std::string, music::waveform>("sqaure", music::waveform::square));
+	map_.insert(std::make_pair<std::string, music::waveform>("square", music::waveform::square));
 	return;
 }
 
