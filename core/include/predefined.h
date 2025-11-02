@@ -12,6 +12,8 @@
 #define CONFIG_INT64(...)               std::stoll(CONFIG_STRING(__VA_ARGS__))
 #define CONFIG_UINT32(...)              std::stoul(CONFIG_STRING(__VA_ARGS__))
 #define CONFIG_UINT64(...)              std::stoull(CONFIG_STRING(__VA_ARGS__))
+#define CONFIG_FLOAT32(...)             std::stof(CONFIG_STRING(__VA_ARGS__))
+#define CONFIG_FLOAT64(...)             std::stod(CONFIG_STRING(__VA_ARGS__))
 
 #define PATH_PROPERTY                   "/.config/metrovian.json"
 // clang-format on

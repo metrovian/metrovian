@@ -89,7 +89,7 @@ Eigen::MatrixXd optimization_abstract::jacobian(const Eigen::VectorXd &domain, c
 		jacobi.col(value) = derivative(domain, range, value);
 	};
 
-	size_t trd_max = std::stoi(property_singleton::instance().parse({"optimization", "thread-max"}));
+	size_t trd_max = CONFIG_UINT64("optimization", "thread-max");
 	size_t trd_q = params_.size() / trd_max;
 	size_t trd_r = params_.size() % trd_max;
 	for (size_t i = 0; i < trd_q; ++i) {
@@ -160,19 +160,19 @@ Eigen::VectorXd optimization_abstract::estimate(const Eigen::VectorXd &domain) {
 }
 
 double optimization_abstract::step_derivative() {
-	return std::stod(property_singleton::instance().parse({"optimization", "derivative-step"}));
+	return CONFIG_FLOAT64("optimization", "derivative-step");
 }
 
 double optimization_abstract::step_damp() {
-	return std::stod(property_singleton::instance().parse({"optimization", "damp-step"}));
+	return CONFIG_FLOAT64("optimization", "damp-step");
 }
 
 double optimization_abstract::step_increase() {
-	return std::stod(property_singleton::instance().parse({"optimization", "increase-step"}));
+	return CONFIG_FLOAT64("optimization", "increase-step");
 }
 
 double optimization_abstract::step_decrease() {
-	return std::stod(property_singleton::instance().parse({"optimization", "decrease-step"}));
+	return CONFIG_FLOAT64("optimization", "decrease-step");
 }
 
 Eigen::VectorXd optimization_abstract::step_iteration(const Eigen::VectorXd &domain, const Eigen::VectorXd &range, const double damp) {
