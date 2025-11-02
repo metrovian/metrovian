@@ -8,6 +8,7 @@ src_command = files(
   'optimization/sinusoidal.cpp',
   'optimization/transcendental.cpp',
   'optimization/user.cpp',
+  'synthesis/music.cpp',
   'abstract.cpp',
   'main.cpp')
 
