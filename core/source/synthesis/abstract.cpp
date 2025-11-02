@@ -15,7 +15,8 @@ void synthesis_abstract::resample(uint64_t note, std::vector<int16_t> &pcm) {
 int8_t synthesis_abstract::synthesize() {
 	create();
 	synthesis(
-	    CONFIG_UINT64("synthesis", "note"),
+	    CONFIG_UINT64("synthesis", "note-min"),
+	    CONFIG_UINT64("synthesis", "note-max"),
 	    CONFIG_UINT64("synthesis", "period"));
 
 	run(sound::pipeline::sync);
