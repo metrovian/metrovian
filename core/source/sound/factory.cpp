@@ -94,12 +94,6 @@ void sound_factory::thread_sync() {
 	return;
 }
 
-void sound_factory::create() {
-	producer_ = create_producer();
-	consumer_ = create_consumer();
-	return;
-}
-
 void sound_factory::run(sound::pipeline type) {
 	std::vector<std::jthread> trds;
 	switch (type) {
@@ -115,6 +109,18 @@ void sound_factory::run(sound::pipeline type) {
 		break;
 	}
 
+	return;
+}
+
+void sound_factory::terminate() {
+	queue_state_.store(0);
+	queue_cvar_.notify_one();
+	return;
+}
+
+void sound_factory::create() {
+	producer_ = create_producer();
+	consumer_ = create_consumer();
 	return;
 }
 

@@ -30,8 +30,9 @@ protected: /* thread */
 	void thread_sync();
 
 public: /* export */
-	void create();
 	void run(sound::pipeline type);
+	void terminate();
+	void create();
 
 public: /* constructor */
 	sound_factory();
