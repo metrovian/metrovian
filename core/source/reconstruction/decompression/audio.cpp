@@ -50,12 +50,18 @@ void decompression_producer::seturi(const std::string &path) {
 
 int8_t decompression_producer::open() {
 	LOG_ENTER();
+	if (avcodec_params_ == nullptr) {
+		LOG_CONDITION(avcodec_params_ == nullptr);
+		LOG_EXIT();
+		return -1;
+	}
+
 	avcodec_ = const_cast<AVCodec *>(avcodec_find_decoder(avcodec_params_->codec_id));
 	if (avcodec_ == nullptr) {
 		avformat_close_input(&avformat_ctx_);
 		LOG_CONDITION(avcodec_find_decoder == nullptr);
 		LOG_EXIT();
-		return -1;
+		return -2;
 	}
 
 	avcodec_ctx_ = avcodec_alloc_context3(avcodec_);
@@ -63,7 +69,7 @@ int8_t decompression_producer::open() {
 		avformat_close_input(&avformat_ctx_);
 		LOG_CONDITION(avcodec_alloc_context3 == nullptr);
 		LOG_EXIT();
-		return -2;
+		return -3;
 	}
 
 	if (avcodec_parameters_to_context(avcodec_ctx_, avcodec_params_) < 0) {
@@ -71,7 +77,7 @@ int8_t decompression_producer::open() {
 		avcodec_free_context(&avcodec_ctx_);
 		LOG_CONDITION(avcodec_parameters_to_context < 0);
 		LOG_EXIT();
-		return -3;
+		return -4;
 	}
 
 	if (avcodec_open2(avcodec_ctx_, avcodec_, nullptr) < 0) {
@@ -79,7 +85,7 @@ int8_t decompression_producer::open() {
 		avcodec_free_context(&avcodec_ctx_);
 		LOG_CONDITION(avcodec_open2 < 0);
 		LOG_EXIT();
-		return -4;
+		return -5;
 	}
 
 	LOG_EXIT();
