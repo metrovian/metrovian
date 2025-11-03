@@ -30,7 +30,10 @@ void sound_factory::clear() {
 }
 
 void sound_factory::thread_producer() {
-	producer_->open();
+	if (producer_->open() != 0) {
+		return;
+	}
+
 	queue_state_.store(1);
 	while (queue_state_.load() == 1) {
 		std::vector<int16_t> pcm = producer_->produce();
@@ -44,10 +47,16 @@ void sound_factory::thread_producer() {
 	queue_state_.store(2);
 	queue_cvar_.notify_one();
 	producer_->close();
+	return;
 }
 
 void sound_factory::thread_consumer() {
-	consumer_->open();
+	if (consumer_->open() != 0) {
+		queue_state_.store(0);
+		queue_cvar_.notify_one();
+		return;
+	}
+
 	while (queue_state_.load() != 0) {
 		std::vector<int16_t> pcm;
 		pop(pcm);
@@ -58,12 +67,22 @@ void sound_factory::thread_consumer() {
 		consumer_->consume(pcm);
 	}
 
+	queue_state_.store(0);
+	queue_cvar_.notify_one();
 	consumer_->close();
+	return;
 }
 
 void sound_factory::thread_sync() {
-	producer_->open();
-	consumer_->open();
+	if (producer_->open() != 0) {
+		return;
+	}
+
+	if (consumer_->open() != 0) {
+		producer_->close();
+		return;
+	}
+
 	queue_state_.store(1);
 	while (queue_state_.load() != 0) {
 		std::vector<int16_t> pcm = producer_->produce();
@@ -72,6 +91,7 @@ void sound_factory::thread_sync() {
 
 	producer_->close();
 	consumer_->close();
+	return;
 }
 
 void sound_factory::create() {

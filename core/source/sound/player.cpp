@@ -4,6 +4,16 @@
 
 int8_t sound_player::open() {
 	LOG_ENTER();
+	if (channel_ == 0) {
+		LOG_CONDITION(channel_ == 0);
+		LOG_EXIT();
+		return -1;
+	} else if (sample_rate_ == 0) {
+		LOG_CONDITION(sample_rate_ == 0);
+		LOG_EXIT();
+		return -2;
+	}
+
 	if (snd_pcm_open(
 		&handle_,
 		CONFIG_STRING("alsa", "player", "name").c_str(),
@@ -11,7 +21,7 @@ int8_t sound_player::open() {
 		0) < 0) {
 		LOG_CONDITION(snd_pcm_open < 0);
 		LOG_EXIT();
-		return -1;
+		return -3;
 	}
 
 	if (snd_pcm_set_params(
@@ -26,7 +36,7 @@ int8_t sound_player::open() {
 		snd_pcm_close(handle_);
 		LOG_CONDITION(snd_pcm_set_params < 0);
 		LOG_EXIT();
-		return -2;
+		return -4;
 	}
 
 	LOG_EXIT();
