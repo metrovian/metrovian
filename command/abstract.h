@@ -1,4 +1,10 @@
 #pragma once
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <cmath>
+#include <csignal>
+#include <functional>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <CLI/CLI.hpp>
@@ -9,13 +15,20 @@ protected: /* command parser */
 	CLI::App *command_parser_;
 	std::vector<std::unique_ptr<command_abstract>> commands_;
 
+protected: /* handler */
+	static inline std::function<void(void)> handler_ = nullptr;
+
+protected: /* handler setup */
+	static void handle_setup(const std::function<void(void)> handler);
+	static void handle_terminate(int);
+
 protected: /* file */
-	int8_t read_binary(const std::string &path, std::vector<uint8_t> &binary);
-	int8_t write_binary(const std::string &path, std::vector<uint8_t> &binary);
-	int8_t read_text(const std::string &path, std::string &text);
-	int8_t write_text(const std::string &path, std::string &text);
-	int8_t read_vector(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter);
-	int8_t write_vector(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter);
+	static int8_t read_binary(const std::string &path, std::vector<uint8_t> &binary);
+	static int8_t write_binary(const std::string &path, std::vector<uint8_t> &binary);
+	static int8_t read_text(const std::string &path, std::string &text);
+	static int8_t write_text(const std::string &path, std::string &text);
+	static int8_t read_vector(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter);
+	static int8_t write_vector(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter);
 
 protected: /* subcommand */
 	int8_t setup_subcommand(std::unique_ptr<command_abstract> command);
