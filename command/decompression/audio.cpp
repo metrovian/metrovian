@@ -12,6 +12,12 @@ void command_audio::setup(CLI::App *parent) {
 
 void command_audio::run() {
 	decompression_audio engine;
-	out_.length() > 0 ? engine.decompress(in_, out_) : engine.decompress(in_);
+	handle_setup([&]() { engine.terminate(); });
+	if (out_.length() > 0) {
+		engine.decompress(in_, out_);
+		return;
+	}
+
+	engine.decompress(in_);
 	return;
 }

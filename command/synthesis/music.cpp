@@ -24,8 +24,10 @@ void command_music::run() {
 	}
 	// clang-format on
 	if (engine != nullptr) {
+		handle_setup([&]() { engine->terminate(); });
 		engine->synthesize();
 		delete engine;
+		engine = nullptr;
 	}
 
 	return;

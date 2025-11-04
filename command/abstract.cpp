@@ -1,6 +1,23 @@
 #include "abstract.h"
 #include "predefined.h"
 
+void command_abstract::handle_setup(const std::function<void(void)> handler) {
+	handler_ = handler;
+	if (handler_ != nullptr) {
+		std::signal(SIGINT, command_abstract::handle_terminate);
+	}
+
+	return;
+}
+
+void command_abstract::handle_terminate(int) {
+	if (handler_ != nullptr) {
+		handler_();
+	}
+
+	return;
+}
+
 int8_t command_abstract::read_binary(const std::string &path, std::vector<uint8_t> &binary) {
 	std::ifstream ifs(path, std::ios::binary);
 	if (ifs.is_open() == false) {
