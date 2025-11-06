@@ -10,6 +10,7 @@ std::string optimization_transcendental::import_function(transcendental::functio
 	case transcendental::function::sinh: function = std::string("c0 + c1 * sinh(c2 * t + c3)"); break;
 	case transcendental::function::cosh: function = std::string("c0 + c1 * cosh(c2 * t + c3)"); break;
 	case transcendental::function::tanh: function = std::string("c0 + c1 * tanh(c2 * t + c3)"); break;
+	default: break;
 	}
 	// clang-format on
 	return optimization_abstract::import_function(function);

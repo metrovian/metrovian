@@ -6,7 +6,8 @@
 
 void command_music::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("music", "MUSIC synthesis")->group("SYNTHESIS");
-	command->add_option("-w, --waveform", model_, "music waveform")->required();
+	command->add_option("-w, --waveform", waveform_, "performance waveform")->required();
+	command->add_option("-p, --params", params_, "parameters");
 	command->callback([this]() { run(); });
 	map_.insert(std::make_pair<std::string, music::waveform>("sin", music::waveform::sin));
 	map_.insert(std::make_pair<std::string, music::waveform>("saw", music::waveform::saw));
@@ -17,10 +18,22 @@ void command_music::setup(CLI::App *parent) {
 void command_music::run() {
 	synthesis_abstract *engine = nullptr;
 	// clang-format off
-	switch (map_[model_]) {
-	case music::waveform::sin: engine = new synthesis_sin; break;
-	case music::waveform::saw: engine = new synthesis_saw; break;
-	case music::waveform::square: engine = new synthesis_square; break;
+	switch (params_.size()) {
+	case 0:
+		switch (map_[waveform_]) {
+		case music::waveform::sin: engine = new synthesis_sin; break;
+		case music::waveform::saw: engine = new synthesis_saw; break;
+		case music::waveform::square: engine = new synthesis_square; break;
+		default: break;
+		} break;
+	case 1:
+		switch (map_[waveform_]) {
+		case music::waveform::saw: engine = new synthesis_saw(params_[0]); break;
+		case music::waveform::square: engine = new synthesis_square(params_[0]); break;
+		default: break;
+		} break;
+	default: 
+		break;
 	}
 	// clang-format on
 	if (engine != nullptr) {
