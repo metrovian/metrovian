@@ -4,6 +4,7 @@
 void command_abstract::handle_setup(const std::function<void(void)> handler) {
 	handler_ = handler;
 	if (handler_ != nullptr) {
+		std::signal(SIGTERM, command_abstract::handle_terminate);
 		std::signal(SIGINT, command_abstract::handle_terminate);
 	}
 
