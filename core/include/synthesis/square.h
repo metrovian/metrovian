@@ -1,3 +1,4 @@
+#pragma once
 #include "synthesis/abstract.h"
 
 class synthesis_square : public synthesis_abstract {
