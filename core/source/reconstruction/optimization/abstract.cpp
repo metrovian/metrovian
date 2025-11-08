@@ -160,19 +160,23 @@ Eigen::VectorXd optimization_abstract::estimate(const Eigen::VectorXd &domain) {
 }
 
 double optimization_abstract::step_derivative() {
-	return CONFIG_FLOAT64("optimization", "derivative-step");
+	static const double step = CONFIG_FLOAT64("optimization", "derivative-step");
+	return step;
 }
 
 double optimization_abstract::step_damp() {
-	return CONFIG_FLOAT64("optimization", "damp-step");
+	static const double step = CONFIG_FLOAT64("optimization", "damp-step");
+	return step;
 }
 
 double optimization_abstract::step_increase() {
-	return CONFIG_FLOAT64("optimization", "increase-step");
+	static const double step = CONFIG_FLOAT64("optimization", "increase-step");
+	return step;
 }
 
 double optimization_abstract::step_decrease() {
-	return CONFIG_FLOAT64("optimization", "decrease-step");
+	static const double step = CONFIG_FLOAT64("optimization", "decrease-step");
+	return step;
 }
 
 Eigen::VectorXd optimization_abstract::step_iteration(const Eigen::VectorXd &domain, const Eigen::VectorXd &range, const double damp) {
