@@ -54,6 +54,7 @@ void property_singleton::load_default() {
 	default_["synthesis"]["sample-rate"] = 44100;
 	default_["synthesis"]["note-min"] = 21;
 	default_["synthesis"]["note-max"] = 108;
+	default_["synthesis"]["tune"] = 440;
 	default_["synthesis"]["period"] = 10;
 }
 

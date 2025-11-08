@@ -18,6 +18,7 @@ src_core = files(
   'source/sound/sequencer.cpp',
   'source/sound/writer.cpp',
   'source/synthesis/abstract.cpp',
+  'source/synthesis/oscillator.cpp',
   'source/synthesis/saw.cpp',
   'source/synthesis/sin.cpp',
   'source/synthesis/square.cpp',
