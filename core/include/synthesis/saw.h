@@ -1,3 +1,4 @@
+#pragma once
 #include "synthesis/abstract.h"
 
 class synthesis_saw : public synthesis_abstract {

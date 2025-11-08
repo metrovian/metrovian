@@ -1,3 +1,4 @@
+#pragma once
 #include "synthesis/abstract.h"
 
 class synthesis_sin : public synthesis_abstract {
