@@ -1,4 +1,5 @@
 #pragma once
+#include "synthesis/oscillator.h"
 #include "sound/factory.h"
 #include "sound/player.h"
 #include "sound/sequencer.h"

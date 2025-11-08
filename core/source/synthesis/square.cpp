@@ -9,14 +9,7 @@ void synthesis_square::synthesis(uint64_t min, uint64_t max, uint64_t period) {
 	resize(max);
 	for (uint64_t i = min; i < max; ++i) {
 		for (uint64_t j = 0; j < sample.size(); ++j) {
-			double time = static_cast<double>(j) / sample_rate;
-			double pitch = std::pow(2.000E+0, (static_cast<int64_t>(i) - 69) / 1.200E+1) * 4.400E+2;
-			double phase = std::fmod(pitch * time, 1.000E+0);
-			if (phase < duty_) {
-				sample[j] = 3276;
-			} else {
-				sample[j] = -3276;
-			}
+			sample[j] = synthesis_oscillator::square(i, j) * 3276;
 		}
 
 		resample(i, sample);
