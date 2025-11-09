@@ -19,6 +19,7 @@ src_core = files(
   'source/sound/writer.cpp',
   'source/synthesis/abstract.cpp',
   'source/synthesis/effector.cpp',
+  'source/synthesis/hammond.cpp',
   'source/synthesis/oscillator.cpp',
   'source/synthesis/saw.cpp',
   'source/synthesis/sin.cpp',
