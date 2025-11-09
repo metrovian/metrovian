@@ -7,13 +7,10 @@
 #include <cmath>
 
 class synthesis_effector {
-protected: /* parameter transform */
-	static double note(uint64_t note, int64_t cent);
-
 public: /* effector */
 	static double shift(
 	    const std::function<double(uint64_t, uint64_t)> waveform,
+	    double cent,
 	    uint64_t note,
-	    uint64_t sample,
-	    int64_t cent);
+	    uint64_t sample);
 };
