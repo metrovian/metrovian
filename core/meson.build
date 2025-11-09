@@ -18,10 +18,12 @@ src_core = files(
   'source/sound/sequencer.cpp',
   'source/sound/writer.cpp',
   'source/synthesis/abstract.cpp',
+  'source/synthesis/effector.cpp',
   'source/synthesis/oscillator.cpp',
   'source/synthesis/saw.cpp',
   'source/synthesis/sin.cpp',
   'source/synthesis/square.cpp',
+  'source/synthesis/unison.cpp',
   'source/property.cpp')
 
 lib_core = static_library(
