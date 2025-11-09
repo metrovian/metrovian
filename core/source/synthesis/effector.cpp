@@ -4,7 +4,7 @@ double synthesis_effector::note(uint64_t note, int64_t cent) {
 	return note + static_cast<double>(cent) / 1.000E+2;
 }
 
-double synthesis_effector::pitch_shifter(
+double synthesis_effector::shift(
     const std::function<double(uint64_t, uint64_t)> waveform,
     uint64_t note,
     uint64_t sample,

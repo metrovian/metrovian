@@ -24,7 +24,7 @@ void synthesis_unison::synthesis(uint64_t min, uint64_t max, uint64_t period) {
 		for (uint64_t j = 0; j < sample.size(); ++j) {
 			double sum = 0.000E+0;
 			for (uint64_t k = 0; k < depth_; ++k) {
-				sum += synthesis_effector::pitch_shifter(waveform, i, j, cent[k]);
+				sum += synthesis_effector::shift(waveform, i, j, cent[k]);
 			}
 
 			sample[j] = (sum / std::sqrt(depth_)) * 3276;
