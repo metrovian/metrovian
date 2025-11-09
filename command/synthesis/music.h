@@ -6,6 +6,7 @@ enum class waveform : uint8_t {
 	sin = 0,
 	saw = 1,
 	square = 2,
+	unison = 3,
 };
 }; // namespace music
 
