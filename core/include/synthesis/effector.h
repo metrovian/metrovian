@@ -8,9 +8,4 @@
 
 class synthesis_effector {
 public: /* effector */
-	static double shift(
-	    const std::function<double(uint64_t, uint64_t)> waveform,
-	    double cent,
-	    uint64_t note,
-	    uint64_t sample);
 };

@@ -2,29 +2,29 @@
 #include "property.h"
 #include "predefined.h"
 
-double synthesis_oscillator::ratio(uint64_t note) {
-	return std::pow(2.000E+0, (static_cast<int64_t>(note) - 69) / 1.200E+1);
+double synthesis_oscillator::ratio(double note) {
+	return std::pow(2.000E+0, (note - 6.900E+1) / 1.200E+1);
 }
 
-double synthesis_oscillator::frequency(uint64_t note) {
+double synthesis_oscillator::frequency(double note) {
 	static const double tune = CONFIG_FLOAT64("synthesis", "tune");
 	return ratio(note) * tune;
 }
 
-double synthesis_oscillator::time(uint64_t sample) {
+double synthesis_oscillator::time(double sample) {
 	static const double sample_rate = CONFIG_FLOAT64("synthesis", "sample-rate");
-	return static_cast<double>(sample) / sample_rate;
+	return sample / sample_rate;
 }
 
-double synthesis_oscillator::phase(uint64_t note, uint64_t sample) {
+double synthesis_oscillator::phase(double note, double sample) {
 	return std::fmod(frequency(note) * time(sample), 1.000E+0);
 }
 
-double synthesis_oscillator::sin(uint64_t note, uint64_t sample) {
+double synthesis_oscillator::sin(double note, double sample) {
 	return std::sin(phase(note, sample) * (M_PI * 2.000E+0));
 }
 
-double synthesis_oscillator::saw(uint64_t note, uint64_t sample, double skew) {
+double synthesis_oscillator::saw(double note, double sample, double skew) {
 	double result = 0.000E+0;
 	if (phase(note, sample) < skew) {
 		result = phase(note, sample) / skew;
@@ -41,6 +41,6 @@ double synthesis_oscillator::saw(uint64_t note, uint64_t sample, double skew) {
 	return result;
 }
 
-double synthesis_oscillator::square(uint64_t note, uint64_t sample, double duty) {
+double synthesis_oscillator::square(double note, double sample, double duty) {
 	return phase(note, sample) < duty ? 1.000E+0 : -1.000E+0;
 }
