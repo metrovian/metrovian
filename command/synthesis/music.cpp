@@ -3,6 +3,7 @@
 #include "synthesis/saw.h"
 #include "synthesis/square.h"
 #include "synthesis/unison.h"
+#include "synthesis/hammond.h"
 #include "predefined.h"
 
 void command_music::setup(CLI::App *parent) {
@@ -14,6 +15,7 @@ void command_music::setup(CLI::App *parent) {
 	map_.insert(std::make_pair<std::string, music::waveform>("saw", music::waveform::saw));
 	map_.insert(std::make_pair<std::string, music::waveform>("square", music::waveform::square));
 	map_.insert(std::make_pair<std::string, music::waveform>("unison", music::waveform::unison));
+	map_.insert(std::make_pair<std::string, music::waveform>("hammond", music::waveform::hammond));
 	return;
 }
 
@@ -26,6 +28,7 @@ void command_music::run() {
 		case music::waveform::saw: engine = new synthesis_saw; break;
 		case music::waveform::square: engine = new synthesis_square; break;
 		case music::waveform::unison: engine = new synthesis_unison; break;
+		case music::waveform::hammond: engine = new synthesis_hammond; break;
 		default: break;
 		} break;
 	case 1:
@@ -37,6 +40,11 @@ void command_music::run() {
 	case 2: 
 		switch (map_[waveform_]) {
 		case music::waveform::unison: engine = new synthesis_unison(params_[0], params_[1]); break;
+		default: break;
+		} break;
+	case 9:
+		switch (map_[waveform_]) {
+		case music::waveform::hammond: engine = new synthesis_hammond(params_); break;
 		default: break;
 		} break;
 	default: // clang-format on
