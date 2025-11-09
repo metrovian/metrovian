@@ -13,6 +13,7 @@ void synthesis_sin::synthesis(uint64_t min, uint64_t max, uint64_t period) {
 		}
 
 		resample(i, sample);
+		LOG_PROGRESS((i + 1) - min, max - min);
 	}
 
 	LOG_EXIT();

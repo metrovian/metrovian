@@ -4,6 +4,7 @@
 #define LOG_ENTER()                     spdlog::trace("[enter] [{}:{}] {}", basename(__FILE__), __LINE__, __func__)
 #define LOG_EXIT()                      spdlog::trace("[exit] [{}:{}] {}", basename(__FILE__), __LINE__, __func__)
 #define LOG_WARN(condition)             spdlog::warn("[warn] [{}:{}] {}", basename(__FILE__), __LINE__, #condition)
+#define LOG_PROGRESS(now, max)          spdlog::info("[render] [{}:{}] {}/{}", basename(__FILE__), __LINE__, now, max)
 #define LOG_CONDITION(condition)        spdlog::error("[condition] [{}:{}] {}", basename(__FILE__), __LINE__, #condition)
 #define LOG_ARGUMENT(argument)          spdlog::critical("[argument] [{}:{}] {}", basename(__FILE__), __LINE__, #argument)
 
