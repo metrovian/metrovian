@@ -1,6 +1,6 @@
-#include "optimization/transcendental.h"
-#include "reconstruction/optimization/transcendental.h"
-#include "predefined.h"
+#include "command/optimization/transcendental.h"
+#include "core/reconstruction/optimization/transcendental.h"
+#include "core/predefined.h"
 
 void command_transcendental::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("transcendental", "TRANSCENDENTAL optimization")->group("OPTIMIZATION");

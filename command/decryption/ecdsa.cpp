@@ -1,6 +1,6 @@
-#include "decryption/ecdsa.h"
-#include "reconstruction/decryption/ecdsa.h"
-#include "predefined.h"
+#include "command/decryption/ecdsa.h"
+#include "core/reconstruction/decryption/ecdsa.h"
+#include "core/predefined.h"
 
 void command_ecdsa::setup(CLI::App *parent) {
 	command_parser_ = parent->add_subcommand("ecdsa", "ECDSA decryption")->group("DECRYPTION");

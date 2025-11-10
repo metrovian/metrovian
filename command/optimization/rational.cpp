@@ -1,6 +1,6 @@
-#include "optimization/rational.h"
-#include "reconstruction/optimization/rational.h"
-#include "predefined.h"
+#include "command/optimization/rational.h"
+#include "core/reconstruction/optimization/rational.h"
+#include "core/predefined.h"
 
 void command_rational::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("rational", "RATIONAL optimization")->group("OPTIMIZATION");

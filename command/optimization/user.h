@@ -1,5 +1,5 @@
 #pragma once
-#include "abstract.h"
+#include "command/abstract.h"
 
 class command_user : public command_abstract {
 protected: /* parameter */

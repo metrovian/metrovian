@@ -1,6 +1,6 @@
-#include "optimization/polynomial.h"
-#include "reconstruction/optimization/polynomial.h"
-#include "predefined.h"
+#include "command/optimization/polynomial.h"
+#include "core/reconstruction/optimization/polynomial.h"
+#include "core/predefined.h"
 
 void command_polynomial::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("polynomial", "POLYNOMIAL optimization")->group("OPTIMIZATION");

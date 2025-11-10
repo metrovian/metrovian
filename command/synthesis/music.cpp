@@ -1,10 +1,10 @@
-#include "synthesis/music.h"
-#include "synthesis/sin.h"
-#include "synthesis/saw.h"
-#include "synthesis/square.h"
-#include "synthesis/unison.h"
-#include "synthesis/hammond.h"
-#include "predefined.h"
+#include "command/synthesis/music.h"
+#include "core/synthesis/sin.h"
+#include "core/synthesis/saw.h"
+#include "core/synthesis/square.h"
+#include "core/synthesis/unison.h"
+#include "core/synthesis/hammond.h"
+#include "core/predefined.h"
 
 void command_music::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("music", "MUSIC synthesis")->group("SYNTHESIS");

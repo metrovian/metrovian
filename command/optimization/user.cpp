@@ -1,6 +1,6 @@
-#include "optimization/user.h"
-#include "reconstruction/optimization/user.h"
-#include "predefined.h"
+#include "command/optimization/user.h"
+#include "core/reconstruction/optimization/user.h"
+#include "core/predefined.h"
 
 void command_user::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("user", "USER optimization")->group("OPTIMIZATION");

@@ -1,5 +1,5 @@
-#include "abstract.h"
-#include "predefined.h"
+#include "command/abstract.h"
+#include "core/predefined.h"
 
 void command_abstract::handle_setup(const std::function<void(void)> handler) {
 	handler_ = handler;

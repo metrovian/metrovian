@@ -1,6 +1,6 @@
 #pragma once
-#include "abstract.h"
-#include "optimization/user.h"
+#include "command/abstract.h"
+#include "command/optimization/user.h"
 
 namespace sinusoidal {
 enum class function : uint8_t;
