@@ -1,6 +1,6 @@
-#include "decryption/rsa.h"
-#include "reconstruction/decryption/rsa.h"
-#include "predefined.h"
+#include "command/decryption/rsa.h"
+#include "core/reconstruction/decryption/rsa.h"
+#include "core/predefined.h"
 
 void command_rsa::setup(CLI::App *parent) {
 	command_parser_ = parent->add_subcommand("rsa", "RSA decryption")->group("DECRYPTION");

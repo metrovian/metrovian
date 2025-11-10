@@ -1,6 +1,6 @@
 #pragma once
-#include "abstract.h"
-#include "optimization/user.h"
+#include "command/abstract.h"
+#include "command/optimization/user.h"
 
 class command_rational : public command_user {
 protected: /* parameter */

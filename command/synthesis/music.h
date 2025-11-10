@@ -1,5 +1,5 @@
 #pragma once
-#include "abstract.h"
+#include "command/abstract.h"
 
 namespace music {
 enum class waveform : uint8_t {

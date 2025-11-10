@@ -1,6 +1,6 @@
-#include "optimization/sinusoidal.h"
-#include "reconstruction/optimization/sinusoidal.h"
-#include "predefined.h"
+#include "command/optimization/sinusoidal.h"
+#include "core/reconstruction/optimization/sinusoidal.h"
+#include "core/predefined.h"
 
 void command_sinusoidal::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("sinusoidal", "SINUSOIDAL optimization")->group("OPTIMIZATION");

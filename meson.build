@@ -11,7 +11,7 @@ project(
     'buildtype=release'])
 
 # include
-inc_core = include_directories('core/include')
+inc_core = include_directories('.')
 
 # dependency
 dep_alsa = dependency('alsa', required: true)

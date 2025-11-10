@@ -1,6 +1,6 @@
-#include "decompression/audio.h"
-#include "reconstruction/decompression/audio.h"
-#include "predefined.h"
+#include "command/decompression/audio.h"
+#include "core/reconstruction/decompression/audio.h"
+#include "core/predefined.h"
 
 void command_audio::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("audio", "AUDIO decompression")->group("DECOMPRESSION");
