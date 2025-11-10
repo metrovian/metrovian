@@ -3,6 +3,7 @@ src_core = files(
   'operation/corr.cpp',
   'operation/desa.cpp',
   'operation/fft.cpp',
+  'reconstruction/decompression/abstract.cpp',
   'reconstruction/decompression/audio.cpp',
   'reconstruction/decryption/abstract.cpp',
   'reconstruction/decryption/ecdsa.cpp',
@@ -13,6 +14,7 @@ src_core = files(
   'reconstruction/optimization/sinusoidal.cpp',
   'reconstruction/optimization/transcendental.cpp',
   'reconstruction/optimization/user.cpp',
+  'sound/abstract.cpp',
   'sound/factory.cpp',
   'sound/player.cpp',
   'sound/sequencer.cpp',
@@ -25,6 +27,7 @@ src_core = files(
   'synthesis/sin.cpp',
   'synthesis/square.cpp',
   'synthesis/unison.cpp',
+  'predefined.cpp',
   'property.cpp')
 
 lib_core = static_library(
