@@ -27,15 +27,18 @@ void interface_singleton::load_command_parser() {
 	command_parser_.formatter(formatter);
 	command_parser_.get_option("--help")->description("");
 	command_parser_.set_version_flag("--version, -v", std::string(__DATE__ " " __TIME__))->description("");
+	return;
 }
 
 void interface_singleton::load_stdout() {
 	std::cout << std::scientific << std::showpos << std::setprecision(6);
+	return;
 }
 
 void interface_singleton::load_stderr() {
 	spdlog::set_default_logger(spdlog::stderr_color_mt("stderr"));
 	spdlog::set_level(spdlog::level::trace);
+	return;
 }
 
 interface_singleton &interface_singleton::instance() {
