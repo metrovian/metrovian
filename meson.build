@@ -43,3 +43,4 @@ dep_common = [
 # subdir
 subdir('core')
 subdir('command')
+subdir('daemon')
