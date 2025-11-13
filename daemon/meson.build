@@ -1,5 +1,9 @@
 # metrovian daemon
 src_daemon = files(
+  'state/abstract.cpp',
+  'state/performance.cpp',
+  'state/synthesis.cpp',
+  'state/wait.cpp',
   'main.cpp')
 
 executable(
