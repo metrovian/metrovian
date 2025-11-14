@@ -19,6 +19,10 @@ int8_t synthesis_abstract::synthesize() {
 	    CONFIG_UINT64("synthesis", "note-max"),
 	    CONFIG_UINT64("synthesis", "period"));
 
+	return 0;
+}
+
+int8_t synthesis_abstract::perform() {
 	run(sound::pipeline::sync);
 	return 0;
 }

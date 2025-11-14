@@ -5,13 +5,13 @@
 #include "core/sound/sequencer.h"
 
 class synthesis_abstract : public sound_factory {
-protected: /* setter */
+protected: /* waveform setter */
 	void resize(uint64_t note);
 	void resample(uint64_t note, std::vector<int16_t> &pcm);
 
-public: /* overload */
+public: /* export */
 	int8_t synthesize();
-	int8_t synthesize(const std::string &path);
+	int8_t perform();
 
 public: /* abstract */
 	virtual ~synthesis_abstract() {}

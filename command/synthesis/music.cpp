@@ -54,6 +54,7 @@ void command_music::run() {
 	if (engine != nullptr) {
 		handle_setup([&]() { engine->terminate(); });
 		engine->synthesize();
+		engine->perform();
 		delete engine;
 		engine = nullptr;
 	}
