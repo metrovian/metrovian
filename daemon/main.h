@@ -1,18 +1,25 @@
 #pragma once
+#include "core/synthesis/abstract.h"
 #include "state/abstract.h"
-#include "state/wait.h"
+#include "state/setup.h"
 #include "state/synthesis.h"
 #include "state/performance.h"
 
 class machine_singleton {
+protected: /* machine core */
+	std::unique_ptr<synthesis_abstract> core_ = nullptr;
+
 protected: /* machine state */
-	std::atomic<machine::state> state_ = machine::state::wait;
+	std::atomic<machine::state> state_ = machine::state::startup;
 	std::unordered_map<machine::state, std::unique_ptr<state_abstract>> map_;
 
 public: /* export */
-	int8_t run();
-	int8_t terminate();
-	int8_t transition(machine::state next);
+	void setup(std::unique_ptr<synthesis_abstract> core);
+	void synthesize();
+	void perform();
+	void terminate();
+	void run();
+	void transition(machine::state next);
 
 public: /* instance */
 	static machine_singleton &instance();

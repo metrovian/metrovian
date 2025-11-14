@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <cmath>
 #include <csignal>
+#include <thread>
+#include <chrono>
 #include <functional>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
@@ -12,9 +14,10 @@
 
 namespace machine {
 enum class state : uint8_t {
-	wait = 0,
-	synthesis = 1,
-	performance = 2,
+	startup = 0,
+	setup = 1,
+	synthesis = 2,
+	performance = 3,
 };
 }; // namespace machine
 
@@ -24,6 +27,5 @@ public: /* abstract */
 
 public: /* abstract */
 	virtual void enter() = 0;
-	virtual void exit() = 0;
 	virtual void update() = 0;
 };
