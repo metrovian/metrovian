@@ -49,23 +49,27 @@ int8_t sound_sequencer::open() {
 		return -1;
 	}
 
-	int32_t client = CONFIG_INT32("alsa", "sequencer", "client");
-	int32_t cport = CONFIG_INT32("alsa", "sequencer", "port");
-	int32_t port = snd_seq_create_simple_port(
-	    handle_,
-	    "InputPort",
-	    SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE,
-	    SND_SEQ_PORT_TYPE_MIDI_GENERIC | SND_SEQ_PORT_TYPE_APPLICATION);
-
-	len_ = CONFIG_UINT64("alsa", "sequencer", "mux-length");
-	if (port < 0) {
+	snd_seq_addr_t address = {0, 0};
+	if (snd_seq_parse_address(
+		handle_,
+		&address,
+		CONFIG_STRING("alsa", "sequencer", "port").c_str()) < 0) {
 		snd_seq_close(handle_);
-		LOG_CONDITION(snd_seq_create_simple_port < 0);
+		LOG_CONDITION(snd_seq_parse_address < 0);
 		LOG_EXIT();
 		return -2;
-	}
+	};
 
-	if (snd_seq_connect_from(handle_, port, client, cport) < 0) {
+	len_ = CONFIG_UINT64("alsa", "sequencer", "mux-length");
+	if (snd_seq_connect_from(
+		handle_,
+		snd_seq_create_simple_port(
+		    handle_,
+		    "InputPort",
+		    SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE,
+		    SND_SEQ_PORT_TYPE_MIDI_GENERIC | SND_SEQ_PORT_TYPE_APPLICATION),
+		address.client,
+		address.port) < 0) {
 		snd_seq_close(handle_);
 		LOG_CONDITION(snd_seq_connect_from < 0);
 		LOG_EXIT();
