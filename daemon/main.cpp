@@ -20,7 +20,13 @@ void machine_singleton::terminate() {
 	return;
 }
 
-void machine_singleton::run() {
+void machine_singleton::transition(machine::state next) {
+	state_.store(next);
+	map_[state_.load()]->enter();
+	return;
+}
+
+void machine_singleton::loop() {
 	transition(machine::state::setup);
 	while (state_.load() != machine::state::startup) {
 		map_[state_.load()]->update();
@@ -30,24 +36,36 @@ void machine_singleton::run() {
 	return;
 }
 
-void machine_singleton::transition(machine::state next) {
-	state_.store(next);
-	map_[state_.load()]->enter();
-	return;
-}
-
 machine_singleton &machine_singleton::instance() {
 	static machine_singleton instance_;
 	return instance_;
 }
 
-machine_singleton::machine_singleton() {
+void machine_singleton::load_map() {
 	map_.insert(std::make_pair(machine::state::setup, std::make_unique<state_setup>()));
 	map_.insert(std::make_pair(machine::state::synthesis, std::make_unique<state_synthesis>()));
 	map_.insert(std::make_pair(machine::state::performance, std::make_unique<state_performance>()));
+	return;
+}
+
+void machine_singleton::load_stdout() {
+	std::cout << std::scientific << std::showpos << std::setprecision(6);
+	return;
+}
+
+void machine_singleton::load_stderr() {
+	spdlog::set_default_logger(spdlog::stderr_color_mt("stderr"));
+	spdlog::set_level(spdlog::level::info);
+	return;
+}
+
+machine_singleton::machine_singleton() {
+	load_map();
+	load_stdout();
+	load_stderr();
 }
 
 int32_t main(int argc, char **argv) {
-	machine_singleton::instance().run();
+	machine_singleton::instance().loop();
 	return 0;
 }
