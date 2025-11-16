@@ -9,6 +9,10 @@ protected: /* waveform setter */
 	void resize(uint64_t note);
 	void resample(uint64_t note, std::vector<int16_t> &pcm);
 
+protected: /* sequencer callback */
+	void callback_disconnect(std::function<void(void)> function);
+	void callback_change(std::function<void(void)> function);
+
 public: /* export */
 	int8_t synthesize();
 	int8_t perform();

@@ -10,14 +10,26 @@ void sound_sequencer::thread_event() {
 			continue;
 		} else if (event != nullptr) {
 			mutex_.lock();
-			if (event->type == SND_SEQ_EVENT_NOTEON) {
+			switch (event->type) {
+			case SND_SEQ_EVENT_NOTEON:
 				key_[event->data.note.note].vel_ = event->data.note.velocity;
 				key_[event->data.note.note].pos_ = 0;
 				key_[event->data.note.note].active_ = 1;
-			} else if (event->type == SND_SEQ_EVENT_NOTEOFF) {
+				break;
+			case SND_SEQ_EVENT_NOTEOFF:
 				key_[event->data.note.note].vel_ = event->data.note.velocity;
 				key_[event->data.note.note].pos_ = 0;
 				key_[event->data.note.note].active_ = 0;
+				break;
+			case SND_SEQ_EVENT_CLIENT_EXIT:
+			case SND_SEQ_EVENT_PORT_EXIT:
+			case SND_SEQ_EVENT_PORT_UNSUBSCRIBED:
+				if (on_disconnect_ != nullptr) {
+					on_disconnect_();
+				}
+				break;
+			default:
+				break;
 			}
 
 			mutex_.unlock();
@@ -34,6 +46,16 @@ void sound_sequencer::resize(uint64_t note) {
 
 void sound_sequencer::resample(uint64_t note, std::vector<int16_t> &pcm) {
 	key_[note].sample_ = pcm;
+	return;
+}
+
+void sound_sequencer::callback_disconnect(std::function<void(void)> function) {
+	on_disconnect_ = function;
+	return;
+}
+
+void sound_sequencer::callback_change(std::function<void(void)> function) {
+	on_change_ = function;
 	return;
 }
 
