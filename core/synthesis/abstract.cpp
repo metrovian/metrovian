@@ -12,6 +12,16 @@ void synthesis_abstract::resample(uint64_t note, std::vector<int16_t> &pcm) {
 	return;
 }
 
+void synthesis_abstract::callback_disconnect(std::function<void(void)> function) {
+	dynamic_cast<sound_sequencer *>(producer_.get())->callback_disconnect(function);
+	return;
+}
+
+void synthesis_abstract::callback_change(std::function<void(void)> function) {
+	dynamic_cast<sound_sequencer *>(producer_.get())->callback_change(function);
+	return;
+}
+
 int8_t synthesis_abstract::synthesize() {
 	create();
 	synthesis(
@@ -19,6 +29,7 @@ int8_t synthesis_abstract::synthesize() {
 	    CONFIG_UINT64("synthesis", "note-max"),
 	    CONFIG_UINT64("synthesis", "period"));
 
+	callback_disconnect([&]() { terminate(); });
 	return 0;
 }
 

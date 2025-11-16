@@ -18,6 +18,10 @@ class sound_sequencer : public sound_producer {
 protected: /* handle */
 	snd_seq_t *handle_ = nullptr;
 
+protected: /* callback */
+	std::function<void(void)> on_disconnect_ = nullptr;
+	std::function<void(void)> on_change_ = nullptr;
+
 protected: /* control */
 	std::atomic<uint8_t> state_;
 	std::mutex mutex_;
@@ -32,6 +36,10 @@ protected: /* thread */
 public: /* setter */
 	void resize(uint64_t note);
 	void resample(uint64_t note, std::vector<int16_t> &pcm);
+
+public: /* callback */
+	void callback_disconnect(std::function<void(void)> function);
+	void callback_change(std::function<void(void)> function);
 
 public: /* constructor */
 	sound_sequencer(
