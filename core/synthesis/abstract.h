@@ -6,12 +6,13 @@
 
 class synthesis_abstract : public sound_factory {
 protected: /* waveform setter */
+	void rescale(uint16_t volume);
 	void resize(uint64_t note);
 	void resample(uint64_t note, std::vector<int16_t> &pcm);
 
 protected: /* sequencer callback */
 	void callback_disconnect(std::function<void(void)> function);
-	void callback_change(std::function<void(void)> function);
+	void callback_change(std::function<void(unsigned, int)> function);
 
 public: /* export */
 	int8_t synthesize();

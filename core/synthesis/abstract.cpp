@@ -2,6 +2,10 @@
 #include "core/property.h"
 #include "core/predefined.h"
 
+void synthesis_abstract::rescale(uint16_t volume) {
+	dynamic_cast<sound_sequencer *>(producer_.get())->rescale(volume);
+}
+
 void synthesis_abstract::resize(uint64_t note) {
 	dynamic_cast<sound_sequencer *>(producer_.get())->resize(note);
 	return;
@@ -17,7 +21,7 @@ void synthesis_abstract::callback_disconnect(std::function<void(void)> function)
 	return;
 }
 
-void synthesis_abstract::callback_change(std::function<void(void)> function) {
+void synthesis_abstract::callback_change(std::function<void(unsigned, int)> function) {
 	dynamic_cast<sound_sequencer *>(producer_.get())->callback_change(function);
 	return;
 }
@@ -30,6 +34,16 @@ int8_t synthesis_abstract::synthesize() {
 	    CONFIG_UINT64("synthesis", "period"));
 
 	callback_disconnect([&]() { terminate(); });
+	callback_change([&](unsigned param, int value) {
+		switch (param) {
+		case 0x07:
+			rescale(value);
+			return;
+		default:
+			return;
+		}
+	});
+
 	return 0;
 }
 
