@@ -20,7 +20,7 @@ protected: /* handle */
 
 protected: /* callback */
 	std::function<void(void)> on_disconnect_ = nullptr;
-	std::function<void(void)> on_change_ = nullptr;
+	std::function<void(unsigned, int)> on_change_ = nullptr;
 
 protected: /* control */
 	std::atomic<uint8_t> state_;
@@ -29,17 +29,19 @@ protected: /* control */
 
 protected: /* parameter */
 	uint64_t len_ = 0;
+	uint16_t volume_ = 64;
 
 protected: /* thread */
 	void thread_event();
 
 public: /* setter */
+	void rescale(uint16_t volume);
 	void resize(uint64_t note);
 	void resample(uint64_t note, std::vector<int16_t> &pcm);
 
 public: /* callback */
 	void callback_disconnect(std::function<void(void)> function);
-	void callback_change(std::function<void(void)> function);
+	void callback_change(std::function<void(unsigned, int)> function);
 
 public: /* constructor */
 	sound_sequencer(

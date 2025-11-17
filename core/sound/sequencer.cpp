@@ -21,6 +21,13 @@ void sound_sequencer::thread_event() {
 				key_[event->data.note.note].pos_ = 0;
 				key_[event->data.note.note].active_ = 0;
 				break;
+			case SND_SEQ_EVENT_CONTROLLER:
+				if (on_change_ != nullptr) {
+					on_change_(
+					    event->data.control.param,
+					    event->data.control.value);
+				}
+				break;
 			case SND_SEQ_EVENT_CLIENT_EXIT:
 			case SND_SEQ_EVENT_PORT_EXIT:
 			case SND_SEQ_EVENT_PORT_UNSUBSCRIBED:
@@ -39,6 +46,11 @@ void sound_sequencer::thread_event() {
 	return;
 }
 
+void sound_sequencer::rescale(uint16_t volume) {
+	volume_ = volume;
+	return;
+}
+
 void sound_sequencer::resize(uint64_t note) {
 	key_.resize(note);
 	return;
@@ -54,7 +66,7 @@ void sound_sequencer::callback_disconnect(std::function<void(void)> function) {
 	return;
 }
 
-void sound_sequencer::callback_change(std::function<void(void)> function) {
+void sound_sequencer::callback_change(std::function<void(unsigned, int)> function) {
 	on_change_ = function;
 	return;
 }
@@ -149,7 +161,7 @@ std::vector<int16_t> sound_sequencer::produce() {
 				break;
 			}
 
-			pcm[i] += note.sample_[note.pos_++] * (note.vel_ / 128.0);
+			pcm[i] += note.sample_[note.pos_++] * ((volume_ * note.vel_) / 16129.0);
 		}
 	}
 
