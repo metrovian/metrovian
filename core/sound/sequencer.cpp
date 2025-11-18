@@ -4,7 +4,7 @@
 
 void sound_sequencer::thread_event() {
 	state_.store(1);
-	while (state_.load() != 0) {
+	while (state_.load() == 1) {
 		snd_seq_event_t *event = nullptr;
 		if (snd_seq_event_input(handle_, &event) < 0) {
 			continue;
@@ -43,6 +43,7 @@ void sound_sequencer::thread_event() {
 		}
 	}
 
+	state_.store(0);
 	return;
 }
 
@@ -136,7 +137,12 @@ int8_t sound_sequencer::open() {
 
 int8_t sound_sequencer::close() {
 	LOG_ENTER();
-	state_.store(0);
+	state_.store(2);
+	while (state_.load() != 0) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		continue;
+	}
+
 	if (handle_ != nullptr) {
 		snd_seq_close(handle_);
 		handle_ = nullptr;

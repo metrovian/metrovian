@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <thread>
+#include <chrono>
 #include <atomic>
 #include <condition_variable>
 #include <map>
