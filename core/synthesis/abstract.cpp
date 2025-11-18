@@ -27,12 +27,21 @@ void synthesis_abstract::callback_change(std::function<void(unsigned, int)> func
 }
 
 int8_t synthesis_abstract::synthesize() {
-	create();
 	synthesis(
 	    CONFIG_UINT64("synthesis", "note-min"),
 	    CONFIG_UINT64("synthesis", "note-max"),
 	    CONFIG_UINT64("synthesis", "period"));
 
+	return 0;
+}
+
+int8_t synthesis_abstract::perform() {
+	run(sound::pipeline::sync);
+	return 0;
+}
+
+synthesis_abstract::synthesis_abstract() {
+	create();
 	callback_disconnect([&]() { terminate(); });
 	callback_change([&](unsigned param, int value) {
 		switch (param) {
@@ -43,13 +52,6 @@ int8_t synthesis_abstract::synthesize() {
 			return;
 		}
 	});
-
-	return 0;
-}
-
-int8_t synthesis_abstract::perform() {
-	run(sound::pipeline::sync);
-	return 0;
 }
 
 std::unique_ptr<sound_producer> synthesis_abstract::create_producer() {
