@@ -18,6 +18,9 @@ public: /* export */
 	int8_t synthesize();
 	int8_t perform();
 
+public: /* constructor */
+	synthesis_abstract();
+
 public: /* abstract */
 	virtual ~synthesis_abstract() {}
 
