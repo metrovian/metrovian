@@ -1,5 +1,4 @@
-## 
-### Mathematician <img src="https://img.shields.io/badge/C++-1f2e45?logo=c%2B%2B&logoColor=white" height="15"/>
+## Metrovian Synthesizer
 - Physical waveform synthesis via reconstruction
 ### Features
 - Performance daemon
