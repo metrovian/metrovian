@@ -1,6 +1,5 @@
 ## Metrovian Synthesizer
 - Physical waveform synthesis via reconstruction
-### Features
 - Performance daemon
 - Reconstruction commands
 ### Hardwares
