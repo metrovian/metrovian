@@ -21,18 +21,12 @@ protected: /* friend */
 	friend class state_synthesis;
 	friend class state_performance;
 
-protected: /* friend */
-	void setup(std::unique_ptr<synthesis_abstract> core);
-	void synthesize();
-	void perform();
-	void terminate();
-	void transition(machine::state next);
-
-public: /* export */
-	void loop();
-
 public: /* instance */
 	static machine_singleton &instance();
+
+public: /* export */
+	void transition(machine::state next);
+	void loop();
 
 private: /* load */
 	void load_map();

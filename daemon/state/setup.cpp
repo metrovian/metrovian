@@ -1,13 +1,17 @@
 #include "daemon/state/setup.h"
 #include "daemon/main.h"
-#include "core/synthesis/hammond.h"
+#include "core/synthesis/abstract.h"
 
 void state_setup::enter() {
+	machine_singleton::instance().core_.reset();
+	return;
 }
 
 void state_setup::update() {
-	// TODO: select by hardware configuration
-	machine_singleton::instance().setup(std::make_unique<synthesis_hammond>());
-	machine_singleton::instance().transition(machine::state::synthesis);
+	machine_singleton::instance().core_ = machine_singleton::instance().hw_->read();
+	if (machine_singleton::instance().core_ != nullptr) {
+		machine_singleton::instance().transition(machine::state::synthesis);
+	}
+
 	return;
 }
