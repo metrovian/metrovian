@@ -1,23 +1,8 @@
 #include "daemon/main.h"
 
-void machine_singleton::setup(std::unique_ptr<synthesis_abstract> core) {
-	core_ = std::move(core);
-	return;
-}
-
-void machine_singleton::synthesize() {
-	core_->synthesize();
-	return;
-}
-
-void machine_singleton::perform() {
-	core_->perform();
-	return;
-}
-
-void machine_singleton::terminate() {
-	core_->terminate();
-	return;
+machine_singleton &machine_singleton::instance() {
+	static machine_singleton instance_;
+	return instance_;
 }
 
 void machine_singleton::transition(machine::state next) {
@@ -38,11 +23,6 @@ void machine_singleton::loop() {
 	return;
 }
 
-machine_singleton &machine_singleton::instance() {
-	static machine_singleton instance_;
-	return instance_;
-}
-
 void machine_singleton::load_map() {
 	map_.insert(std::make_pair(machine::state::setup, std::make_unique<state_setup>()));
 	map_.insert(std::make_pair(machine::state::synthesis, std::make_unique<state_synthesis>()));
@@ -57,7 +37,7 @@ void machine_singleton::load_stdout() {
 
 void machine_singleton::load_stderr() {
 	spdlog::set_default_logger(spdlog::stderr_color_mt("stderr"));
-	spdlog::set_level(spdlog::level::info);
+	spdlog::set_level(spdlog::level::trace);
 	return;
 }
 

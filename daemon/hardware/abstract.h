@@ -3,6 +3,7 @@
 #include "daemon/hardware/abstract/knob.h"
 #include "daemon/hardware/abstract/segment.h"
 #include "daemon/state/abstract.h"
+#include "core/synthesis/abstract.h"
 
 class hardware_abstract {
 protected: /* hardware component */
@@ -10,7 +11,10 @@ protected: /* hardware component */
 	std::unique_ptr<knob_abstract> knob_ = nullptr;
 	std::unique_ptr<segment_abstract> segment_ = nullptr;
 
-public: /* export */
+public: /* setup */
+	std::unique_ptr<synthesis_abstract> read();
+
+public: /* transition */
 	void enter(machine::state state);
 	void exit(machine::state state);
 
