@@ -9,5 +9,5 @@
 
 class knob_abstract {
 protected: /* abstract */
-	virtual uint8_t read() = 0;
+	virtual uint16_t read() = 0;
 };

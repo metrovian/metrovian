@@ -1,13 +1,15 @@
 #pragma once
 #include "core/synthesis/abstract.h"
-#include "state/abstract.h"
-#include "state/setup.h"
-#include "state/synthesis.h"
-#include "state/performance.h"
+#include "daemon/hardware/abstract.h"
+#include "daemon/state/abstract.h"
+#include "daemon/state/setup.h"
+#include "daemon/state/synthesis.h"
+#include "daemon/state/performance.h"
 
 class machine_singleton {
 protected: /* machine core */
 	std::unique_ptr<synthesis_abstract> core_ = nullptr;
+	std::unique_ptr<hardware_abstract> hw_ = nullptr;
 
 protected: /* machine state */
 	std::atomic<machine::state> state_ = machine::state::startup;
