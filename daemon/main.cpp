@@ -21,6 +21,8 @@ void machine_singleton::terminate() {
 }
 
 void machine_singleton::transition(machine::state next) {
+	hw_->exit(state_.load());
+	hw_->enter(next);
 	state_.store(next);
 	map_[state_.load()]->enter();
 	return;
