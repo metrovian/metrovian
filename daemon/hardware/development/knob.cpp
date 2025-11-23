@@ -1,4 +1,5 @@
 #include "daemon/hardware/development/knob.h"
+#include "core/predefined.h"
 
 void knob_development::start() {
 	tcgetattr(STDIN_FILENO, &terminal_);
@@ -17,8 +18,8 @@ void knob_development::start() {
 			}
 		}
 
-		spdlog::info("[hardware] knob: {}", static_cast<int32_t>(value_));
 		state_.store(0);
+		LOG_VALUE(static_cast<int32_t>(value_));
 	}).detach();
 
 	return;
