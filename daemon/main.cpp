@@ -23,6 +23,12 @@ void machine_singleton::loop() {
 	return;
 }
 
+void machine_singleton::load_hardware() {
+	hw_ = std::make_unique<hardware_development>();
+	hw_->create();
+	return;
+}
+
 void machine_singleton::load_map() {
 	map_.insert(std::make_pair(machine::state::setup, std::make_unique<state_setup>()));
 	map_.insert(std::make_pair(machine::state::synthesis, std::make_unique<state_synthesis>()));
@@ -42,6 +48,7 @@ void machine_singleton::load_stderr() {
 }
 
 machine_singleton::machine_singleton() {
+	load_hardware();
 	load_map();
 	load_stdout();
 	load_stderr();

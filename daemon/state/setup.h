@@ -3,6 +3,6 @@
 
 class state_setup : public state_abstract {
 public: /* abstract */
-	virtual void enter();
-	virtual void update();
+	virtual void enter() override final;
+	virtual void update() override final;
 };

@@ -1,6 +1,9 @@
 # metrovian daemon
 src_daemon = files(
   'hardware/abstract.cpp',
+  'hardware/development.cpp',
+  'hardware/development/indicator.cpp',
+  'hardware/development/knob.cpp',
   'state/abstract.cpp',
   'state/performance.cpp',
   'state/setup.cpp',
