@@ -1,10 +1,11 @@
 #pragma once
-#include "core/synthesis/abstract.h"
 #include "daemon/hardware/abstract.h"
+#include "daemon/hardware/development.h"
 #include "daemon/state/abstract.h"
 #include "daemon/state/setup.h"
 #include "daemon/state/synthesis.h"
 #include "daemon/state/performance.h"
+#include "core/synthesis/abstract.h"
 
 class machine_singleton {
 protected: /* machine core */
@@ -29,6 +30,7 @@ public: /* export */
 	void loop();
 
 private: /* load */
+	void load_hardware();
 	void load_map();
 	void load_stdout();
 	void load_stderr();

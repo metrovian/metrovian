@@ -6,6 +6,6 @@ protected: /* complete flag */
 	std::atomic<uint8_t> complete_ = 0;
 
 public: /* abstract */
-	virtual void enter();
-	virtual void update();
+	virtual void enter() override final;
+	virtual void update() override final;
 };
