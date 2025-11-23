@@ -19,5 +19,5 @@ protected: /* abstract */
 	virtual std::unique_ptr<knob_abstract> create_knob() = 0;
 
 public: /* abstract */
-	virtual std::unique_ptr<synthesis_abstract> read() = 0;
+	virtual std::unique_ptr<synthesis_abstract> update() = 0;
 };

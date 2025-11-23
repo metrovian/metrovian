@@ -9,5 +9,5 @@ protected: /* abstract */
 	virtual std::unique_ptr<knob_abstract> create_knob() override final;
 
 public: /* abstract */
-	virtual std::unique_ptr<synthesis_abstract> read() override final;
+	virtual std::unique_ptr<synthesis_abstract> update() override final;
 };
