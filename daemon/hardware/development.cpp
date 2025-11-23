@@ -9,6 +9,10 @@ std::unique_ptr<knob_abstract> hardware_development::create_knob() {
 	return std::make_unique<knob_development>();
 }
 
-std::unique_ptr<synthesis_abstract> hardware_development::read() {
-	return std::make_unique<synthesis_square>();
+std::unique_ptr<synthesis_abstract> hardware_development::update() {
+	if (knob_->update() != 0) {
+		return std::make_unique<synthesis_square>();
+	}
+
+	return nullptr;
 }

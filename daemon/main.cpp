@@ -54,7 +54,7 @@ machine_singleton::machine_singleton() {
 	load_stderr();
 }
 
-int32_t main(int argc, char **argv) {
+int32_t main() {
 	machine_singleton::instance().loop();
 	return 0;
 }
