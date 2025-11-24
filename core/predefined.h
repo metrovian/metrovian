@@ -3,11 +3,11 @@
 #define RETURN_CLEANUP(retcode, code)   do { retcode = code; goto cleanup; } while(0)
 
 #define LOG_PATH                        std::string(__FILE__).substr(3)
-#define LOG_ENTER()                     spdlog::trace("[enter] [{}:{}] {}", LOG_PATH, __LINE__, __func__)
 #define LOG_EXIT()                      spdlog::trace("[exit] [{}:{}] {}", LOG_PATH, __LINE__, __func__)
-#define LOG_WARN(condition)             spdlog::warn("[warn] [{}:{}] {}", LOG_PATH, __LINE__, #condition)
+#define LOG_ENTER()                     spdlog::debug("[enter] [{}:{}] {}", LOG_PATH, __LINE__, __func__)
 #define LOG_VALUE(value)                spdlog::info("[value] [{}:{}] {}", LOG_PATH, __LINE__, value)
 #define LOG_PROGRESS(now, max)          spdlog::info("[render] [{}:{}] {}/{}", LOG_PATH, __LINE__, now, max)
+#define LOG_WARN(condition)             spdlog::warn("[warn] [{}:{}] {}", LOG_PATH, __LINE__, #condition)
 #define LOG_CONDITION(condition)        spdlog::error("[condition] [{}:{}] {}", LOG_PATH, __LINE__, #condition)
 #define LOG_ARGUMENT(argument)          spdlog::critical("[argument] [{}:{}] {}", LOG_PATH, __LINE__, #argument)
 
