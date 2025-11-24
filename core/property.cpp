@@ -39,12 +39,6 @@ void property_singleton::load_default() {
 	default_["alsa"]["sequencer"]["port-control"] = "";
 	default_["alsa"]["sequencer"]["mux-length"] = 32;
 	/* core */
-	default_["decryption"]["rsa"]["trial-iteration"] = 1000000;
-	default_["decryption"]["rsa"]["fermat-iteration"] = 1000000;
-	default_["decryption"]["rsa"]["pollards-rho-iteration"] = 1000000;
-	default_["decryption"]["rsa"]["pollards-p1-iteration"] = 100000;
-	default_["decryption"]["rsa"]["williams-p1-iteration"] = 100000;
-	default_["decryption"]["ecdsa"]["trial-iteration"] = 1000000;
 	default_["optimization"]["thread-max"] = 8;
 	default_["optimization"]["derivative-step"] = 1.000E-5;
 	default_["optimization"]["damp-step"] = 1.000E-3;
