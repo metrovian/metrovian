@@ -4,8 +4,6 @@
 #include "command/optimization/sinusoidal.h"
 #include "command/optimization/transcendental.h"
 #include "command/optimization/user.h"
-#include "command/decryption/rsa.h"
-#include "command/decryption/ecdsa.h"
 #include "command/decompression/audio.h"
 #include "command/synthesis/music.h"
 #include "core/predefined.h"
@@ -58,8 +56,6 @@ int32_t main(int argc, char **argv) {
 	interface_singleton::instance().command_setup(std::make_unique<command_sinusoidal>());
 	interface_singleton::instance().command_setup(std::make_unique<command_transcendental>());
 	interface_singleton::instance().command_setup(std::make_unique<command_user>());
-	interface_singleton::instance().command_setup(std::make_unique<command_rsa>());
-	interface_singleton::instance().command_setup(std::make_unique<command_ecdsa>());
 	interface_singleton::instance().command_setup(std::make_unique<command_audio>());
 	interface_singleton::instance().command_setup(std::make_unique<command_music>());
 	interface_singleton::instance().command_parse(argc, argv);
