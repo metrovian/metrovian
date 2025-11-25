@@ -1,5 +1,5 @@
 #include "command/optimization/sinusoidal.h"
-#include "core/reconstruction/optimization/sinusoidal.h"
+#include "core/optimization/sinusoidal.h"
 #include "core/predefined.h"
 
 void command_sinusoidal::setup(CLI::App *parent) {

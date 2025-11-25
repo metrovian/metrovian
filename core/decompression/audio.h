@@ -1,5 +1,5 @@
 #pragma once
-#include "core/reconstruction/decompression/abstract.h"
+#include "core/decompression/abstract.h"
 #include "core/sound/abstract.h"
 #include "core/sound/factory.h"
 #include "core/sound/player.h"

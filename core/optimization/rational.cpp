@@ -1,4 +1,4 @@
-#include "core/reconstruction/optimization/rational.h"
+#include "core/optimization/rational.h"
 #include "core/predefined.h"
 
 std::string optimization_rational::import_function(std::vector<uint8_t> model) {

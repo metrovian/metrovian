@@ -1,5 +1,5 @@
 #pragma once
-#include "core/reconstruction/optimization/abstract.h"
+#include "core/optimization/abstract.h"
 
 namespace sinusoidal {
 enum class function : uint8_t {

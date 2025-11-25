@@ -1,5 +1,5 @@
 #pragma once
-#include "core/reconstruction/optimization/abstract.h"
+#include "core/optimization/abstract.h"
 
 class optimization_user : public optimization_abstract {
 protected: /* abstract */

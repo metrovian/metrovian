@@ -1,5 +1,5 @@
 #include "command/optimization/rational.h"
-#include "core/reconstruction/optimization/rational.h"
+#include "core/optimization/rational.h"
 #include "core/predefined.h"
 
 void command_rational::setup(CLI::App *parent) {

@@ -1,4 +1,4 @@
-#include "core/reconstruction/optimization/sinusoidal.h"
+#include "core/optimization/sinusoidal.h"
 #include "core/predefined.h"
 
 std::string optimization_sinusoidal::import_function(sinusoidal::function model) {

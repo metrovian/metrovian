@@ -1,5 +1,5 @@
 #include "command/optimization/transcendental.h"
-#include "core/reconstruction/optimization/transcendental.h"
+#include "core/optimization/transcendental.h"
 #include "core/predefined.h"
 
 void command_transcendental::setup(CLI::App *parent) {

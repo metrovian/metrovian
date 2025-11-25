@@ -1,5 +1,5 @@
 #include "command/optimization/user.h"
-#include "core/reconstruction/optimization/user.h"
+#include "core/optimization/user.h"
 #include "core/predefined.h"
 
 void command_user::setup(CLI::App *parent) {
