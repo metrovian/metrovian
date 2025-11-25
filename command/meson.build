@@ -1,6 +1,7 @@
 # metrovian command
 src_command = files(
   'decompression/audio.cpp',
+  'operation/corr.cpp',
   'optimization/polynomial.cpp',
   'optimization/rational.cpp',
   'optimization/sinusoidal.cpp',
