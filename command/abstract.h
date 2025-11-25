@@ -27,6 +27,8 @@ protected: /* file */
 	static int8_t write_binary(const std::string &path, std::vector<uint8_t> &binary);
 	static int8_t read_text(const std::string &path, std::string &text);
 	static int8_t write_text(const std::string &path, std::string &text);
+	static int8_t read_vector(const std::string &path, Eigen::VectorXd &range);
+	static int8_t write_vector(const std::string &path, Eigen::VectorXd &range);
 	static int8_t read_vector(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter);
 	static int8_t write_vector(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter);
 

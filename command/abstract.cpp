@@ -79,6 +79,41 @@ int8_t command_abstract::write_text(const std::string &path, std::string &text) 
 	return 0;
 }
 
+int8_t command_abstract::read_vector(const std::string &path, Eigen::VectorXd &range) {
+	std::ifstream ifs(path);
+	if (!ifs.is_open()) {
+		return -1;
+	}
+
+	std::vector<double> read_range;
+	std::string line;
+	while (std::getline(ifs, line)) {
+		if (line.empty() == false) {
+			read_range.push_back(std::stod(line));
+		}
+	}
+
+	range = Eigen::Map<Eigen::VectorXd>(read_range.data(), read_range.size());
+	return 0;
+}
+
+int8_t command_abstract::write_vector(const std::string &path, Eigen::VectorXd &range) {
+	std::ofstream ofs(path);
+	if (ofs.is_open() == false) {
+		return -1;
+	}
+
+	for (Eigen::Index i = 0; i < range.size(); ++i) {
+		ofs << range[i] << std::endl;
+	}
+
+	if (ofs.fail() == true) {
+		return -2;
+	}
+
+	return 0;
+}
+
 int8_t command_abstract::read_vector(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter) {
 	std::ifstream ifs(path);
 	if (ifs.is_open() == false) {
