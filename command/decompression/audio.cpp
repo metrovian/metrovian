@@ -1,5 +1,5 @@
 #include "command/decompression/audio.h"
-#include "core/reconstruction/decompression/audio.h"
+#include "core/decompression/audio.h"
 #include "core/predefined.h"
 
 void command_audio::setup(CLI::App *parent) {

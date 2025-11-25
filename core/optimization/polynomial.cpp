@@ -1,4 +1,4 @@
-#include "core/reconstruction/optimization/polynomial.h"
+#include "core/optimization/polynomial.h"
 #include "core/predefined.h"
 
 std::string optimization_polynomial::import_function(uint8_t model) {

@@ -1,4 +1,4 @@
-#include "core/reconstruction/optimization/transcendental.h"
+#include "core/optimization/transcendental.h"
 #include "core/predefined.h"
 
 std::string optimization_transcendental::import_function(transcendental::function model) {

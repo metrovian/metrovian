@@ -1,5 +1,5 @@
 #pragma once
-#include "core/reconstruction/optimization/abstract.h"
+#include "core/optimization/abstract.h"
 
 namespace transcendental {
 enum class function : uint8_t {

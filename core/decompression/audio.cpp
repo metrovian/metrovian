@@ -1,4 +1,4 @@
-#include "core/reconstruction/decompression/audio.h"
+#include "core/decompression/audio.h"
 #include "core/property.h"
 #include "core/predefined.h"
 

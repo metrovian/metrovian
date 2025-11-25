@@ -1,5 +1,5 @@
 #include "command/optimization/polynomial.h"
-#include "core/reconstruction/optimization/polynomial.h"
+#include "core/optimization/polynomial.h"
 #include "core/predefined.h"
 
 void command_polynomial::setup(CLI::App *parent) {
