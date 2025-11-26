@@ -1,6 +1,7 @@
 #include "command/main.h"
 #include "command/decompression/audio.h"
 #include "command/operation/corr.h"
+#include "command/operation/desa.h"
 #include "command/optimization/polynomial.h"
 #include "command/optimization/rational.h"
 #include "command/optimization/sinusoidal.h"
@@ -54,6 +55,7 @@ interface_singleton::interface_singleton() {
 int32_t main(int argc, char **argv) {
 	interface_singleton::instance().command_setup(std::make_unique<command_audio>());
 	interface_singleton::instance().command_setup(std::make_unique<command_corr>());
+	interface_singleton::instance().command_setup(std::make_unique<command_desa>());
 	interface_singleton::instance().command_setup(std::make_unique<command_polynomial>());
 	interface_singleton::instance().command_setup(std::make_unique<command_rational>());
 	interface_singleton::instance().command_setup(std::make_unique<command_sinusoidal>());
