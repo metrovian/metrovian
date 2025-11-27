@@ -1,6 +1,9 @@
 # Targets
 build/
 
+# IDE
+.vscode
+
 # Prerequisites
 *.d
 
