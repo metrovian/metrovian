@@ -7,6 +7,7 @@
 #include <map>
 #include <memory>
 #include <atomic>
+#include <thread>
 #include <termios.h>
 #include <unistd.h>
 #include <spdlog/spdlog.h>
