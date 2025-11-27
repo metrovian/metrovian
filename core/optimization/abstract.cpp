@@ -39,7 +39,8 @@ double optimization_abstract::residual(const double domain, const double range) 
 	mu::Parser parser;
 	parser.DefineVar("t", const_cast<double *>(&domain));
 	for (Eigen::Index i = 0; i < params_.size(); ++i) {
-		parser.DefineVar("c" + std::to_string(i), &params_[i]);
+		std::string symbol = std::string("c") + std::to_string(i);
+		parser.DefineVar(symbol, &params_[i]);
 	}
 
 	parser.SetExpr(objective_function());
@@ -50,7 +51,8 @@ double optimization_abstract::residual(const double domain, const double range, 
 	mu::Parser parser;
 	parser.DefineVar("t", const_cast<double *>(&domain));
 	for (Eigen::Index i = 0; i < params.size(); ++i) {
-		parser.DefineVar("c" + std::to_string(i), const_cast<double *>(&params[i]));
+		std::string symbol = std::string("c") + std::to_string(i);
+		parser.DefineVar(symbol, const_cast<double *>(&params[i]));
 	}
 
 	parser.SetExpr(objective_function());
@@ -148,7 +150,8 @@ Eigen::VectorXd optimization_abstract::estimate(const Eigen::VectorXd &domain) {
 		mu::Parser parser;
 		parser.DefineVar("x", const_cast<double *>(&domain[i]));
 		for (Eigen::Index j = 0; j < params_.size(); ++j) {
-			parser.DefineVar("c" + std::to_string(j + 1), &params_[j]);
+			std::string symbol = std::string("c") + std::to_string(j + 1);
+			parser.DefineVar(symbol, &params_[j]);
 		}
 
 		parser.SetExpr(objective_function());
