@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <gpiod.h>
 
 class knob_abstract {
 public: /* destructor */

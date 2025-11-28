@@ -24,7 +24,7 @@ void machine_singleton::loop() {
 }
 
 void machine_singleton::load_hardware() {
-	hw_ = std::make_unique<hardware_development>();
+	hw_ = std::make_unique<hardware_raspi>();
 	hw_->create();
 	return;
 }

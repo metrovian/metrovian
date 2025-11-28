@@ -10,6 +10,7 @@
 #include <thread>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <gpiod.h>
 
 namespace indicator {
 enum class state : uint8_t {
