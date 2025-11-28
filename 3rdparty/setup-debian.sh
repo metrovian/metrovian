@@ -10,11 +10,9 @@ sudo apt install \
         libeigen3-dev \
         libmuparser-dev \
         libspdlog-dev \
-        libssl-dev \
-        libgsl-dev \
-        libgmp-dev \
         libavcodec-dev \
         libavformat-dev \
         libavutil-dev \
         libswscale-dev \
         libswresample-dev \
+        libgpiod-dev \
