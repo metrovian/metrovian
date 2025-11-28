@@ -1,6 +1,5 @@
 #include "daemon/hardware/raspi/indicator.h"
 #include "core/predefined.h"
-#include "indicator.h"
 
 indicator_raspi::indicator_raspi() {
 	chip_ = gpiod_chip_open_by_name("gpiochip0");
