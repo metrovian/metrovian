@@ -14,6 +14,9 @@ public: /* transition */
 	void exit(machine::state state);
 	void create();
 
+public: /* destructor */
+	virtual ~hardware_abstract() {}
+
 protected: /* abstract */
 	virtual std::unique_ptr<indicator_abstract> create_indicator() = 0;
 	virtual std::unique_ptr<knob_abstract> create_knob() = 0;

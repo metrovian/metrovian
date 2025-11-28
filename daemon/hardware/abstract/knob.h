@@ -14,6 +14,9 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 class knob_abstract {
+public: /* destructor */
+	virtual ~knob_abstract() {}
+
 public: /* abstract */
 	virtual void start() = 0;
 	virtual void stop() = 0;

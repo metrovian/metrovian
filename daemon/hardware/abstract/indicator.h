@@ -6,6 +6,8 @@
 #include <vector>
 #include <map>
 #include <memory>
+#include <atomic>
+#include <thread>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
@@ -19,6 +21,9 @@ enum class state : uint8_t {
 }; // namespace indicator
 
 class indicator_abstract {
+public: /* destructor */
+	virtual ~indicator_abstract() {}
+
 public: /* abstract */
 	virtual void set(indicator::state state) = 0;
 };
