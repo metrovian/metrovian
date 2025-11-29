@@ -78,7 +78,7 @@ int8_t sound_sequencer::open() {
 		&handle_,
 		CONFIG_STRING("alsa", "sequencer", "name").c_str(),
 		SND_SEQ_OPEN_INPUT,
-		0) < 0) {
+		SND_SEQ_NONBLOCK) < 0) {
 		LOG_CONDITION(snd_seq_open < 0);
 		LOG_EXIT();
 		return -1;
