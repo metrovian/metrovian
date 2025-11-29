@@ -18,6 +18,7 @@ enum class state : uint8_t {
 	setup = 1,
 	synthesis = 2,
 	performance = 3,
+	shutdown = 4,
 };
 }; // namespace machine
 

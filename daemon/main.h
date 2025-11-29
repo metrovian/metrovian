@@ -3,6 +3,7 @@
 #include "daemon/hardware/development.h"
 #include "daemon/hardware/raspi.h"
 #include "daemon/state/abstract.h"
+#include "daemon/state/dummy.h"
 #include "daemon/state/setup.h"
 #include "daemon/state/synthesis.h"
 #include "daemon/state/performance.h"
@@ -29,6 +30,7 @@ public: /* instance */
 public: /* export */
 	void transition(machine::state next);
 	void loop();
+	void shutdown();
 
 private: /* load */
 	void load_hardware();
