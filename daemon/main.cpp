@@ -15,11 +15,24 @@ void machine_singleton::transition(machine::state next) {
 
 void machine_singleton::loop() {
 	transition(machine::state::setup);
-	while (state_.load() != machine::state::startup) {
+	while (state_.load() != machine::state::shutdown) {
 		map_[state_.load()]->update();
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
 
+	state_.store(machine::state::startup);
+	return;
+}
+
+void machine_singleton::shutdown() {
+	state_.store(machine::state::shutdown);
+	while (state_.load() != machine::state::startup) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		continue;
+	}
+
+	core_.reset();
+	hw_.reset();
 	return;
 }
 
@@ -30,6 +43,8 @@ void machine_singleton::load_hardware() {
 }
 
 void machine_singleton::load_map() {
+	map_.insert(std::make_pair(machine::state::startup, std::make_unique<state_dummy>()));
+	map_.insert(std::make_pair(machine::state::shutdown, std::make_unique<state_dummy>()));
 	map_.insert(std::make_pair(machine::state::setup, std::make_unique<state_setup>()));
 	map_.insert(std::make_pair(machine::state::synthesis, std::make_unique<state_synthesis>()));
 	map_.insert(std::make_pair(machine::state::performance, std::make_unique<state_performance>()));
@@ -54,7 +69,14 @@ machine_singleton::machine_singleton() {
 	load_stderr();
 }
 
-int32_t main() {
+static void handle_terminate(int) {
+	machine_singleton::instance().shutdown();
+	return;
+}
+
+int main(int, char **) {
+	std::signal(SIGTERM, handle_terminate);
+	std::signal(SIGINT, handle_terminate);
 	machine_singleton::instance().loop();
 	return 0;
 }

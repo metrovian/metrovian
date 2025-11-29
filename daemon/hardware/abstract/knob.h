@@ -9,6 +9,7 @@
 #include <atomic>
 #include <thread>
 #include <termios.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>

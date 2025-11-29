@@ -7,6 +7,9 @@ protected: /* terminal */
 	std::atomic<uint16_t> value_ = 0;
 	termios terminal_;
 
+public: /* destructor */
+	virtual ~knob_development() override final;
+
 public: /* abstract */
 	virtual void start() override final;
 	virtual void stop() override final;
