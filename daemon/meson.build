@@ -7,6 +7,7 @@ src_daemon = files(
   'hardware/raspi.cpp',
   'hardware/raspi/indicator.cpp',
   'hardware/raspi/knob.cpp',
+  'hardware/raspi/segment.cpp',
   'state/abstract.cpp',
   'state/dummy.cpp',
   'state/performance.cpp',
