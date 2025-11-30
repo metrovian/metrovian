@@ -23,7 +23,7 @@ public: /* constructor */
 	segment_raspi();
 
 public: /* destructor */
-	virtual ~segment_raspi();
+	~segment_raspi();
 
 public: /* export */
 	void set(uint8_t num);
