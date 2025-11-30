@@ -2,6 +2,7 @@
 #include "core/predefined.h"
 
 segment_raspi::segment_raspi() {
+	LOG_ENTER();
 	chip_ = gpiod_chip_open("/dev/gpiochip0");
 	if (chip_ == nullptr) {
 		LOG_CONDITION(gpiod_chip_open_by_name == nullptr);
@@ -113,9 +114,12 @@ segment_raspi::segment_raspi() {
 
 		state_.store(0);
 	}).detach();
+
+	LOG_EXIT();
 }
 
 segment_raspi::~segment_raspi() {
+	LOG_ENTER();
 	if (state_.load() != 0) {
 		state_.store(2);
 	}
@@ -146,6 +150,7 @@ segment_raspi::~segment_raspi() {
 	gpiod_line_release(line2_);
 	gpiod_line_release(line3_);
 	gpiod_chip_close(chip_);
+	LOG_EXIT();
 }
 
 void segment_raspi::set(uint8_t num) {

@@ -1,4 +1,5 @@
 #include "daemon/main.h"
+#include "core/predefined.h"
 
 machine_singleton &machine_singleton::instance() {
 	static machine_singleton instance_;
@@ -6,14 +7,17 @@ machine_singleton &machine_singleton::instance() {
 }
 
 void machine_singleton::transition(machine::state next) {
+	LOG_ENTER();
 	hw_->exit(state_.load());
 	hw_->enter(next);
 	state_.store(next);
 	map_[state_.load()]->enter();
+	LOG_EXIT();
 	return;
 }
 
 void machine_singleton::loop() {
+	LOG_ENTER();
 	transition(machine::state::setup);
 	while (state_.load() != machine::state::shutdown) {
 		map_[state_.load()]->update();
@@ -21,10 +25,12 @@ void machine_singleton::loop() {
 	}
 
 	state_.store(machine::state::startup);
+	LOG_EXIT();
 	return;
 }
 
 void machine_singleton::shutdown() {
+	LOG_ENTER();
 	state_.store(machine::state::shutdown);
 	while (state_.load() != machine::state::startup) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -33,6 +39,7 @@ void machine_singleton::shutdown() {
 
 	core_.reset();
 	hw_.reset();
+	LOG_EXIT();
 	return;
 }
 
@@ -63,10 +70,12 @@ void machine_singleton::load_stderr() {
 }
 
 machine_singleton::machine_singleton() {
+	LOG_ENTER();
 	load_hardware();
 	load_map();
 	load_stdout();
 	load_stderr();
+	LOG_EXIT();
 }
 
 static void handle_terminate(int) {

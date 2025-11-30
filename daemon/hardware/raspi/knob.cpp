@@ -2,6 +2,7 @@
 #include "core/predefined.h"
 
 knob_raspi::knob_raspi() {
+	LOG_ENTER();
 	chip_ = gpiod_chip_open("/dev/gpiochip0");
 	if (chip_ == nullptr) {
 		LOG_CONDITION(gpiod_chip_open_by_name == nullptr);
@@ -43,9 +44,11 @@ knob_raspi::knob_raspi() {
 	}
 
 	segment_ = std::make_unique<segment_raspi>();
+	LOG_EXIT();
 }
 
 knob_raspi::~knob_raspi() {
+	LOG_ENTER();
 	segment_.reset();
 	state_.store(2);
 	stop();
@@ -53,9 +56,11 @@ knob_raspi::~knob_raspi() {
 	gpiod_line_release(line2_);
 	gpiod_line_release(line3_);
 	gpiod_chip_close(chip_);
+	LOG_EXIT();
 }
 
 void knob_raspi::start() {
+	LOG_ENTER();
 	std::thread([this]() {
 		int32_t key_pre = gpiod_line_get_value(line1_);
 		int32_t s1_pre = gpiod_line_get_value(line2_);
@@ -89,16 +94,19 @@ void knob_raspi::start() {
 		state_.store(0);
 	}).detach();
 
+	LOG_EXIT();
 	return;
 }
 
 void knob_raspi::stop() {
+	LOG_ENTER();
 	while (state_.load() != 0) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 		continue;
 	}
 
 	value_.store(value_.load() & 0xFF);
+	LOG_EXIT();
 	return;
 }
 

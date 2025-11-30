@@ -2,6 +2,7 @@
 #include "core/predefined.h"
 
 indicator_raspi::indicator_raspi() {
+	LOG_ENTER();
 	chip_ = gpiod_chip_open_by_name("gpiochip0");
 	if (chip_ == nullptr) {
 		LOG_CONDITION(gpiod_chip_open_by_name == nullptr);
@@ -21,9 +22,12 @@ indicator_raspi::indicator_raspi() {
 		gpiod_chip_close(chip_);
 		return;
 	}
+
+	LOG_EXIT();
 }
 
 indicator_raspi::~indicator_raspi() {
+	LOG_ENTER();
 	if (state_.load() != 0) {
 		state_.store(2);
 	}
@@ -36,6 +40,7 @@ indicator_raspi::~indicator_raspi() {
 	gpiod_line_set_value(line_, 0);
 	gpiod_line_release(line_);
 	gpiod_chip_close(chip_);
+	LOG_EXIT();
 }
 
 void indicator_raspi::set(indicator::state state) {
