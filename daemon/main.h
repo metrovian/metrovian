@@ -18,6 +18,13 @@ protected: /* machine state */
 	std::atomic<machine::state> state_ = machine::state::startup;
 	std::unordered_map<machine::state, std::unique_ptr<state_abstract>> map_;
 
+protected: /* handler */
+	static inline std::function<void(void)> handler_ = nullptr;
+
+protected: /* handler setup */
+	static void handle_setup(const std::function<void(void)> handler);
+	static void handle_terminate(int);
+
 protected: /* friend */
 	friend class state_abstract;
 	friend class state_setup;

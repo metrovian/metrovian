@@ -1,5 +1,24 @@
 #include "daemon/main.h"
 #include "core/predefined.h"
+#include "main.h"
+
+void machine_singleton::handle_setup(const std::function<void(void)> handler) {
+	handler_ = handler;
+	if (handler_ != nullptr) {
+		std::signal(SIGTERM, machine_singleton::handle_terminate);
+		std::signal(SIGINT, machine_singleton::handle_terminate);
+	}
+
+	return;
+}
+
+void machine_singleton::handle_terminate(int) {
+	if (handler_ != nullptr) {
+		handler_();
+	}
+
+	return;
+}
 
 machine_singleton &machine_singleton::instance() {
 	static machine_singleton instance_;
@@ -74,16 +93,10 @@ machine_singleton::machine_singleton() {
 	load_map();
 	load_stdout();
 	load_stderr();
-}
-
-static void handle_terminate(int) {
-	machine_singleton::instance().shutdown();
-	return;
+	handle_setup([&]() { shutdown(); });
 }
 
 int main(int, char **) {
-	std::signal(SIGTERM, handle_terminate);
-	std::signal(SIGINT, handle_terminate);
-	machine_singleton::instance().loop();
+	std::jthread([&]() { machine_singleton::instance().loop(); });
 	return 0;
 }
