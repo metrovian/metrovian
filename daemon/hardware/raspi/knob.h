@@ -2,10 +2,15 @@
 #include "daemon/hardware/abstract/knob.h"
 
 class knob_raspi : public knob_abstract {
-protected: /* terminal */
+protected: /* gpio flag */
 	std::atomic<uint8_t> state_ = 0;
 	std::atomic<uint16_t> value_ = 0;
-	termios terminal_;
+
+protected: /* gpio controller */
+	struct gpiod_chip *chip_ = nullptr;
+	struct gpiod_line *line1_ = nullptr;
+	struct gpiod_line *line2_ = nullptr;
+	struct gpiod_line *line3_ = nullptr;
 
 public: /* destructor */
 	virtual ~knob_raspi() override final;
