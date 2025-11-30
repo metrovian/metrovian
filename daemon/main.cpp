@@ -1,6 +1,5 @@
 #include "daemon/main.h"
 #include "core/predefined.h"
-#include "main.h"
 
 void machine_singleton::handle_setup(const std::function<void(void)> handler) {
 	handler_ = handler;
@@ -63,7 +62,20 @@ void machine_singleton::shutdown() {
 }
 
 void machine_singleton::load_hardware() {
-	hw_ = std::make_unique<hardware_raspi>();
+	struct utsname result;
+	if (uname(&result) != 0) {
+		return;
+	}
+
+	std::string platform = result.machine;
+	if (platform == "aarch64" ||
+	    platform == "armv7l" ||
+	    platform == "armv6l") {
+		hw_ = std::make_unique<hardware_raspi>();
+	} else {
+		hw_ = std::make_unique<hardware_development>();
+	}
+
 	hw_->create();
 	return;
 }
