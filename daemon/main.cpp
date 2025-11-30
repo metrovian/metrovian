@@ -70,12 +70,10 @@ void machine_singleton::load_stderr() {
 }
 
 machine_singleton::machine_singleton() {
-	LOG_ENTER();
 	load_hardware();
 	load_map();
 	load_stdout();
 	load_stderr();
-	LOG_EXIT();
 }
 
 static void handle_terminate(int) {
