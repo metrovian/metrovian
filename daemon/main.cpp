@@ -42,22 +42,14 @@ void machine_singleton::loop() {
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
 
-	state_.store(machine::state::startup);
+	core_.reset();
+	hw_.reset();
 	LOG_EXIT();
 	return;
 }
 
 void machine_singleton::shutdown() {
-	LOG_ENTER();
 	state_.store(machine::state::shutdown);
-	while (state_.load() != machine::state::startup) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
-		continue;
-	}
-
-	core_.reset();
-	hw_.reset();
-	LOG_EXIT();
 	return;
 }
 
