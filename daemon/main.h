@@ -2,6 +2,7 @@
 #include "daemon/hardware/abstract.h"
 #include "daemon/hardware/development.h"
 #include "daemon/hardware/raspi.h"
+#include "daemon/server-micro/restapi.h"
 #include "daemon/state/abstract.h"
 #include "daemon/state/dummy.h"
 #include "daemon/state/setup.h"

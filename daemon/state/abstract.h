@@ -21,6 +21,14 @@ enum class state : uint8_t {
 	performance = 3,
 	shutdown = 4,
 };
+
+enum class waveform : uint8_t {
+	sin = 0,
+	saw = 1,
+	square = 2,
+	unison = 3,
+	hammond = 4,
+};
 }; // namespace machine
 
 class state_abstract {

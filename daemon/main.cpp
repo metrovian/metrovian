@@ -98,6 +98,7 @@ machine_singleton::machine_singleton() {
 	load_stdout();
 	load_stderr();
 	handle_setup([&]() { shutdown(); });
+	restapi_singleton::instance();
 }
 
 int main(int, char **) {
