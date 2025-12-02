@@ -23,11 +23,12 @@ enum class state : uint8_t {
 };
 
 enum class waveform : uint8_t {
-	sin = 0,
-	saw = 1,
-	square = 2,
-	unison = 3,
-	hammond = 4,
+	none = 0,
+	sin = 1,
+	saw = 2,
+	square = 3,
+	unison = 4,
+	hammond = 5,
 };
 }; // namespace machine
 
