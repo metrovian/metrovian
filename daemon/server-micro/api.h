@@ -12,7 +12,7 @@
 #include <spdlog/spdlog.h>
 #include <microhttpd.h>
 
-class restapi_singleton {
+class api_singleton {
 protected: /* microhttpd struct */
 	struct MHD_Daemon *server_ = nullptr;
 
@@ -33,14 +33,14 @@ protected: /* parser */
 	    const char *uri);
 
 public: /* instance */
-	static restapi_singleton &instance();
+	static api_singleton &instance();
 
 public: /* export */
 	std::string update();
 
 private: /* constraint */
-	~restapi_singleton();
-	restapi_singleton();
-	restapi_singleton(const restapi_singleton &) = default;
-	restapi_singleton &operator=(const restapi_singleton &) = default;
+	~api_singleton();
+	api_singleton();
+	api_singleton(const api_singleton &) = default;
+	api_singleton &operator=(const api_singleton &) = default;
 };

@@ -26,6 +26,7 @@ machine_singleton &machine_singleton::instance() {
 
 void machine_singleton::transition(machine::state next) {
 	LOG_ENTER();
+	context_singleton::instance().transition(next);
 	hw_->exit(state_.load());
 	hw_->enter(next);
 	state_.store(next);
@@ -98,7 +99,8 @@ machine_singleton::machine_singleton() {
 	load_stdout();
 	load_stderr();
 	handle_setup([&]() { shutdown(); });
-	restapi_singleton::instance();
+	context_singleton::instance();
+	api_singleton::instance();
 }
 
 int main(int, char **) {
