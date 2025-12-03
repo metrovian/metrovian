@@ -9,6 +9,7 @@ sudo apt install \
         libcli11-dev \
         libeigen3-dev \
         libmuparser-dev \
+        libmicrohttpd-dev \
         libspdlog-dev \
         libavcodec-dev \
         libavformat-dev \
