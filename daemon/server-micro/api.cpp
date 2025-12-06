@@ -1,10 +1,12 @@
 #include "daemon/server-micro/api.h"
 #include "daemon/server-micro/context.h"
+#include "daemon/server-micro/response.h"
+#include "daemon/server-micro/parser/router.h"
 #include "core/property.h"
 #include "core/predefined.h"
 
 MHD_Result api_singleton::handle_request(
-    void *cls,
+    void *,
     struct MHD_Connection *connection,
     const char *,
     const char *method,
@@ -13,70 +15,10 @@ MHD_Result api_singleton::handle_request(
     size_t *,
     void **) {
 	if (strncmp(method, "GET", 3) != 0) {
-		return MHD_queue_response(
-		    connection,
-		    MHD_HTTP_METHOD_NOT_ALLOWED,
-		    MHD_create_response_from_buffer(
-			0,
-			nullptr,
-			MHD_RESPMEM_PERSISTENT));
+		return response::empty(connection, MHD_HTTP_METHOD_NOT_ALLOWED);
 	}
 
-	return static_cast<api_singleton *>(cls)->parse(connection);
-}
-
-MHD_Result api_singleton::parse(struct MHD_Connection *connection) {
-	const char *action =
-	    MHD_lookup_connection_value(
-		connection,
-		MHD_GET_ARGUMENT_KIND,
-		"action");
-
-	if (strncmp(action, "read", 4) == 0) {
-		const char *param = MHD_lookup_connection_value(
-		    connection,
-		    MHD_GET_ARGUMENT_KIND,
-		    "state");
-
-		if (param != nullptr) {
-			uint8_t state = static_cast<uint8_t>(context_singleton::instance().update_state());
-			std::string response = std::to_string(state);
-			char *buf = (char *)malloc(response.length());
-			memcpy(buf, response.c_str(), response.length());
-			return MHD_queue_response(
-			    connection,
-			    MHD_HTTP_OK,
-			    MHD_create_response_from_buffer(
-				response.length(),
-				(void *)buf,
-				MHD_RESPMEM_MUST_FREE));
-		}
-	} else if (strncmp(action, "write", 5) == 0) {
-		const char *waveform =
-		    MHD_lookup_connection_value(
-			connection,
-			MHD_GET_ARGUMENT_KIND,
-			"waveform");
-
-		if (waveform != nullptr) {
-			context_singleton::instance().transition(static_cast<machine::waveform>(std::stoi(waveform)));
-			return MHD_queue_response(
-			    connection,
-			    MHD_HTTP_OK,
-			    MHD_create_response_from_buffer(
-				0,
-				nullptr,
-				MHD_RESPMEM_PERSISTENT));
-		}
-	}
-
-	return MHD_queue_response(
-	    connection,
-	    MHD_HTTP_BAD_REQUEST,
-	    MHD_create_response_from_buffer(
-		0,
-		nullptr,
-		MHD_RESPMEM_PERSISTENT));
+	return router_singleton::instance().parse(connection);
 }
 
 api_singleton &api_singleton::instance() {
