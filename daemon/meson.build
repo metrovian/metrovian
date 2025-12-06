@@ -1,13 +1,5 @@
 # metrovian daemon
 src_daemon = files(
-  'hardware/abstract.cpp',
-  'hardware/development.cpp',
-  'hardware/development/indicator.cpp',
-  'hardware/development/knob.cpp',
-  'hardware/raspi.cpp',
-  'hardware/raspi/indicator.cpp',
-  'hardware/raspi/knob.cpp',
-  'hardware/raspi/segment.cpp',
   'server-micro/api.cpp',
   'server-micro/context.cpp',
   'state/abstract.cpp',
