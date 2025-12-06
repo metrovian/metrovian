@@ -1,5 +1,32 @@
-#include "daemon/main.h"
+#include "main.h"
 #include "core/predefined.h"
+
+void machine_singleton::transition(machine::state next) {
+	LOG_ENTER();
+	context_singleton::instance().transition(next);
+	state_.store(next);
+	smap_[state_.load()]->enter();
+	LOG_EXIT();
+	return;
+}
+
+void machine_singleton::transition(machine::waveform next) {
+	LOG_ENTER();
+	context_singleton::instance().transition(next);
+	waveform_.store(next);
+	LOG_EXIT();
+	return;
+}
+
+void machine_singleton::synthesize() {
+	wmap_[waveform_.load()]->synthesize();
+	return;
+}
+
+void machine_singleton::perform() {
+	wmap_[waveform_.load()]->perform();
+	return;
+}
 
 void machine_singleton::handle_setup(const std::function<void(void)> handler) {
 	handler_ = handler;
@@ -24,61 +51,20 @@ machine_singleton &machine_singleton::instance() {
 	return instance_;
 }
 
-void machine_singleton::transition(machine::state next) {
-	LOG_ENTER();
-	context_singleton::instance().transition(next);
-	hw_->exit(state_.load());
-	hw_->enter(next);
-	state_.store(next);
-	map_[state_.load()]->enter();
-	LOG_EXIT();
-	return;
-}
-
 void machine_singleton::loop() {
 	LOG_ENTER();
 	transition(machine::state::setup);
 	while (state_.load() != machine::state::shutdown) {
-		map_[state_.load()]->update();
+		smap_[state_.load()]->update();
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
 
-	core_.reset();
-	hw_.reset();
 	LOG_EXIT();
 	return;
 }
 
 void machine_singleton::shutdown() {
 	state_.store(machine::state::shutdown);
-	return;
-}
-
-void machine_singleton::load_hardware() {
-	struct utsname result;
-	if (uname(&result) != 0) {
-		return;
-	}
-
-	std::string platform = result.machine;
-	if (platform == "aarch64" ||
-	    platform == "armv7l" ||
-	    platform == "armv6l") {
-		hw_ = std::make_unique<hardware_raspi>();
-	} else {
-		hw_ = std::make_unique<hardware_development>();
-	}
-
-	hw_->create();
-	return;
-}
-
-void machine_singleton::load_map() {
-	map_.insert(std::make_pair(machine::state::startup, std::make_unique<state_dummy>()));
-	map_.insert(std::make_pair(machine::state::shutdown, std::make_unique<state_dummy>()));
-	map_.insert(std::make_pair(machine::state::setup, std::make_unique<state_setup>()));
-	map_.insert(std::make_pair(machine::state::synthesis, std::make_unique<state_synthesis>()));
-	map_.insert(std::make_pair(machine::state::performance, std::make_unique<state_performance>()));
 	return;
 }
 
@@ -93,11 +79,30 @@ void machine_singleton::load_stderr() {
 	return;
 }
 
+void machine_singleton::load_smap() {
+	smap_.insert(std::make_pair(machine::state::none, std::make_unique<state_dummy>()));
+	smap_.insert(std::make_pair(machine::state::shutdown, std::make_unique<state_dummy>()));
+	smap_.insert(std::make_pair(machine::state::setup, std::make_unique<state_setup>()));
+	smap_.insert(std::make_pair(machine::state::synthesis, std::make_unique<state_synthesis>()));
+	smap_.insert(std::make_pair(machine::state::performance, std::make_unique<state_performance>()));
+	return;
+}
+
+void machine_singleton::load_wmap() {
+	wmap_.insert(std::make_pair(machine::waveform::none, nullptr));
+	wmap_.insert(std::make_pair(machine::waveform::sin, std::make_unique<synthesis_sin>()));
+	wmap_.insert(std::make_pair(machine::waveform::saw, std::make_unique<synthesis_saw>()));
+	wmap_.insert(std::make_pair(machine::waveform::square, std::make_unique<synthesis_square>()));
+	wmap_.insert(std::make_pair(machine::waveform::unison, std::make_unique<synthesis_unison>()));
+	wmap_.insert(std::make_pair(machine::waveform::hammond, std::make_unique<synthesis_hammond>()));
+	return;
+}
+
 machine_singleton::machine_singleton() {
-	load_hardware();
-	load_map();
 	load_stdout();
 	load_stderr();
+	load_smap();
+	load_wmap();
 	handle_setup([&]() { shutdown(); });
 	context_singleton::instance();
 	api_singleton::instance();

@@ -5,7 +5,7 @@
 void state_performance::enter() {
 	complete_.store(0);
 	std::thread([&]() {
-		machine_singleton::instance().core_->perform();
+		machine_singleton::instance().perform();
 		complete_.store(1);
 	}).detach();
 

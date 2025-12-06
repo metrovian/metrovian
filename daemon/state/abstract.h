@@ -15,7 +15,7 @@
 
 namespace machine {
 enum class state : uint8_t {
-	startup = 0,
+	none = 0,
 	setup = 1,
 	synthesis = 2,
 	performance = 3,

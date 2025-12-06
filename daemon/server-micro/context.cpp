@@ -10,7 +10,7 @@ void context_singleton::transition(machine::state state) {
 	return;
 }
 
-void context_singleton::select(machine::waveform waveform) {
+void context_singleton::transition(machine::waveform waveform) {
 	waveform_ = waveform;
 	return;
 }

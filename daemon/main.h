@@ -1,7 +1,4 @@
 #pragma once
-#include "daemon/hardware/abstract.h"
-#include "daemon/hardware/development.h"
-#include "daemon/hardware/raspi.h"
 #include "daemon/server-micro/api.h"
 #include "daemon/server-micro/context.h"
 #include "daemon/state/abstract.h"
@@ -10,15 +7,26 @@
 #include "daemon/state/synthesis.h"
 #include "daemon/state/performance.h"
 #include "core/synthesis/abstract.h"
+#include "core/synthesis/sin.h"
+#include "core/synthesis/saw.h"
+#include "core/synthesis/square.h"
+#include "core/synthesis/unison.h"
+#include "core/synthesis/hammond.h"
 
 class machine_singleton {
 protected: /* machine core */
-	std::unique_ptr<synthesis_abstract> core_ = nullptr;
-	std::unique_ptr<hardware_abstract> hw_ = nullptr;
+	std::atomic<machine::state> state_ = machine::state::none;
+	std::atomic<machine::waveform> waveform_ = machine::waveform::none;
 
-protected: /* machine state */
-	std::atomic<machine::state> state_ = machine::state::startup;
-	std::unordered_map<machine::state, std::unique_ptr<state_abstract>> map_;
+protected: /* machine map */
+	std::unordered_map<machine::state, std::unique_ptr<state_abstract>> smap_;
+	std::unordered_map<machine::waveform, std::unique_ptr<synthesis_abstract>> wmap_;
+
+protected: /* machine function */
+	void transition(machine::state next);
+	void transition(machine::waveform next);
+	void synthesize();
+	void perform();
 
 protected: /* handler */
 	static inline std::function<void(void)> handler_ = nullptr;
@@ -37,15 +45,14 @@ public: /* instance */
 	static machine_singleton &instance();
 
 public: /* export */
-	void transition(machine::state next);
 	void loop();
 	void shutdown();
 
 private: /* load */
-	void load_hardware();
-	void load_map();
 	void load_stdout();
 	void load_stderr();
+	void load_smap();
+	void load_wmap();
 
 private: /* constraint */
 	machine_singleton();
