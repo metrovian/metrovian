@@ -1,4 +1,4 @@
-#include "main.h"
+#include "daemon/main.h"
 #include "core/predefined.h"
 
 void machine_singleton::transition(machine::state next) {
