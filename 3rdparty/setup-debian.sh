@@ -17,4 +17,3 @@ sudo apt install \
         libavutil-dev \
         libswscale-dev \
         libswresample-dev \
-        libgpiod-dev \
