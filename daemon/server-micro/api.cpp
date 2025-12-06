@@ -6,19 +6,12 @@
 MHD_Result api_singleton::handle_request(
     void *cls,
     struct MHD_Connection *connection,
-    const char *uri,
+    const char *,
     const char *method,
     const char *,
     const char *,
     size_t *,
     void **) {
-	return static_cast<api_singleton *>(cls)->parse(connection, uri, method);
-}
-
-MHD_Result api_singleton::parse(
-    struct MHD_Connection *connection,
-    const char *uri,
-    const char *method) {
 	if (strncmp(method, "GET", 3) != 0) {
 		return MHD_queue_response(
 		    connection,
@@ -29,6 +22,10 @@ MHD_Result api_singleton::parse(
 			MHD_RESPMEM_PERSISTENT));
 	}
 
+	return static_cast<api_singleton *>(cls)->parse(connection);
+}
+
+MHD_Result api_singleton::parse(struct MHD_Connection *connection) {
 	const char *action =
 	    MHD_lookup_connection_value(
 		connection,

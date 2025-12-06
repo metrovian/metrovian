@@ -28,10 +28,7 @@ protected: /* handler */
 	    void **con_cls);
 
 protected: /* parser */
-	MHD_Result parse(
-	    struct MHD_Connection *connection,
-	    const char *uri,
-	    const char *method);
+	MHD_Result parse(struct MHD_Connection *connection);
 
 public: /* instance */
 	static api_singleton &instance();
