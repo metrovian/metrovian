@@ -19,7 +19,6 @@ dep_eigen = dependency('eigen3', required: true)
 dep_json = dependency('nlohmann_json', required: true)
 dep_muparser = dependency('muparser', required: true)
 dep_spdlog = dependency('spdlog', required: true)
-dep_gpiod = dependency('libgpiod', required: true)
 dep_microhttpd = dependency('libmicrohttpd', required: true)
 dep_ffmpeg_codec = dependency('libavcodec', required: true)
 dep_ffmpeg_format = dependency('libavformat', required: true)
@@ -31,7 +30,6 @@ dep_common = [
   dep_json,
   dep_muparser,
   dep_spdlog,
-  dep_gpiod,
   dep_microhttpd,
   dep_ffmpeg_codec,
   dep_ffmpeg_format,
