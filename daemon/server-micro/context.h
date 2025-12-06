@@ -11,7 +11,7 @@ public: /* instance */
 
 public: /* setter */
 	void transition(machine::state state);
-	void select(machine::waveform waveform);
+	void transition(machine::waveform waveform);
 
 public: /* getter */
 	machine::state update_state();

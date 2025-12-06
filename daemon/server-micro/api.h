@@ -20,7 +20,7 @@ protected: /* handler */
 	static MHD_Result handle_request(
 	    void *cls,
 	    struct MHD_Connection *connection,
-	    const char *url,
+	    const char *uri,
 	    const char *method,
 	    const char *version,
 	    const char *data,
@@ -28,15 +28,13 @@ protected: /* handler */
 	    void **con_cls);
 
 protected: /* parser */
-	void parse(
+	MHD_Result parse(
 	    struct MHD_Connection *connection,
-	    const char *uri);
+	    const char *uri,
+	    const char *method);
 
 public: /* instance */
 	static api_singleton &instance();
-
-public: /* export */
-	std::string update();
 
 private: /* constraint */
 	~api_singleton();

@@ -4,7 +4,7 @@
 void state_synthesis::enter() {
 	complete_.store(0);
 	std::thread([&]() {
-		machine_singleton::instance().core_->synthesize();
+		machine_singleton::instance().synthesize();
 		complete_.store(1);
 	}).detach();
 

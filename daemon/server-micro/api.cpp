@@ -6,36 +6,85 @@
 MHD_Result api_singleton::handle_request(
     void *cls,
     struct MHD_Connection *connection,
-    const char *url,
+    const char *uri,
     const char *method,
-    const char *version,
-    const char *data,
-    size_t *size,
-    void **con_cls) {
-	const char *resp = "API TEST";
-	auto response =
-	    MHD_create_response_from_buffer(
-		strlen(resp),
-		(void *)resp,
-		MHD_RESPMEM_PERSISTENT);
-	MHD_queue_response(connection, MHD_HTTP_NOT_FOUND, response);
-	MHD_destroy_response(response);
-	return MHD_Result::MHD_YES;
+    const char *,
+    const char *,
+    size_t *,
+    void **) {
+	return static_cast<api_singleton *>(cls)->parse(connection, uri, method);
 }
 
-void api_singleton::parse(
+MHD_Result api_singleton::parse(
     struct MHD_Connection *connection,
-    const char *uri) {
-	// context_singleton::instance().select();
+    const char *uri,
+    const char *method) {
+	if (strncmp(method, "GET", 3) != 0) {
+		return MHD_queue_response(
+		    connection,
+		    MHD_HTTP_METHOD_NOT_ALLOWED,
+		    MHD_create_response_from_buffer(
+			0,
+			nullptr,
+			MHD_RESPMEM_PERSISTENT));
+	}
+
+	const char *action =
+	    MHD_lookup_connection_value(
+		connection,
+		MHD_GET_ARGUMENT_KIND,
+		"action");
+
+	if (strncmp(action, "read", 4) == 0) {
+		const char *param = MHD_lookup_connection_value(
+		    connection,
+		    MHD_GET_ARGUMENT_KIND,
+		    "state");
+
+		if (param != nullptr) {
+			uint8_t state = static_cast<uint8_t>(context_singleton::instance().update_state());
+			std::string response = std::to_string(state);
+			char *buf = (char *)malloc(response.length());
+			memcpy(buf, response.c_str(), response.length());
+			return MHD_queue_response(
+			    connection,
+			    MHD_HTTP_OK,
+			    MHD_create_response_from_buffer(
+				response.length(),
+				(void *)buf,
+				MHD_RESPMEM_MUST_FREE));
+		}
+	} else if (strncmp(action, "write", 5) == 0) {
+		const char *waveform =
+		    MHD_lookup_connection_value(
+			connection,
+			MHD_GET_ARGUMENT_KIND,
+			"waveform");
+
+		if (waveform != nullptr) {
+			context_singleton::instance().transition(static_cast<machine::waveform>(std::stoi(waveform)));
+			return MHD_queue_response(
+			    connection,
+			    MHD_HTTP_OK,
+			    MHD_create_response_from_buffer(
+				0,
+				nullptr,
+				MHD_RESPMEM_PERSISTENT));
+		}
+	}
+
+	return MHD_queue_response(
+	    connection,
+	    MHD_HTTP_BAD_REQUEST,
+	    MHD_create_response_from_buffer(
+		0,
+		nullptr,
+		MHD_RESPMEM_PERSISTENT));
 }
 
 api_singleton &api_singleton::instance() {
 	static api_singleton instance_;
 	return instance_;
-}
-
-std::string api_singleton::update() {
-	return std::string();
 }
 
 api_singleton::api_singleton() {
