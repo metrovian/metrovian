@@ -15,7 +15,10 @@ document.addEventListener("DOMContentLoaded", () => {
   function applyState(state) {
     const info = STATE_UI[state];
     stateText.textContent = info.label;
-    stateCircle.classList.remove(Object.values(STATE_UI).map((v) => v.class));
+    stateCircle.classList.remove(
+      ...Object.values(STATE_UI).map((v) => v.class)
+    );
+
     stateCircle.classList.add(info.class);
     if (info.disabled == false) {
       waveSelect.disabled = false;
