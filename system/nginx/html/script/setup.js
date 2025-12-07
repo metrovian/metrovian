@@ -31,19 +31,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function updateState() {
-    const res = await fetch("/api?action=read&state=0", {
-      method: "GET",
-      cache: "no-store",
-    });
-
-    if (res.ok == false) {
+    try {
+      const raw = await asyncAPI({ action: "read", state: 0 });
+      const state = raw.trim();
+      applyState(state);
+    } catch (err) {
       applyState(400);
-      return;
+      console.error("State", err);
     }
 
-    const raw = await res.text();
-    const state = raw.trim();
-    applyState(state);
     return;
   }
 
@@ -51,21 +47,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const value = waveSelect?.value || null;
     const valids = Array.from(waveSelect.options).map((opt) => opt.value);
     if (valids.includes(value) == false) {
-      console.error("invalid waveform");
+      console.error("Invalid Waveform");
       return;
     }
 
-    const res = await fetch(
-      `/api?action=write&waveform=${encodeURIComponent(value)}`,
-      { method: "GET", cache: "no-store" }
-    );
-
-    if (res.ok == false) {
-      applyState(400);
+    try {
+      await asyncAPI({
+        action: "write",
+        waveform: encodeURIComponent(value),
+      });
+    } catch (err) {
+      console.warn(`Select Waveform: ${value}`);
       return;
     }
 
-    console.log(`select waveform: ${value}`);
+    console.log(`Select Waveform: ${value}`);
     return;
   });
 
