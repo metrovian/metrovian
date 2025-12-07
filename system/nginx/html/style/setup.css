@@ -1,0 +1,155 @@
+:root {
+  --bg: #0d1117;
+  --panel-bg: #121418;
+  --panel-border: #232830;
+  --muted: #9fb0d6;
+  --text: #e6eef9;
+  --accent-blue: #3b82f6;
+  --accent-synth: #6ea8ff;
+  --accent-perf: #22f7b6;
+  --accent-error: #ef4444;
+  --circle-size: 180px;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  font-family: "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+#panel {
+  width: 320px;
+  margin: 48px auto;
+  background: linear-gradient(180deg, #0f1419 0%, #0b0f14 100%);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.55);
+  border: 1px solid var(--panel-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+}
+
+.circle {
+  width: var(--circle-size);
+  height: var(--circle-size);
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0b1220 0%, #0f1724 100%);
+  border: 3px solid rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: var(--text);
+  transition: box-shadow 180ms ease, border-color 180ms ease,
+    transform 180ms ease;
+  margin-bottom: 18px;
+  position: relative;
+}
+.circle::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 25%,
+    rgba(255, 255, 255, 0.02),
+    transparent 35%
+  );
+  pointer-events: none;
+}
+.circle.setup {
+  border-color: rgba(59, 130, 246, 0.9);
+  box-shadow: 0 6px 28px 6px rgba(59, 130, 246, 0.2),
+    0 0 6px 1px rgba(59, 130, 246, 0.12) inset;
+}
+.circle.synthesis {
+  border-color: rgba(110, 168, 255, 0.95);
+  box-shadow: 0 8px 34px 8px rgba(110, 168, 255, 0.22),
+    0 0 8px 2px rgba(110, 168, 255, 0.12) inset;
+}
+.circle.perform {
+  border-color: rgba(34, 247, 182, 0.95);
+  box-shadow: 0 8px 34px 8px rgba(34, 247, 182, 0.24),
+    0 0 8px 2px rgba(34, 247, 182, 0.12) inset;
+}
+.circle.error {
+  border-color: rgba(239, 68, 68, 0.95);
+  color: #ffdad6;
+  box-shadow: 0 8px 40px 10px rgba(239, 68, 68, 0.28);
+}
+
+#waveSetup {
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+  margin-top: 6px;
+  color: var(--muted);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+#waveSetup.disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+#waveSetup select {
+  width: 140px;
+  height: 40px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: linear-gradient(180deg, #0b1622, #071019);
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  appearance: none;
+}
+#waveSetup select option {
+  background: #0b1622;
+  color: var(--text);
+}
+#waveSetup button {
+  padding: 8px 16px;
+  height: 40px;
+  border-radius: 10px;
+  border: none;
+  background: var(--accent-blue);
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(59, 130, 246, 0.12);
+  transition: transform 80ms ease, box-shadow 120ms ease;
+}
+#waveSetup button:active {
+  transform: translateY(1px);
+}
+#waveSetup button:hover {
+  box-shadow: 0 10px 26px rgba(59, 130, 246, 0.16);
+}
+
+@media (max-width: 520px) {
+  #panel {
+    width: calc(100% - 100px);
+    padding: 20px;
+    margin: 32px auto;
+    max-height: calc(100vh - 64px);
+  }
+  :root {
+    --circle-size: 160px;
+  }
+  #waveSetup select {
+    width: 160px;
+  }
+}
