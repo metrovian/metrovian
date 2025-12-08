@@ -4,6 +4,9 @@ git submodule foreach --recursive "git clean -fd"
 git submodule update --init --recursive
 sudo apt update
 sudo apt install \
+        dnsmasq \
+        dhcpcd \
+        hostapd \
         nginx \
         nlohmann-json3-dev \
         libasound2-dev \
