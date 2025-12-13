@@ -2,7 +2,6 @@
 #include "daemon/server-micro/response.h"
 #include "daemon/server-micro/parser/read/state.h"
 #include "daemon/server-micro/parser/write/waveform.h"
-#include "router.h"
 
 MHD_Result router_singleton::handle_query(
     void *cls,
