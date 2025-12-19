@@ -14,6 +14,7 @@ void state_performance::enter() {
 
 void state_performance::update() {
 	if (complete_.load() != 0) {
+		machine_singleton::instance().clear();
 		machine_singleton::instance().transition(machine::state::setup);
 	}
 

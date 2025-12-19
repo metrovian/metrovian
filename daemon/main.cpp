@@ -28,6 +28,21 @@ void machine_singleton::perform() {
 	return;
 }
 
+void machine_singleton::clear() {
+	// clang-format off
+	machine::waveform now = waveform_.load();
+	switch (now) {
+	case machine::waveform::none: wmap_[now] = nullptr; break;
+	case machine::waveform::sin: wmap_[now] = std::make_unique<synthesis_sin>(); break;
+	case machine::waveform::saw: wmap_[now] = std::make_unique<synthesis_saw>(); break;
+	case machine::waveform::square: wmap_[now] = std::make_unique<synthesis_square>(); break;
+	case machine::waveform::unison: wmap_[now] = std::make_unique<synthesis_unison>(); break;
+	case machine::waveform::hammond: wmap_[now] = std::make_unique<synthesis_hammond>(); break;
+	}
+	// clang-format on
+	return;
+}
+
 void machine_singleton::handle_setup(const std::function<void(void)> handler) {
 	handler_ = handler;
 	if (handler_ != nullptr) {
