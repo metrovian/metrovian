@@ -38,6 +38,7 @@ void machine_singleton::clear() {
 	case machine::waveform::square: wmap_[now] = std::make_unique<synthesis_square>(); break;
 	case machine::waveform::unison: wmap_[now] = std::make_unique<synthesis_unison>(); break;
 	case machine::waveform::hammond: wmap_[now] = std::make_unique<synthesis_hammond>(); break;
+	default: break;
 	}
 	// clang-format on
 	return;
