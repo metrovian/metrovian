@@ -27,6 +27,7 @@ protected: /* machine function */
 	void transition(machine::waveform next);
 	void synthesize();
 	void perform();
+	void clear();
 
 protected: /* handler */
 	static inline std::function<void(void)> handler_ = nullptr;
