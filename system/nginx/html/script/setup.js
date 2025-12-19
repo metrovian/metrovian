@@ -46,6 +46,19 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  async function updateOptions() {
+    const res = await fetch("/data/setup.json");
+    const waves = await res.json();
+    waves.forEach((w) => {
+      const opt = document.createElement("option");
+      opt.value = w.id;
+      opt.textContent = w.name;
+      waveSelect.appendChild(opt);
+    });
+
+    return;
+  }
+
   waveConfirm.addEventListener("click", async () => {
     const value = waveSelect?.value || null;
     const valids = Array.from(waveSelect.options).map((opt) => opt.value);
@@ -55,10 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      await asyncAPI({
-        action: "write",
-        waveform: encodeURIComponent(value),
-      });
+      await asyncAPI({ action: "write", waveform: value });
     } catch (err) {
       console.warn(`Select Waveform: ${value}`);
       return;
@@ -68,6 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   });
 
+  updateOptions();
   updateState();
   setInterval(updateState, 200);
   return;
