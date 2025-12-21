@@ -48,6 +48,9 @@ synthesis_abstract::synthesis_abstract() {
 		case 0x07:
 			rescale(value);
 			return;
+		case 0x79:
+			terminate();
+			return;
 		default:
 			return;
 		}
