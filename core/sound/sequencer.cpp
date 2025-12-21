@@ -84,55 +84,48 @@ int8_t sound_sequencer::open() {
 		return -1;
 	}
 
-	snd_seq_addr_t note = {0, 0};
-	if (snd_seq_parse_address(
-		handle_,
-		&note,
-		CONFIG_STRING("alsa", "sequencer", "port-note").c_str()) < 0) {
-		snd_seq_close(handle_);
-		LOG_CONDITION(snd_seq_parse_address < 0);
-		LOG_EXIT();
-		return -2;
-	} else if (snd_seq_connect_from(
-		       handle_,
-		       snd_seq_create_simple_port(
-			   handle_,
-			   "InputPort",
-			   SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE,
-			   SND_SEQ_PORT_TYPE_MIDI_GENERIC | SND_SEQ_PORT_TYPE_APPLICATION),
-		       note.client,
-		       note.port) < 0) {
-		snd_seq_close(handle_);
-		LOG_CONDITION(snd_seq_connect_from < 0);
-		LOG_EXIT();
-		return -3;
-	}
+	len_ = CONFIG_UINT64("alsa", "sequencer", "mux-length");
+	uint8_t ports = 0;
+	snd_seq_client_info_t *cinfo = nullptr;
+	snd_seq_port_info_t *pinfo = nullptr;
+	snd_seq_client_info_alloca(&cinfo);
+	snd_seq_port_info_alloca(&pinfo);
+	while (snd_seq_query_next_client(handle_, cinfo) >= 0) {
+		int32_t client = snd_seq_client_info_get_client(cinfo);
+		if (client == 0 ||
+		    client == 14) {
+			continue;
+		}
 
-	snd_seq_addr_t control = {0, 0};
-	if (snd_seq_parse_address(
-		handle_,
-		&control,
-		CONFIG_STRING("alsa", "sequencer", "port-control").c_str()) == 0) {
-		if (snd_seq_connect_from(
-			handle_,
-			snd_seq_create_simple_port(
-			    handle_,
-			    "InputPort",
-			    SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE,
-			    SND_SEQ_PORT_TYPE_MIDI_GENERIC | SND_SEQ_PORT_TYPE_APPLICATION),
-			control.client,
-			control.port) < 0) {
-			snd_seq_close(handle_);
-			LOG_CONDITION(snd_seq_connect_from < 0);
+		snd_seq_port_info_set_client(pinfo, client);
+		snd_seq_port_info_set_port(pinfo, -1);
+		while (snd_seq_query_next_port(handle_, pinfo) >= 0) {
+			if (snd_seq_connect_from(
+				handle_,
+				snd_seq_create_simple_port(
+				    handle_,
+				    "InputPort",
+				    SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE,
+				    SND_SEQ_PORT_TYPE_MIDI_GENERIC | SND_SEQ_PORT_TYPE_APPLICATION),
+				client,
+				snd_seq_port_info_get_port(pinfo)) == 0) {
+				const char *name = snd_seq_port_info_get_name(pinfo);
+				++ports;
+				LOG_VALUE(name);
+				continue;
+			}
+		}
+
+		if (ports > 0) {
+			std::thread(&sound_sequencer::thread_event, this).detach();
 			LOG_EXIT();
-			return -4;
+			return 0;
 		}
 	}
 
-	len_ = CONFIG_UINT64("alsa", "sequencer", "mux-length");
-	std::thread(&sound_sequencer::thread_event, this).detach();
+	LOG_CONDITION(snd_seq_query_next_client < 0);
 	LOG_EXIT();
-	return 0;
+	return -2;
 }
 
 int8_t sound_sequencer::close() {
