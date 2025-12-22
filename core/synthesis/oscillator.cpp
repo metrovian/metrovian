@@ -44,3 +44,21 @@ double synthesis_oscillator::saw(double note, double sample, double skew) {
 double synthesis_oscillator::square(double note, double sample, double duty) {
 	return phase(note, sample) < duty ? 1.000E+0 : -1.000E+0;
 }
+
+std::function<double(double, double)> synthesis_oscillator::lambda_sin() {
+	return [&](double note, double sample) {
+		return sin(note, sample);
+	};
+}
+
+std::function<double(double, double)> synthesis_oscillator::lambda_saw(double skew) {
+	return [&](double note, double sample) {
+		return saw(note, sample, skew);
+	};
+}
+
+std::function<double(double, double)> synthesis_oscillator::lambda_square(double duty) {
+	return [&](double note, double sample) {
+		return square(note, sample, duty);
+	};
+}

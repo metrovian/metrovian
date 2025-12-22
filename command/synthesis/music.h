@@ -2,20 +2,17 @@
 #include "command/abstract.h"
 
 namespace music {
-enum class waveform : uint8_t {
-	sin = 0,
-	saw = 1,
-	square = 2,
-	unison = 3,
-	hammond = 4,
+enum class method : uint8_t {
+	add = 0,
+	fm = 1,
 };
 }; // namespace music
 
 class command_music : public command_abstract {
 protected: /* parameter */
-	std::string waveform_;
-	std::unordered_map<std::string, music::waveform> map_;
-	std::vector<double> params_;
+	std::string method_;
+	std::string in_;
+	std::unordered_map<std::string, music::method> map_;
 
 public: /* abstract */
 	virtual void setup(CLI::App *parent) override final;

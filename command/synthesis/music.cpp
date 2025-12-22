@@ -2,52 +2,34 @@
 #include "core/synthesis/sin.h"
 #include "core/synthesis/saw.h"
 #include "core/synthesis/square.h"
-#include "core/synthesis/unison.h"
-#include "core/synthesis/hammond.h"
+#include "core/synthesis/add.h"
 #include "core/predefined.h"
 
 void command_music::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("music", "MUSIC synthesis")->group("SYNTHESIS");
-	command->add_option("-w, --waveform", waveform_, "performance waveform")->required();
-	command->add_option("-p, --params", params_, "parameters");
+	command->add_option("-m, --method", method_, "synthesis method")->required();
+	command->add_option("-i, --in", in_, "preset json")->required();
 	command->callback([this]() { run(); });
-	map_.insert(std::make_pair<std::string, music::waveform>("sin", music::waveform::sin));
-	map_.insert(std::make_pair<std::string, music::waveform>("saw", music::waveform::saw));
-	map_.insert(std::make_pair<std::string, music::waveform>("square", music::waveform::square));
-	map_.insert(std::make_pair<std::string, music::waveform>("unison", music::waveform::unison));
-	map_.insert(std::make_pair<std::string, music::waveform>("hammond", music::waveform::hammond));
+	map_.insert(std::make_pair<std::string, music::method>("add", music::method::add));
+	map_.insert(std::make_pair<std::string, music::method>("fm", music::method::fm));
 	return;
 }
 
 void command_music::run() {
 	synthesis_abstract *engine = nullptr;
-	switch (params_.size()) {
-	case 0: // clang-format off
-		switch (map_[waveform_]) {
-		case music::waveform::sin: engine = new synthesis_sin; break;
-		case music::waveform::saw: engine = new synthesis_saw; break;
-		case music::waveform::square: engine = new synthesis_square; break;
-		case music::waveform::unison: engine = new synthesis_unison; break;
-		case music::waveform::hammond: engine = new synthesis_hammond; break;
-		default: break;
-		} break;
-	case 1:
-		switch (map_[waveform_]) {
-		case music::waveform::saw: engine = new synthesis_saw(params_[0]); break;
-		case music::waveform::square: engine = new synthesis_square(params_[0]); break;
-		default: break;
-		} break;
-	case 2: 
-		switch (map_[waveform_]) {
-		case music::waveform::unison: engine = new synthesis_unison(params_[0], params_[1]); break;
-		default: break;
-		} break;
-	case 9:
-		switch (map_[waveform_]) {
-		case music::waveform::hammond: engine = new synthesis_hammond(params_); break;
-		default: break;
-		} break;
-	default: // clang-format on
+	switch (map_[method_]) {
+	case music::method::add:
+	case music::method::fm: {
+		std::ifstream ifs(in_);
+		if (ifs.is_open() == true) {
+			nlohmann::json preset;
+			ifs >> preset;
+			engine = new synthesis_add(preset);
+		}
+
+		break;
+	}
+	default:
 		break;
 	}
 
