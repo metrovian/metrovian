@@ -7,9 +7,9 @@ synthesis_add::synthesis_add(nlohmann::json preset) {
 	    std::string,
 	    std::function<std::function<double(double, double)>(const nlohmann::json)>>
 	    cmap =
-		{{"sin", [&](const nlohmann::json &) { return synthesis_oscillator::lambda_sin(); }},
-		 {"saw", [&](const nlohmann::json &object) { return synthesis_oscillator::lambda_saw(object.value("skew", 0.000E+0)); }},
-		 {"square", [&](const nlohmann::json &object) { return synthesis_oscillator::lambda_square(object.value("duty", 0.500E+0)); }}};
+		{{"sin", [](const nlohmann::json &) { return synthesis_oscillator::lambda_sin(); }},
+		 {"saw", [](const nlohmann::json &object) { return synthesis_oscillator::lambda_saw(object.value("skew", 0.000E+0)); }},
+		 {"square", [](const nlohmann::json &object) { return synthesis_oscillator::lambda_square(object.value("duty", 0.500E+0)); }}};
 
 	if (preset.value("method", "") != std::string("add")) {
 		return;
