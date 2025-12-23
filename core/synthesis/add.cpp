@@ -19,9 +19,9 @@ synthesis_add::synthesis_add(nlohmann::json preset) {
 		for (const auto &object : preset["components"]) {
 			auto iter = cmap.find(object.value("osc", ""));
 			if (iter != cmap.end()) {
-				components.push_back(iter->second(object));
-				amps.push_back(object.value("amp", 0.0));
-				ratios.push_back(object.value("ratio", 1.0));
+				components_.push_back(iter->second(object));
+				amps_.push_back(object.value("amp", 0.0));
+				ratios_.push_back(object.value("ratio", 1.0));
 			}
 		}
 	}
@@ -31,8 +31,8 @@ void synthesis_add::synthesis(uint64_t min, uint64_t max, uint64_t period) {
 	LOG_ENTER();
 	double sum = 0.000E+0;
 	double peak = 0.000E+0;
-	for (uint64_t i = 0; i < components.size(); ++i) {
-		peak += amps[i];
+	for (uint64_t i = 0; i < components_.size(); ++i) {
+		peak += amps_[i];
 	}
 
 	uint64_t sample_rate = CONFIG_UINT64("synthesis", "sample-rate");
@@ -41,9 +41,9 @@ void synthesis_add::synthesis(uint64_t min, uint64_t max, uint64_t period) {
 	for (uint64_t i = min; i < max; ++i) {
 		for (uint64_t j = 0; j < sample.size(); ++j) {
 			sum = 0.000E+0;
-			for (uint64_t k = 0; k < components.size(); ++k) {
-				sum += components[k](i + std::log2(ratios[k]) * 1.200E+1, j) *
-				       amps[k] / peak;
+			for (uint64_t k = 0; k < components_.size(); ++k) {
+				sum += components_[k](i + std::log2(ratios_[k]) * 1.200E+1, j) *
+				       amps_[k] / peak;
 			}
 
 			sample[j] = static_cast<int16_t>(sum * 3276);
