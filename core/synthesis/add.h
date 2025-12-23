@@ -3,9 +3,9 @@
 
 class synthesis_add : public synthesis_abstract {
 protected: /* synthesis components */
-	std::vector<std::function<double(double, double)>> components;
-	std::vector<double> amps;
-	std::vector<double> ratios;
+	std::vector<std::function<double(double, double)>> components_;
+	std::vector<double> amps_;
+	std::vector<double> ratios_;
 
 public: /* constructor */
 	synthesis_add(nlohmann::json preset);
