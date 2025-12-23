@@ -16,23 +16,20 @@ void command_music::setup(CLI::App *parent) {
 }
 
 void command_music::run() {
+	nlohmann::json preset;
+	std::ifstream ifs(in_);
+	if (ifs.is_open() == true) {
+		ifs >> preset;
+	}
+
+	// clang-format off
 	synthesis_abstract *engine = nullptr;
 	switch (map_[method_]) {
-	case music::method::add:
-	case music::method::fm: {
-		std::ifstream ifs(in_);
-		if (ifs.is_open() == true) {
-			nlohmann::json preset;
-			ifs >> preset;
-			engine = new synthesis_add(preset);
-		}
-
-		break;
+	case music::method::add: engine = new synthesis_add(preset); break;
+	case music::method::fm: break;
+	default: return;
 	}
-	default:
-		break;
-	}
-
+	// clang-format on
 	if (engine != nullptr) {
 		handle_setup([&]() { engine->terminate(); });
 		engine->synthesize();
