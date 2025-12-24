@@ -10,6 +10,7 @@
 #include <sys/utsname.h>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <nlohmann/json.hpp>
 #include <CLI/CLI.hpp>
 #include <Eigen/Dense>
 
@@ -20,15 +21,6 @@ enum class state : uint8_t {
 	synthesis = 2,
 	performance = 3,
 	shutdown = 4,
-};
-
-enum class waveform : uint8_t {
-	none = 0,
-	sin = 1,
-	saw = 2,
-	square = 3,
-	unison = 4,
-	hammond = 5,
 };
 }; // namespace machine
 

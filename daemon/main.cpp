@@ -3,44 +3,36 @@
 
 void machine_singleton::transition(machine::state next) {
 	LOG_ENTER();
-	context_singleton::instance().transition(next);
+	context_singleton::instance().set_state(next);
 	state_.store(next);
 	smap_[state_.load()]->enter();
 	LOG_EXIT();
 	return;
 }
 
-void machine_singleton::transition(machine::waveform next) {
+void machine_singleton::setup(nlohmann::json preset) {
 	LOG_ENTER();
-	context_singleton::instance().transition(next);
-	waveform_.store(next);
+	std::string method = preset.value("method", "");
+	if (method == std::string("add")) {
+		core_ = std::make_unique<synthesis_add>(preset);
+	}
+
 	LOG_EXIT();
 	return;
 }
 
+void machine_singleton::setup() {
+	core_.reset();
+	return;
+}
+
 void machine_singleton::synthesize() {
-	wmap_[waveform_.load()]->synthesize();
+	core_->synthesize();
 	return;
 }
 
 void machine_singleton::perform() {
-	wmap_[waveform_.load()]->perform();
-	return;
-}
-
-void machine_singleton::clear() {
-	// clang-format off
-	machine::waveform now = waveform_.load();
-	switch (now) {
-	case machine::waveform::none: wmap_[now] = nullptr; break;
-	case machine::waveform::sin: wmap_[now] = std::make_unique<synthesis_sin>(); break;
-	case machine::waveform::saw: wmap_[now] = std::make_unique<synthesis_saw>(); break;
-	case machine::waveform::square: wmap_[now] = std::make_unique<synthesis_square>(); break;
-	case machine::waveform::unison: wmap_[now] = std::make_unique<synthesis_unison>(); break;
-	case machine::waveform::hammond: wmap_[now] = std::make_unique<synthesis_hammond>(); break;
-	default: break;
-	}
-	// clang-format on
+	core_->perform();
 	return;
 }
 
@@ -104,21 +96,10 @@ void machine_singleton::load_smap() {
 	return;
 }
 
-void machine_singleton::load_wmap() {
-	wmap_.insert(std::make_pair(machine::waveform::none, nullptr));
-	wmap_.insert(std::make_pair(machine::waveform::sin, std::make_unique<synthesis_sin>()));
-	wmap_.insert(std::make_pair(machine::waveform::saw, std::make_unique<synthesis_saw>()));
-	wmap_.insert(std::make_pair(machine::waveform::square, std::make_unique<synthesis_square>()));
-	wmap_.insert(std::make_pair(machine::waveform::unison, std::make_unique<synthesis_unison>()));
-	wmap_.insert(std::make_pair(machine::waveform::hammond, std::make_unique<synthesis_hammond>()));
-	return;
-}
-
 machine_singleton::machine_singleton() {
 	load_stdout();
 	load_stderr();
 	load_smap();
-	load_wmap();
 	handle_setup([&]() { shutdown(); });
 	context_singleton::instance();
 	api_singleton::instance();

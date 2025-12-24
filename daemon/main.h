@@ -7,27 +7,22 @@
 #include "daemon/state/synthesis.h"
 #include "daemon/state/performance.h"
 #include "core/synthesis/abstract.h"
-#include "core/synthesis/sin.h"
-#include "core/synthesis/saw.h"
-#include "core/synthesis/square.h"
-#include "core/synthesis/unison.h"
-#include "core/synthesis/hammond.h"
+#include "core/synthesis/add.h"
 
 class machine_singleton {
 protected: /* machine core */
-	std::atomic<machine::state> state_ = machine::state::none;
-	std::atomic<machine::waveform> waveform_ = machine::waveform::none;
+	std::unique_ptr<synthesis_abstract> core_ = nullptr;
 
 protected: /* machine map */
+	std::atomic<machine::state> state_ = machine::state::none;
 	std::unordered_map<machine::state, std::unique_ptr<state_abstract>> smap_;
-	std::unordered_map<machine::waveform, std::unique_ptr<synthesis_abstract>> wmap_;
 
 protected: /* machine function */
 	void transition(machine::state next);
-	void transition(machine::waveform next);
+	void setup(nlohmann::json preset);
+	void setup();
 	void synthesize();
 	void perform();
-	void clear();
 
 protected: /* handler */
 	static inline std::function<void(void)> handler_ = nullptr;
