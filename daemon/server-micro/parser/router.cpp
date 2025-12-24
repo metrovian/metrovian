@@ -1,6 +1,7 @@
 #include "daemon/server-micro/parser/router.h"
 #include "daemon/server-micro/response.h"
 #include "daemon/server-micro/parser/read/state.h"
+#include "daemon/server-micro/parser/read/waveform.h"
 #include "daemon/server-micro/parser/write/waveform.h"
 
 MHD_Result router_singleton::handle_query(
@@ -72,6 +73,7 @@ router_singleton &router_singleton::instance() {
 
 void router_singleton::load_rmap() {
 	rmap_.insert(std::make_pair("state", std::make_unique<read_state>()));
+	rmap_.insert(std::make_pair("waveform", std::make_unique<read_waveform>()));
 	return;
 }
 

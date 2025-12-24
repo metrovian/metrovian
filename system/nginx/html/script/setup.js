@@ -47,12 +47,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function updateOptions() {
-    const res = await fetch("/data/setup.json");
-    const waves = await res.json();
-    waves.forEach((w) => {
+    const res = await asyncAPI({ action: "read", waveform: 0 });
+    const waves = JSON.parse(res);
+    waves.forEach((wave) => {
       const opt = document.createElement("option");
-      opt.value = w.id;
-      opt.textContent = w.name;
+      opt.value = wave.id;
+      opt.textContent = wave.name;
       waveSelect.appendChild(opt);
     });
 
