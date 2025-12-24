@@ -1,7 +1,4 @@
 #include "command/synthesis/music.h"
-#include "core/synthesis/sin.h"
-#include "core/synthesis/saw.h"
-#include "core/synthesis/square.h"
 #include "core/synthesis/add.h"
 #include "core/predefined.h"
 
@@ -20,6 +17,7 @@ void command_music::run() {
 	std::ifstream ifs(in_);
 	if (ifs.is_open() == true) {
 		ifs >> preset;
+		ifs.close();
 	}
 
 	// clang-format off

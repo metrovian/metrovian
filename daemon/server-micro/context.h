@@ -4,21 +4,28 @@
 class context_singleton {
 protected: /* context */
 	machine::state state_ = machine::state::setup;
-	machine::waveform waveform_ = machine::waveform::none;
+	nlohmann::json preset_;
+	nlohmann::json presets_;
+
+public: /* main setter */
+	void set_state(const machine::state &state);
+	void set_presets(const nlohmann::json &presets);
+
+public: /* api getter */
+	machine::state get_state();
+	nlohmann::json get_presets();
+
+public: /* api setter */
+	void set_preset(uint8_t id);
+
+public: /* main getter */
+	nlohmann::json get_preset();
 
 public: /* instance */
 	static context_singleton &instance();
 
-public: /* setter */
-	void transition(machine::state state);
-	void transition(machine::waveform waveform);
-
-public: /* getter */
-	machine::state update_state();
-	machine::waveform update_waveform();
-
 private: /* constraint */
-	context_singleton() {}
+	context_singleton();
 	context_singleton(const context_singleton &) = default;
 	context_singleton &operator=(const context_singleton &) = default;
 };

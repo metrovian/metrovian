@@ -5,5 +5,5 @@
 MHD_Result read_state::parse(MHD_Connection *connection) {
 	return response::numeric(
 	    connection,
-	    static_cast<uint32_t>(context_singleton::instance().update_state()));
+	    static_cast<uint32_t>(context_singleton::instance().get_state()));
 }

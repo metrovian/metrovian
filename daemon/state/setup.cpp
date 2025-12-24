@@ -4,14 +4,14 @@
 #include "core/synthesis/abstract.h"
 
 void state_setup::enter() {
-	machine_singleton::instance().transition(machine::waveform::none);
+	machine_singleton::instance().setup();
 	return;
 }
 
 void state_setup::update() {
-	machine::waveform waveform = context_singleton::instance().update_waveform();
-	if (waveform != machine::waveform::none) {
-		machine_singleton::instance().transition(waveform);
+	nlohmann::json preset = context_singleton::instance().get_preset();
+	if (preset.empty() == false) {
+		machine_singleton::instance().setup(preset);
 		machine_singleton::instance().transition(machine::state::synthesis);
 	}
 
