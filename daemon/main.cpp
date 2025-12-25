@@ -88,8 +88,8 @@ void machine_singleton::load_stderr() {
 }
 
 void machine_singleton::load_smap() {
-	smap_.insert(std::make_pair(machine::state::none, std::make_unique<state_dummy>()));
-	smap_.insert(std::make_pair(machine::state::shutdown, std::make_unique<state_dummy>()));
+	smap_.insert(std::make_pair(machine::state::none, std::make_unique<state_none>()));
+	smap_.insert(std::make_pair(machine::state::shutdown, std::make_unique<state_none>()));
 	smap_.insert(std::make_pair(machine::state::setup, std::make_unique<state_setup>()));
 	smap_.insert(std::make_pair(machine::state::synthesis, std::make_unique<state_synthesis>()));
 	smap_.insert(std::make_pair(machine::state::performance, std::make_unique<state_performance>()));
