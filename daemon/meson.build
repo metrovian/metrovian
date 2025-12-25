@@ -9,7 +9,7 @@ src_daemon = files(
   'server-micro/context.cpp',
   'server-micro/response.cpp',
   'state/abstract.cpp',
-  'state/dummy.cpp',
+  'state/none.cpp',
   'state/performance.cpp',
   'state/setup.cpp',
   'state/synthesis.cpp',

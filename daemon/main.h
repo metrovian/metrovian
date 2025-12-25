@@ -2,7 +2,7 @@
 #include "daemon/server-micro/api.h"
 #include "daemon/server-micro/context.h"
 #include "daemon/state/abstract.h"
-#include "daemon/state/dummy.h"
+#include "daemon/state/none.h"
 #include "daemon/state/setup.h"
 #include "daemon/state/synthesis.h"
 #include "daemon/state/performance.h"
@@ -33,6 +33,7 @@ protected: /* handler setup */
 
 protected: /* friend */
 	friend class state_abstract;
+	friend class state_none;
 	friend class state_setup;
 	friend class state_synthesis;
 	friend class state_performance;
