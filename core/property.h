@@ -1,6 +1,9 @@
 #pragma once
 #include <iostream>
 #include <fstream>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>
 
 class property_singleton {
