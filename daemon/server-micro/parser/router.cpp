@@ -3,6 +3,7 @@
 #include "daemon/server-micro/response.h"
 #include "daemon/server-micro/parser/read/state.h"
 #include "daemon/server-micro/parser/read/waveform.h"
+#include "daemon/server-micro/parser/write/reboot.h"
 #include "daemon/server-micro/parser/write/waveform.h"
 
 MHD_Result router_singleton::handle_query(
@@ -133,6 +134,7 @@ void router_singleton::load_rmap() {
 }
 
 void router_singleton::load_wmap() {
+	wmap_.insert(std::make_pair("reboot", std::make_unique<write_reboot>()));
 	wmap_.insert(std::make_pair("waveform", std::make_unique<write_waveform>()));
 	return;
 }
