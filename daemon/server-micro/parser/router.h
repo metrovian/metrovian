@@ -19,6 +19,11 @@ protected: /* router action */
 
 public: /* export */
 	MHD_Result parse(struct MHD_Connection *connection);
+	MHD_Result upload(
+	    struct MHD_Connection *connection,
+	    const char *data,
+	    size_t *size,
+	    void **con_cls);
 
 public: /* instance */
 	static router_singleton &instance();
