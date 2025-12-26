@@ -49,7 +49,6 @@ private: /* load */
 	void load_stdout();
 	void load_stderr();
 	void load_smap();
-	void load_wmap();
 
 private: /* constraint */
 	machine_singleton();
