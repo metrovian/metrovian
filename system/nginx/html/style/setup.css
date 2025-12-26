@@ -33,8 +33,8 @@
 }
 
 .circle {
-  width: var(--circle-size);
-  height: var(--circle-size);
+  width: 160px;
+  height: 160px;
   border-radius: 50%;
   background: linear-gradient(135deg, #0b1220 0%, #0f1724 100%);
   border: 3px solid rgba(255, 255, 255, 0.04);
@@ -107,7 +107,7 @@
   pointer-events: none;
 }
 #waveSetup select {
-  width: 140px;
+  width: 160px;
   height: 40px;
   padding: 8px 12px;
   border-radius: 10px;
@@ -140,19 +140,4 @@
 }
 #waveSetup button:hover {
   box-shadow: 0 10px 26px rgba(59, 130, 246, 0.16);
-}
-
-@media (max-width: 520px) {
-  #panel {
-    width: calc(100% - 100px);
-    padding: 20px;
-    margin: 32px auto;
-    max-height: calc(100vh - 64px);
-  }
-  :root {
-    --circle-size: 160px;
-  }
-  #waveSetup select {
-    width: 160px;
-  }
 }
