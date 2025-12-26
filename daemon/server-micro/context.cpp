@@ -9,6 +9,13 @@ void context_singleton::set_state(const machine::state &state) {
 
 void context_singleton::set_presets(const nlohmann::json &presets) {
 	presets_ = presets;
+	std::string path = std::string(std::getenv("HOME")) + PATH_PRESET;
+	std::ofstream ofs(path);
+	if (ofs.is_open() == true) {
+		ofs << presets_.dump(8);
+		ofs.close();
+	}
+
 	return;
 }
 
