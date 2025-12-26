@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
   const STATE_UI = {
     1: { label: "SETUP", class: "setup", disabled: false },
-    2: { label: "SYNTHESIS", class: "synthesis", disabled: true },
-    3: { label: "PERFORM", class: "perform", disabled: true },
+    2: { label: "SYNTH", class: "synthesis", disabled: true },
+    3: { label: "PLAY", class: "perform", disabled: true },
     400: { label: "ERROR", class: "error", disabled: true },
   };
 
