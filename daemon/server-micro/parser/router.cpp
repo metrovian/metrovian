@@ -1,4 +1,5 @@
 #include "daemon/server-micro/parser/router.h"
+#include "daemon/server-micro/context.h"
 #include "daemon/server-micro/response.h"
 #include "daemon/server-micro/parser/read/state.h"
 #include "daemon/server-micro/parser/read/waveform.h"
@@ -64,6 +65,60 @@ MHD_Result router_singleton::parse(struct MHD_Connection *connection) {
 	}
 
 	return response::empty(connection, MHD_HTTP_BAD_REQUEST);
+}
+
+MHD_Result router_singleton::upload(
+    struct MHD_Connection *connection,
+    const char *data,
+    size_t *size,
+    void **con_cls) {
+	std::unordered_map<std::string, std::string> params;
+	if (MHD_get_connection_values(
+		connection,
+		MHD_GET_ARGUMENT_KIND,
+		&router_singleton::handle_query,
+		&params) < 0) {
+		return response::empty(connection, MHD_HTTP_BAD_REQUEST);
+	}
+
+	if (params.size() != 1) {
+		return response::empty(connection, MHD_HTTP_BAD_REQUEST);
+	}
+
+	auto iter = params.find("action");
+	if (iter == params.end()) {
+		return response::empty(connection, MHD_HTTP_BAD_REQUEST);
+	}
+
+	params.erase(iter);
+	if (iter->second.compare("upload") != 0) {
+		return response::empty(connection, MHD_HTTP_BAD_REQUEST);
+	}
+
+	if (*con_cls == nullptr) {
+		*con_cls = new std::string();
+		return MHD_YES;
+	}
+
+	auto body = static_cast<std::string *>(*con_cls);
+	if (*size != 0) {
+		body->append((const char *)data, *size);
+		*size = 0;
+		return MHD_YES;
+	}
+
+	int code = MHD_HTTP_BAD_REQUEST;
+	auto upload = nlohmann::json::parse(*body, nullptr, false);
+	if (upload.is_discarded() == false) {
+		if (upload.is_array() == true) {
+			code = MHD_HTTP_OK;
+			context_singleton::instance().set_presets(upload);
+		}
+	}
+
+	delete body;
+	*con_cls = nullptr;
+	return response::empty(connection, code);
 }
 
 router_singleton &router_singleton::instance() {
