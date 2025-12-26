@@ -9,6 +9,8 @@
 #include <atomic>
 #include <thread>
 #include <unistd.h>
+#include <sys/reboot.h>
+#include <linux/reboot.h>
 #include <spdlog/spdlog.h>
 #include <microhttpd.h>
 
