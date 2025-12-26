@@ -20,12 +20,13 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  color: var(--text);
+  color: var(--muted);
   padding: 8px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 10;
 }
 .systemBtn:hover {
   background: rgba(255, 255, 255, 0.08);
@@ -114,7 +115,7 @@
   padding: 8px 12px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.04);
-  background-color: #0b1622;
+  background-color: var(--box);
   color: var(--text);
   font-size: 14px;
   outline: none;
@@ -122,7 +123,7 @@
   appearance: none;
 }
 #waveSetup select option {
-  background: #0b1622;
+  background: var(--box);
   color: var(--text);
 }
 #waveSetup button {
