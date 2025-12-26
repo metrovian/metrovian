@@ -1,4 +1,5 @@
 #include "daemon/main.h"
+#include "core/property.h"
 #include "core/predefined.h"
 
 void machine_singleton::transition(machine::state next) {
@@ -101,6 +102,7 @@ machine_singleton::machine_singleton() {
 	load_stderr();
 	load_smap();
 	handle_setup([&]() { shutdown(); });
+	property_singleton::instance();
 	context_singleton::instance();
 	api_singleton::instance();
 }

@@ -64,6 +64,14 @@ void property_singleton::merge_default(nlohmann::ordered_json &target, const nlo
 
 property_singleton::property_singleton() {
 	load_default();
+	std::string dir = std::string(std::getenv("HOME")) + PATH_DIR;
+	if (access(dir.c_str(), F_OK) != 0) {
+		if (mkdir(dir.c_str(), 0755) != 0) {
+			LOG_CONDITION(mkdir != 0);
+			return;
+		}
+	}
+
 	std::string path = std::string(std::getenv("HOME")) + PATH_PROPERTY;
 	std::ifstream ifs(path);
 	if (ifs.is_open() == true) {
