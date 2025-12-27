@@ -14,10 +14,8 @@ int8_t sound_player::open() {
 		return -2;
 	}
 
-	char plug_hw[64] = {0};
 	char card_hw[32] = {0};
 	int card = -1;
-	int dev = -1;
 	while ((snd_card_next(&card) >= 0) && (card >= 0)) {
 		snd_ctl_t *ctl = nullptr;
 		snprintf(card_hw, sizeof(card_hw), "hw:%d", card);
@@ -25,6 +23,8 @@ int8_t sound_player::open() {
 			continue;
 		}
 
+		char dev_hw[64] = {0};
+		int dev = -1;
 		while ((snd_ctl_pcm_next_device(ctl, &dev) >= 0) && (dev >= 0)) {
 			snd_pcm_info_t *info = nullptr;
 			snd_pcm_info_alloca(&info);
@@ -35,10 +35,10 @@ int8_t sound_player::open() {
 				continue;
 			}
 
-			snprintf(plug_hw, sizeof(plug_hw), "plughw:%d,%d", card, dev);
+			snprintf(dev_hw, sizeof(dev_hw), "plughw:%d,%d", card, dev);
 			if (snd_pcm_open(
 				&handle_,
-				plug_hw,
+				dev_hw,
 				SND_PCM_STREAM_PLAYBACK,
 				0) < 0) {
 				LOG_CONDITION(snd_pcm_open < 0);
