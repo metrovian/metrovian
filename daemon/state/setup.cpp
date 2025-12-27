@@ -9,7 +9,7 @@ void state_setup::enter() {
 }
 
 void state_setup::update() {
-	nlohmann::json preset = context_singleton::instance().get_preset();
+	nlohmann::ordered_json preset = context_singleton::instance().get_preset();
 	if (preset.empty() == false) {
 		machine_singleton::instance().setup(preset);
 		machine_singleton::instance().transition(machine::state::synthesis);

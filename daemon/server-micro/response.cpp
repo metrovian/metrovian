@@ -42,7 +42,7 @@ MHD_Result response::numeric(struct MHD_Connection *connection, uint32_t value) 
 	return ret;
 }
 
-MHD_Result response::json(struct MHD_Connection *connection, const nlohmann::json &object) {
+MHD_Result response::json(struct MHD_Connection *connection, const nlohmann::ordered_json &object) {
 	std::string str_object = object.dump();
 	struct MHD_Response *response =
 	    MHD_create_response_from_buffer(

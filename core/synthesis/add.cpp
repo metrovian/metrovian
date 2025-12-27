@@ -2,14 +2,14 @@
 #include "core/property.h"
 #include "core/predefined.h"
 
-synthesis_add::synthesis_add(nlohmann::json preset) {
+synthesis_add::synthesis_add(nlohmann::ordered_json preset) {
 	static const std::unordered_map<
 	    std::string,
-	    std::function<std::function<double(double, double)>(const nlohmann::json)>>
+	    std::function<std::function<double(double, double)>(const nlohmann::ordered_json)>>
 	    cmap =
-		{{"sin", [](const nlohmann::json &) { return synthesis_oscillator::lambda_sin(); }},
-		 {"saw", [](const nlohmann::json &object) { return synthesis_oscillator::lambda_saw(object.value("skew", 0.000E+0)); }},
-		 {"square", [](const nlohmann::json &object) { return synthesis_oscillator::lambda_square(object.value("duty", 0.500E+0)); }}};
+		{{"sin", [](const nlohmann::ordered_json &) { return synthesis_oscillator::lambda_sin(); }},
+		 {"saw", [](const nlohmann::ordered_json &object) { return synthesis_oscillator::lambda_saw(object.value("skew", 0.000E+0)); }},
+		 {"square", [](const nlohmann::ordered_json &object) { return synthesis_oscillator::lambda_square(object.value("duty", 0.500E+0)); }}};
 
 	if (preset.value("method", "") != std::string("add")) {
 		return;
