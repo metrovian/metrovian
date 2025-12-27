@@ -14,33 +14,61 @@ int8_t sound_player::open() {
 		return -2;
 	}
 
-	if (snd_pcm_open(
-		&handle_,
-		CONFIG_STRING("alsa", "player", "name").c_str(),
-		SND_PCM_STREAM_PLAYBACK,
-		0) < 0) {
-		LOG_CONDITION(snd_pcm_open < 0);
-		LOG_EXIT();
-		return -3;
+	char plug_hw[64] = {0};
+	char card_hw[32] = {0};
+	int card = -1;
+	int dev = -1;
+	while ((snd_card_next(&card) >= 0) && (card >= 0)) {
+		snd_ctl_t *ctl = nullptr;
+		snprintf(card_hw, sizeof(card_hw), "hw:%d", card);
+		if (snd_ctl_open(&ctl, card_hw, 0) < 0) {
+			continue;
+		}
+
+		while ((snd_ctl_pcm_next_device(ctl, &dev) >= 0) && (dev >= 0)) {
+			snd_pcm_info_t *info = nullptr;
+			snd_pcm_info_alloca(&info);
+			snd_pcm_info_set_device(info, dev);
+			snd_pcm_info_set_subdevice(info, 0);
+			snd_pcm_info_set_stream(info, SND_PCM_STREAM_PLAYBACK);
+			if (snd_ctl_pcm_info(ctl, info) < 0) {
+				continue;
+			}
+
+			snprintf(plug_hw, sizeof(plug_hw), "plughw:%d,%d", card, dev);
+			if (snd_pcm_open(
+				&handle_,
+				plug_hw,
+				SND_PCM_STREAM_PLAYBACK,
+				0) < 0) {
+				LOG_CONDITION(snd_pcm_open < 0);
+				LOG_EXIT();
+				return -3;
+			}
+
+			if (snd_pcm_set_params(
+				handle_,
+				SND_PCM_FORMAT_S16_LE,
+				SND_PCM_ACCESS_RW_INTERLEAVED,
+				channel_,
+				sample_rate_,
+				1,
+				5000) < 0) {
+				snd_pcm_drain(handle_);
+				snd_pcm_close(handle_);
+				LOG_CONDITION(snd_pcm_set_params < 0);
+				LOG_EXIT();
+				return -4;
+			}
+
+			LOG_EXIT();
+			return 0;
+		}
 	}
 
-	if (snd_pcm_set_params(
-		handle_,
-		SND_PCM_FORMAT_S16_LE,
-		SND_PCM_ACCESS_RW_INTERLEAVED,
-		channel_,
-		sample_rate_,
-		1,
-		5000) < 0) {
-		snd_pcm_drain(handle_);
-		snd_pcm_close(handle_);
-		LOG_CONDITION(snd_pcm_set_params < 0);
-		LOG_EXIT();
-		return -4;
-	}
-
+	LOG_CONDITION(snd_card_next < 0);
 	LOG_EXIT();
-	return 0;
+	return -5;
 }
 
 int8_t sound_player::close() {
