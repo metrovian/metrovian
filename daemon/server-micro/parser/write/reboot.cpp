@@ -12,9 +12,11 @@ MHD_Result write_reboot::parse(MHD_Connection *connection, std::string param) {
         default: return response::empty(connection, MHD_HTTP_BAD_REQUEST);
         }
 	// clang-format on
-	if (reboot(cmd) != 0) {
-		return response::empty(connection, MHD_HTTP_INTERNAL_SERVER_ERROR);
-	}
+	std::thread([cmd] {
+		sleep(5);
+		sync();
+		reboot(cmd);
+	}).detach();
 
 	return response::empty(connection, MHD_HTTP_OK);
 }
