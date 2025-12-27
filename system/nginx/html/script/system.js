@@ -63,6 +63,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   rebootBtn.addEventListener("click", async () => {
+    if (confirm("Reboot?") == false) {
+      return;
+    }
+
     try {
       await asyncAPI({ action: "write", reboot: 1 });
     } catch (err) {
@@ -75,6 +79,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   shutdownBtn.addEventListener("click", async () => {
+    if (confirm("Shutdown?") == false) {
+      return;
+    }
+
     try {
       await asyncAPI({ action: "write", reboot: 0 });
     } catch (err) {
