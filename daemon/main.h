@@ -18,8 +18,7 @@ protected: /* machine map */
 	std::unordered_map<machine::state, std::unique_ptr<state_abstract>> smap_;
 
 protected: /* machine function */
-	void transition(machine::state next);
-	void setup(nlohmann::ordered_json preset);
+	void setup(const nlohmann::ordered_json &preset);
 	void setup();
 	void synthesize();
 	void perform();
@@ -42,6 +41,7 @@ public: /* instance */
 	static machine_singleton &instance();
 
 public: /* export */
+	void transition(machine::state next);
 	void loop();
 	void shutdown();
 

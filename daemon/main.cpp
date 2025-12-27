@@ -2,16 +2,7 @@
 #include "core/property.h"
 #include "core/predefined.h"
 
-void machine_singleton::transition(machine::state next) {
-	LOG_ENTER();
-	context_singleton::instance().set_state(next);
-	state_.store(next);
-	smap_[state_.load()]->enter();
-	LOG_EXIT();
-	return;
-}
-
-void machine_singleton::setup(nlohmann::ordered_json preset) {
+void machine_singleton::setup(const nlohmann::ordered_json &preset) {
 	LOG_ENTER();
 	std::string method = preset.value("method", "");
 	if (method == std::string("add")) {
@@ -58,6 +49,15 @@ void machine_singleton::handle_terminate(int) {
 machine_singleton &machine_singleton::instance() {
 	static machine_singleton instance_;
 	return instance_;
+}
+
+void machine_singleton::transition(machine::state next) {
+	LOG_ENTER();
+	context_singleton::instance().set_state(next);
+	state_.store(next);
+	smap_[state_.load()]->enter();
+	LOG_EXIT();
+	return;
 }
 
 void machine_singleton::loop() {
