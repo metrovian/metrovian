@@ -2,7 +2,7 @@
 #include "core/property.h"
 #include "core/predefined.h"
 
-synthesis_add::synthesis_add(nlohmann::ordered_json preset) {
+synthesis_add::synthesis_add(const nlohmann::ordered_json &preset) {
 	static const std::unordered_map<
 	    std::string,
 	    std::function<std::function<double(double, double)>(const nlohmann::ordered_json)>>
