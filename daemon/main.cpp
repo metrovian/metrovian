@@ -11,7 +11,7 @@ void machine_singleton::transition(machine::state next) {
 	return;
 }
 
-void machine_singleton::setup(nlohmann::json preset) {
+void machine_singleton::setup(nlohmann::ordered_json preset) {
 	LOG_ENTER();
 	std::string method = preset.value("method", "");
 	if (method == std::string("add")) {

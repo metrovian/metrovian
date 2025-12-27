@@ -13,7 +13,7 @@ void command_music::setup(CLI::App *parent) {
 }
 
 void command_music::run() {
-	nlohmann::json preset;
+	nlohmann::ordered_json preset;
 	std::ifstream ifs(in_);
 	if (ifs.is_open() == true) {
 		ifs >> preset;

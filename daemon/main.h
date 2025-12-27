@@ -19,7 +19,7 @@ protected: /* machine map */
 
 protected: /* machine function */
 	void transition(machine::state next);
-	void setup(nlohmann::json preset);
+	void setup(nlohmann::ordered_json preset);
 	void setup();
 	void synthesize();
 	void perform();

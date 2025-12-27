@@ -7,7 +7,7 @@ void context_singleton::set_state(const machine::state &state) {
 	return;
 }
 
-void context_singleton::set_presets(const nlohmann::json &presets) {
+void context_singleton::set_presets(const nlohmann::ordered_json &presets) {
 	presets_ = presets;
 	std::string path = std::string(std::getenv("HOME")) + PATH_PRESET;
 	std::ofstream ofs(path);
@@ -23,14 +23,14 @@ machine::state context_singleton::get_state() {
 	return state_;
 }
 
-nlohmann::json context_singleton::get_presets() {
+nlohmann::ordered_json context_singleton::get_presets() {
 	return presets_;
 }
 
 void context_singleton::set_preset(uint8_t id) {
 	for (const auto &object : presets_) {
 		if (object.value("id", -1) == id) {
-			preset_ = object.value("data", nlohmann::json());
+			preset_ = object.value("data", nlohmann::ordered_json());
 			return;
 		}
 	}
@@ -38,7 +38,7 @@ void context_singleton::set_preset(uint8_t id) {
 	return;
 }
 
-nlohmann::json context_singleton::get_preset() {
+nlohmann::ordered_json context_singleton::get_preset() {
 	return std::move(preset_);
 }
 

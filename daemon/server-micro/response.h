@@ -17,5 +17,5 @@ class response {
 public: /* export */
 	static MHD_Result empty(struct MHD_Connection *connection, uint32_t code);
 	static MHD_Result numeric(struct MHD_Connection *connection, uint32_t value);
-	static MHD_Result json(struct MHD_Connection *connection, const nlohmann::json &object);
+	static MHD_Result json(struct MHD_Connection *connection, const nlohmann::ordered_json &object);
 };

@@ -8,7 +8,7 @@ protected: /* synthesis components */
 	std::vector<double> ratios_;
 
 public: /* constructor */
-	synthesis_add(nlohmann::json preset);
+	synthesis_add(nlohmann::ordered_json preset);
 
 protected: /* abstract */
 	virtual void synthesis(uint64_t min, uint64_t max, uint64_t period) override final;

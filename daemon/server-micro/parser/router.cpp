@@ -109,7 +109,7 @@ MHD_Result router_singleton::upload(
 	}
 
 	int code = MHD_HTTP_BAD_REQUEST;
-	auto upload = nlohmann::json::parse(*body, nullptr, false);
+	auto upload = nlohmann::ordered_json::parse(*body, nullptr, false);
 	if (upload.is_discarded() == false) {
 		if (upload.is_array() == true) {
 			code = MHD_HTTP_OK;
