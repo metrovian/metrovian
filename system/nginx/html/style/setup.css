@@ -1,18 +1,3 @@
-@keyframes pulseGlow {
-  0% {
-    box-shadow: 0 0 10px 2px var(--glow-color),
-      0 0 4px 1px rgba(255, 255, 255, 0) inset;
-  }
-  50% {
-    box-shadow: 0 0 10px 5px var(--glow-color),
-      0 0 4px 1px rgba(255, 255, 255, 0.5) inset;
-  }
-  100% {
-    box-shadow: 0 0 10px 2px var(--glow-color),
-      0 0 4px 1px rgba(255, 255, 255, 0) inset;
-  }
-}
-
 .systemBtn {
   position: absolute;
   top: 16px;
@@ -65,32 +50,16 @@
   pointer-events: none;
 }
 .circle.setup {
-  animation: pulseGlow 2s infinite ease-in-out;
-  --glow-color: rgba(59, 130, 246, 0.6);
   border-color: rgba(59, 130, 246, 0.95);
-  box-shadow: 0 6px 28px 6px rgba(59, 130, 246, 0.2),
-    0 0 6px 1px rgba(59, 130, 246, 0.12) inset;
 }
 .circle.synthesis {
-  animation: pulseGlow 2s infinite ease-in-out;
-  --glow-color: rgba(47, 189, 214, 0.6);
   border-color: rgba(47, 189, 214, 0.95);
-  box-shadow: 0 8px 34px 8px rgba(110, 168, 255, 0.22),
-    0 0 8px 2px rgba(110, 168, 255, 0.12) inset;
 }
 .circle.perform {
-  animation: pulseGlow 2s infinite ease-in-out;
-  --glow-color: rgba(34, 247, 182, 0.6);
   border-color: rgba(34, 247, 182, 0.95);
-  box-shadow: 0 8px 34px 8px rgba(34, 247, 182, 0.24),
-    0 0 8px 2px rgba(34, 247, 182, 0.12) inset;
 }
 .circle.error {
-  animation: pulseGlow 2s infinite ease-in-out;
-  --glow-color: rgba(239, 68, 68, 0.6);
   border-color: rgba(239, 68, 68, 0.95);
-  color: #ffdad6;
-  box-shadow: 0 8px 40px 10px rgba(239, 68, 68, 0.28);
 }
 
 #waveSetup {
