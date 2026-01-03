@@ -1,7 +1,8 @@
 ## Features
 - Physical waveform synthesis via reconstruction
-- Performance daemon
-- Reconstruction commands
+- Mathematical commands
+- Audio commands
+- Musical performance daemon ( Wi-Fi )
 ## Hardwares
 - Alesis Mini Q32 `audio-sequencer`
 - Dell AC511 `audio-soundbar`
