@@ -2,7 +2,7 @@
 - Physical waveform synthesis via reconstruction
 - Mathematical commands
 - Audio commands
-- Musical performance daemon ( Wi-Fi )
+- Performance daemon ( Wi-Fi )
 ## Hardwares
 - Alesis Mini Q32 `audio-sequencer`
 - Dell AC511 `audio-soundbar`
