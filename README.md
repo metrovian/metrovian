@@ -1,5 +1,6 @@
 ## Features
-- Physical waveform synthesis via reconstruction
+- Physical oscillogram synthesis via reconstruction
+- Physical spectrogram
 - Mathematical commands
 - Audio commands
 - Performance daemon ( Wi-Fi )
