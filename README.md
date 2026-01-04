@@ -1,8 +1,7 @@
 ## Features
 - Physical oscillogram synthesis via reconstruction
-- Physical spectrogram
-- Mathematical commands
-- Audio commands
+- Mathematical operation
+- Audio command
 - Performance daemon ( Wi-Fi )
 ## Hardwares
 - Alesis Mini Q32 `audio-sequencer`
