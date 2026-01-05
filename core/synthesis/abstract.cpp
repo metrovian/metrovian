@@ -26,6 +26,11 @@ void synthesis_abstract::callback_change(std::function<void(unsigned, int)> func
 	return;
 }
 
+void synthesis_abstract::callback_synthesis(std::function<void(uint64_t)> function) {
+	on_synthesis_ = function;
+	return;
+}
+
 int8_t synthesis_abstract::synthesize() {
 	synthesis(
 	    CONFIG_UINT64("synthesis", "note-min"),

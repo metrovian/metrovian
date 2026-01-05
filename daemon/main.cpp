@@ -19,6 +19,10 @@ void machine_singleton::setup() {
 }
 
 void machine_singleton::synthesize() {
+	core_->callback_synthesis([&](uint64_t value) {
+		context_singleton::instance().set_progress(value);
+	});
+
 	core_->synthesize();
 	return;
 }

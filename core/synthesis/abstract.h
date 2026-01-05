@@ -5,6 +5,9 @@
 #include "core/sound/sequencer.h"
 
 class synthesis_abstract : public sound_factory {
+protected: /* callback */
+	std::function<void(uint64_t)> on_synthesis_ = nullptr;
+
 protected: /* waveform setter */
 	void rescale(uint16_t volume);
 	void resize(uint64_t note);
@@ -13,6 +16,9 @@ protected: /* waveform setter */
 protected: /* sequencer callback */
 	void callback_disconnect(std::function<void(void)> function);
 	void callback_change(std::function<void(unsigned, int)> function);
+
+public: /* synthesis callback */
+	void callback_synthesis(std::function<void(uint64_t)> function);
 
 public: /* export */
 	int8_t synthesize();

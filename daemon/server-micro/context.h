@@ -6,14 +6,18 @@ protected: /* context */
 	machine::state state_ = machine::state::setup;
 	nlohmann::ordered_json preset_;
 	nlohmann::ordered_json presets_;
+	uint64_t progress_ = 0;
 
 public: /* main setter */
 	void set_state(const machine::state &state);
 	void set_presets(const nlohmann::ordered_json &presets);
+	void set_progress(uint64_t progress);
 
 public: /* api getter */
 	machine::state get_state();
 	nlohmann::ordered_json get_presets();
+	uint64_t get_progress();
+	uint64_t get_notes();
 
 public: /* api setter */
 	void set_preset(uint8_t id);
