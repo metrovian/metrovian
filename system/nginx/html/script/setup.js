@@ -38,6 +38,16 @@ document.addEventListener("DOMContentLoaded", () => {
       const raw = await asyncAPI({ action: "read", state: 0 });
       const state = raw.trim();
       applyState(state);
+      if (state == 2) {
+        const now = await asyncAPI({ action: "read", progress: 0 });
+        const max = await asyncAPI({ action: "read", notes: 0 });
+        stateCircle.style.setProperty(
+          "--progress",
+          (parseInt(now) * 100.0) / parseInt(max)
+        );
+      } else {
+        stateCircle.style.removeProperty("--progress");
+      }
     } catch (err) {
       applyState(400);
       console.error("State", err);
