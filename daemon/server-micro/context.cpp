@@ -19,12 +19,25 @@ void context_singleton::set_presets(const nlohmann::ordered_json &presets) {
 	return;
 }
 
+void context_singleton::set_progress(uint64_t progress) {
+	progress_ = progress;
+	return;
+}
+
 machine::state context_singleton::get_state() {
 	return state_;
 }
 
 nlohmann::ordered_json context_singleton::get_presets() {
 	return presets_;
+}
+
+uint64_t context_singleton::get_progress() {
+	return progress_;
+}
+
+uint64_t context_singleton::get_notes() {
+	return CONFIG_UINT64("synthesis", "note-max") - CONFIG_UINT64("synthesis", "note-min");
 }
 
 void context_singleton::set_preset(uint8_t id) {

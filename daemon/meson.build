@@ -1,5 +1,7 @@
 # metrovian daemon
 src_daemon = files(
+  'server-micro/parser/read/notes.cpp',
+  'server-micro/parser/read/progress.cpp',
   'server-micro/parser/read/state.cpp',
   'server-micro/parser/read/waveform.cpp',
   'server-micro/parser/write/reboot.cpp',
