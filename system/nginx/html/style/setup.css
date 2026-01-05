@@ -19,11 +19,12 @@
 }
 
 .circle {
-  width: 120px;
-  height: 120px;
+  box-sizing: border-box;
+  width: 128px;
+  height: 128px;
+  flex-shrink: 0;
   border-radius: 50%;
-  background: linear-gradient(135deg, #0b1220 0%, #0f1724 100%);
-  border: 3px solid rgba(255, 255, 255, 0.04);
+  background: #0b1220;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -32,34 +33,40 @@
   font-weight: 600;
   opacity: 0.8;
   color: var(--text);
-  transition: box-shadow 180ms ease, border-color 180ms ease,
-    transform 180ms ease;
   margin-bottom: 18px;
   position: relative;
+  z-index: 1;
+  --progress: 100;
 }
 .circle::before {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: radial-gradient(
-    circle at 30% 25%,
-    rgba(255, 255, 255, 0.02),
-    transparent 35%
+  padding: 3px;
+  background: conic-gradient(
+    var(--border-color, transparent) calc(var(--progress, 0) * 1%),
+    rgba(255, 255, 255, 0.08) 0%
   );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
   pointer-events: none;
+  z-index: -1;
+  transition: --progress 200ms ease;
 }
 .circle.setup {
-  border-color: rgba(59, 130, 246, 0.95);
+  --border-color: #3b82f6;
 }
 .circle.synthesis {
-  border-color: rgba(47, 189, 214, 0.95);
+  --border-color: #2fbdd6;
 }
 .circle.perform {
-  border-color: rgba(34, 247, 182, 0.95);
+  --border-color: #22f7b6;
 }
 .circle.error {
-  border-color: rgba(239, 68, 68, 0.95);
+  --border-color: #ef4444;
 }
 
 #waveSetup {
