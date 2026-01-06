@@ -13,10 +13,6 @@
   justify-content: center;
   z-index: 10;
 }
-.systemBtn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text);
-}
 
 .circle {
   box-sizing: border-box;
@@ -113,10 +109,4 @@
   cursor: pointer;
   box-shadow: 0 8px 18px rgba(59, 130, 246, 0.12);
   transition: transform 80ms ease, box-shadow 120ms ease;
-}
-#waveSetup button:active {
-  transform: translateY(1px);
-}
-#waveSetup button:hover {
-  box-shadow: 0 10px 26px rgba(59, 130, 246, 0.16);
 }
