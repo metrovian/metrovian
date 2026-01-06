@@ -14,10 +14,6 @@
   transition: all 0.2s ease;
   z-index: 10;
 }
-.backBtn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text);
-}
 
 .header {
   width: 100%;
@@ -68,10 +64,6 @@
   flex-grow: 1;
   text-align: left;
   letter-spacing: 0.5px;
-}
-.systemBtn:hover {
-  background: var(--box);
-  border-color: rgba(255, 255, 255, 0.1);
 }
 .systemBtn svg {
   width: 18px !important;
