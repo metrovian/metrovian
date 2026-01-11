@@ -88,7 +88,7 @@ void machine_singleton::load_stdout() {
 
 void machine_singleton::load_stderr() {
 	spdlog::set_default_logger(spdlog::stderr_color_mt("stderr"));
-	spdlog::set_level(spdlog::level::trace);
+	spdlog::set_level(spdlog::level::info);
 	return;
 }
 

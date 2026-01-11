@@ -7,6 +7,8 @@
 #include "daemon/server-micro/parser/read/waveform.h"
 #include "daemon/server-micro/parser/write/reboot.h"
 #include "daemon/server-micro/parser/write/waveform.h"
+#include "core/property.h"
+#include "core/predefined.h"
 
 MHD_Result router_singleton::handle_query(
     void *cls,
@@ -33,6 +35,7 @@ MHD_Result router_singleton::write(MHD_Connection *connection, std::string key, 
 		return response::empty(connection, MHD_HTTP_BAD_REQUEST);
 	}
 
+	spdlog::info("[api] [{}:{}] {}:{}:{}", LOG_PATH, __LINE__, __func__, key, value);
 	return iter->second->parse(connection, value);
 }
 
@@ -116,6 +119,7 @@ MHD_Result router_singleton::upload(
 		if (upload.is_array() == true) {
 			code = MHD_HTTP_OK;
 			context_singleton::instance().set_presets(upload);
+			spdlog::info("[api] [{}:{}] {}", LOG_PATH, __LINE__, __func__);
 		}
 	}
 
