@@ -56,11 +56,9 @@ machine_singleton &machine_singleton::instance() {
 }
 
 void machine_singleton::transition(machine::state next) {
-	LOG_ENTER();
 	context_singleton::instance().set_state(next);
 	state_.store(next);
 	smap_[state_.load()]->enter();
-	LOG_EXIT();
 	return;
 }
 
