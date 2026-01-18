@@ -2,17 +2,22 @@
 #include "core/property.h"
 #include "core/predefined.h"
 
-void synthesis_abstract::rescale(uint16_t volume) {
-	dynamic_cast<sound_sequencer *>(producer_.get())->rescale(volume);
-}
-
-void synthesis_abstract::resize(uint64_t note) {
-	dynamic_cast<sound_sequencer *>(producer_.get())->resize(note);
+void synthesis_abstract::set_envelope(double sustain, double attack, double decay, double release) {
+	dynamic_cast<sound_sequencer *>(producer_.get())->set_envelope(sustain, attack, decay, release);
 	return;
 }
 
-void synthesis_abstract::resample(uint64_t note, std::vector<int16_t> &pcm) {
-	dynamic_cast<sound_sequencer *>(producer_.get())->resample(note, pcm);
+void synthesis_abstract::set_scale(uint16_t volume) {
+	dynamic_cast<sound_sequencer *>(producer_.get())->set_scale(volume);
+}
+
+void synthesis_abstract::set_size(uint64_t note) {
+	dynamic_cast<sound_sequencer *>(producer_.get())->set_size(note);
+	return;
+}
+
+void synthesis_abstract::set_sample(uint64_t note, std::vector<int16_t> &pcm) {
+	dynamic_cast<sound_sequencer *>(producer_.get())->set_sample(note, pcm);
 	return;
 }
 
@@ -51,7 +56,7 @@ synthesis_abstract::synthesis_abstract() {
 	callback_change([&](unsigned param, int value) {
 		switch (param) {
 		case 0x07:
-			rescale(value);
+			set_scale(value);
 			return;
 		case 0x79:
 			terminate();
