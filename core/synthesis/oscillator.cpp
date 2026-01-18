@@ -41,7 +41,7 @@ double synthesis_oscillator::saw(double note, double sample, double skew) {
 	return result;
 }
 
-double synthesis_oscillator::square(double note, double sample, double duty) {
+double synthesis_oscillator::sqr(double note, double sample, double duty) {
 	return phase(note, sample) < duty ? 1.000E+0 : -1.000E+0;
 }
 
@@ -57,8 +57,17 @@ std::function<double(double, double)> synthesis_oscillator::lambda_saw(double sk
 	};
 }
 
-std::function<double(double, double)> synthesis_oscillator::lambda_square(double duty) {
+std::function<double(double, double)> synthesis_oscillator::lambda_sqr(double duty) {
 	return [duty](double note, double sample) {
-		return square(note, sample, duty);
+		return sqr(note, sample, duty);
 	};
+}
+
+const oscmap_t &synthesis_oscillator::map() {
+	static const oscmap_t map_ =
+	    {{"sin", [](const nlohmann::ordered_json &) { return lambda_sin(); }},
+	     {"saw", [](const nlohmann::ordered_json &obj) { return lambda_saw(obj.value("skew", 0.000E+0)); }},
+	     {"sqr", [](const nlohmann::ordered_json &obj) { return lambda_sqr(obj.value("duty", 0.500E+0)); }}};
+
+	return map_;
 }

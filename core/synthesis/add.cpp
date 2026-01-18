@@ -3,22 +3,14 @@
 #include "core/predefined.h"
 
 synthesis_add::synthesis_add(const nlohmann::ordered_json &preset) {
-	static const std::unordered_map<
-	    std::string,
-	    std::function<std::function<double(double, double)>(const nlohmann::ordered_json)>>
-	    cmap =
-		{{"sin", [](const nlohmann::ordered_json &) { return synthesis_oscillator::lambda_sin(); }},
-		 {"saw", [](const nlohmann::ordered_json &object) { return synthesis_oscillator::lambda_saw(object.value("skew", 0.000E+0)); }},
-		 {"square", [](const nlohmann::ordered_json &object) { return synthesis_oscillator::lambda_square(object.value("duty", 0.500E+0)); }}};
-
 	if (preset.value("method", "") != std::string("add")) {
 		return;
 	}
 
 	if (preset["components"].is_array() == true) {
 		for (const auto &object : preset["components"]) {
-			auto iter = cmap.find(object.value("osc", ""));
-			if (iter != cmap.end()) {
+			auto iter = synthesis_oscillator::map().find(object.value("osc", ""));
+			if (iter != synthesis_oscillator::map().end()) {
 				components_.push_back(iter->second(object));
 				amps_.push_back(object.value("amp", 0.0));
 				ratios_.push_back(object.value("ratio", 1.0));
