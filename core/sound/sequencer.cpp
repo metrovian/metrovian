@@ -12,14 +12,20 @@ void sound_sequencer::thread_event() {
 			mutex_.lock();
 			switch (event->type) {
 			case SND_SEQ_EVENT_NOTEON:
-				key_[event->data.note.note].vel_ = event->data.note.velocity;
-				key_[event->data.note.note].pos_ = 0;
-				key_[event->data.note.note].active_ = 1;
+				if (event->data.note.velocity > 0) {
+					key_[event->data.note.note].vel_ = event->data.note.velocity;
+					key_[event->data.note.note].pos_enter_ = 0;
+					key_[event->data.note.note].pos_ = 0;
+					key_[event->data.note.note].active_ = 1;
+					key_[event->data.note.note].state_ = sound::state::attack;
+				} else {
+					key_[event->data.note.note].pos_enter_ = key_[event->data.note.note].pos_;
+					key_[event->data.note.note].state_ = sound::state::release;
+				}
 				break;
 			case SND_SEQ_EVENT_NOTEOFF:
-				key_[event->data.note.note].vel_ = event->data.note.velocity;
-				key_[event->data.note.note].pos_ = 0;
-				key_[event->data.note.note].active_ = 0;
+				key_[event->data.note.note].pos_enter_ = key_[event->data.note.note].pos_;
+				key_[event->data.note.note].state_ = sound::state::release;
 				break;
 			case SND_SEQ_EVENT_CONTROLLER:
 				if (on_change_ != nullptr) {
@@ -47,17 +53,61 @@ void sound_sequencer::thread_event() {
 	return;
 }
 
-void sound_sequencer::rescale(uint16_t volume) {
+double sound_sequencer::calc_envelope(sound::note &note) {
+	switch (note.state_) {
+	case sound::state::sustain:
+		return sustain_;
+
+	case sound::state::attack:
+		if (note.pos_ < attack_) {
+			return static_cast<double>(note.pos_) / attack_;
+		} else {
+			note.pos_enter_ += attack_;
+			note.state_ = sound::state::decay;
+			return 1.000E+0;
+		}
+	case sound::state::decay:
+		if (note.pos_ < note.pos_enter_ + decay_) {
+			return 1.000E+0 - ((note.pos_ - note.pos_enter_) * sustain_) / decay_;
+		} else {
+			note.pos_enter_ += decay_;
+			note.state_ = sound::state::sustain;
+			return sustain_;
+		}
+	case sound::state::release:
+		if (note.pos_ < note.pos_enter_ + release_) {
+			return sustain_ - ((note.pos_ - note.pos_enter_) * sustain_) / release_;
+		} else {
+			note.pos_enter_ = 0;
+			note.pos_ = 0;
+			note.active_ = 0;
+			note.state_ = sound::state::none;
+			return 0.000E+0;
+		}
+	default:
+		return 0.000E+0;
+	}
+}
+
+void sound_sequencer::set_envelope(double sustain, double attack, double decay, double release) {
+	sustain_ = sustain;
+	attack_ = static_cast<uint64_t>(sample_rate_ * attack);
+	decay_ = static_cast<uint64_t>(sample_rate_ * decay);
+	release = static_cast<uint64_t>(sample_rate_ * release);
+	return;
+}
+
+void sound_sequencer::set_scale(uint16_t volume) {
 	volume_ = volume;
 	return;
 }
 
-void sound_sequencer::resize(uint64_t note) {
+void sound_sequencer::set_size(uint64_t note) {
 	key_.resize(note);
 	return;
 }
 
-void sound_sequencer::resample(uint64_t note, std::vector<int16_t> &pcm) {
+void sound_sequencer::set_sample(uint64_t note, std::vector<int16_t> &pcm) {
 	key_[note].sample_ = pcm;
 	return;
 }
@@ -149,18 +199,18 @@ std::vector<int16_t> sound_sequencer::produce() {
 	std::lock_guard lock(mutex_);
 	std::vector<int16_t> pcm(len_, 0);
 	for (sound::note &note : key_) {
-		if (note.active_ == 0) {
-			continue;
-		}
+		double env = calc_envelope(note) / 16129.0;
+		if (note.active_ != 0) {
+			env *= note.vel_ * volume_;
+			for (uint64_t i = 0; i < len_; ++i) {
+				if (note.pos_ > note.sample_.size() - 1) {
+					note.pos_ = 0;
+					note.active_ = 0;
+					break;
+				}
 
-		for (uint64_t i = 0; i < len_; ++i) {
-			if (note.pos_ > note.sample_.size() - 1) {
-				note.pos_ = 0;
-				note.active_ = 0;
-				break;
+				pcm[i] += note.sample_[note.pos_++] * env;
 			}
-
-			pcm[i] += note.sample_[note.pos_++] * ((volume_ * note.vel_) / 16129.0);
 		}
 	}
 

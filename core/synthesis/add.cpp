@@ -29,7 +29,7 @@ void synthesis_add::synthesis(uint64_t min, uint64_t max, uint64_t period) {
 
 	uint64_t sample_rate = CONFIG_UINT64("synthesis", "sample-rate");
 	std::vector<int16_t> sample(sample_rate * period, 0);
-	resize(max);
+	set_size(max);
 	for (uint64_t i = min; i < max; ++i) {
 		if (on_synthesis_ != nullptr) {
 			on_synthesis_((i + 1) - min);
@@ -45,7 +45,7 @@ void synthesis_add::synthesis(uint64_t min, uint64_t max, uint64_t period) {
 			sample[j] = static_cast<int16_t>(sum * 3276);
 		}
 
-		resample(i, sample);
+		set_sample(i, sample);
 		LOG_PROGRESS((i + 1) - min, max - min);
 	}
 

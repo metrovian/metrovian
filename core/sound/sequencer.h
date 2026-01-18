@@ -6,11 +6,21 @@ extern "C" {
 }
 
 namespace sound {
+enum class state {
+	none = 0,
+	attack = 1,
+	decay = 2,
+	sustain = 3,
+	release = 4,
+};
+
 struct note {
 	std::vector<int16_t> sample_;
 	uint8_t active_ = 0;
 	uint8_t vel_ = 0;
+	uint64_t pos_enter_ = 0;
 	uint64_t pos_ = 0;
+	sound::state state_ = sound::state::none;
 };
 }; // namespace sound
 
@@ -31,13 +41,23 @@ protected: /* parameter */
 	uint64_t len_ = 0;
 	uint16_t volume_ = 64;
 
+protected: /* envelope */
+	double sustain_ = 1.000E+0;
+	uint64_t attack_ = 0;
+	uint64_t decay_ = 0;
+	uint64_t release_ = 0;
+
 protected: /* thread */
 	void thread_event();
 
+protected: /* envelope */
+	double calc_envelope(sound::note &note);
+
 public: /* setter */
-	void rescale(uint16_t volume);
-	void resize(uint64_t note);
-	void resample(uint64_t note, std::vector<int16_t> &pcm);
+	void set_envelope(double sustain, double attack, double decay, double release);
+	void set_scale(uint16_t volume);
+	void set_size(uint64_t note);
+	void set_sample(uint64_t note, std::vector<int16_t> &pcm);
 
 public: /* callback */
 	void callback_disconnect(std::function<void(void)> function);
