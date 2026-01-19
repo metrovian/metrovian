@@ -9,7 +9,7 @@ protected: /* callback */
 	std::function<void(uint64_t)> on_synthesis_ = nullptr;
 
 protected: /* waveform setter */
-	void set_envelope(double sustain, double attack, double decay, double release);
+	void set_envelope(const nlohmann::ordered_json &preset);
 	void set_scale(uint16_t volume);
 	void set_size(uint64_t note);
 	void set_sample(uint64_t note, std::vector<int16_t> &pcm);
