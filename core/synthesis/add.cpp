@@ -2,12 +2,12 @@
 #include "core/property.h"
 #include "core/predefined.h"
 
-synthesis_add::synthesis_add(const nlohmann::ordered_json &preset) {
+synthesis_add::synthesis_add(const nlohmann::ordered_json &preset)
+    : synthesis_abstract(preset) {
 	if (preset.value("method", "") != std::string("add")) {
 		return;
 	}
 
-	set_envelope(preset);
 	if (preset["components"].is_array() == true) {
 		for (const auto &object : preset["components"]) {
 			auto iter = synthesis_oscillator::map().find(object.value("osc", ""));

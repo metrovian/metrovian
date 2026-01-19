@@ -79,6 +79,11 @@ synthesis_abstract::synthesis_abstract() {
 	});
 }
 
+synthesis_abstract::synthesis_abstract(const nlohmann::ordered_json &preset)
+    : synthesis_abstract() {
+	set_envelope(preset);
+}
+
 std::unique_ptr<sound_producer> synthesis_abstract::create_producer() {
 	return std::make_unique<sound_sequencer>(
 	    CONFIG_UINT32("synthesis", "channel"),
