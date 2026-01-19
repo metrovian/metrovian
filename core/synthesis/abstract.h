@@ -27,6 +27,7 @@ public: /* export */
 
 public: /* constructor */
 	synthesis_abstract();
+	synthesis_abstract(const nlohmann::ordered_json &preset);
 
 public: /* abstract */
 	virtual ~synthesis_abstract() {}
