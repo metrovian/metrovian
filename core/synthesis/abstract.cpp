@@ -2,13 +2,25 @@
 #include "core/property.h"
 #include "core/predefined.h"
 
-void synthesis_abstract::set_envelope(double sustain, double attack, double decay, double release) {
-	dynamic_cast<sound_sequencer *>(producer_.get())->set_envelope(sustain, attack, decay, release);
+void synthesis_abstract::set_envelope(const nlohmann::ordered_json &preset) {
+	auto iter = preset.find("envelope");
+	if (iter != preset.end()) {
+		if (iter->is_object() == true) {
+			dynamic_cast<sound_sequencer *>(producer_.get())
+			    ->set_envelope(
+				iter->value("sustain", 1.000E+0),
+				iter->value("attack", 0.000E+0),
+				iter->value("decay", 0.000E+0),
+				iter->value("release", 0.000E+0));
+		}
+	}
+
 	return;
 }
 
 void synthesis_abstract::set_scale(uint16_t volume) {
 	dynamic_cast<sound_sequencer *>(producer_.get())->set_scale(volume);
+	return;
 }
 
 void synthesis_abstract::set_size(uint64_t note) {

@@ -93,7 +93,7 @@ void sound_sequencer::set_envelope(double sustain, double attack, double decay, 
 	sustain_ = sustain;
 	attack_ = static_cast<uint64_t>(sample_rate_ * attack);
 	decay_ = static_cast<uint64_t>(sample_rate_ * decay);
-	release = static_cast<uint64_t>(sample_rate_ * release);
+	release_ = static_cast<uint64_t>(sample_rate_ * release);
 	return;
 }
 
