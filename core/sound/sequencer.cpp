@@ -62,15 +62,15 @@ double sound_sequencer::calc_envelope(sound::note &note) {
 		if (note.pos_ < attack_) {
 			return static_cast<double>(note.pos_) / attack_;
 		} else {
-			note.pos_enter_ += attack_;
+			note.pos_enter_ = note.pos_;
 			note.state_ = sound::state::decay;
 			return 1.000E+0;
 		}
 	case sound::state::decay:
 		if (note.pos_ < note.pos_enter_ + decay_) {
-			return 1.000E+0 - ((note.pos_ - note.pos_enter_) * sustain_) / decay_;
+			return 1.000E+0 - ((note.pos_ - note.pos_enter_) * (1.000E+0 - sustain_)) / decay_;
 		} else {
-			note.pos_enter_ += decay_;
+			note.pos_enter_ = note.pos_;
 			note.state_ = sound::state::sustain;
 			return sustain_;
 		}
