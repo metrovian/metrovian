@@ -20,6 +20,7 @@ struct note {
 	uint8_t vel_ = 0;
 	uint64_t pos_enter_ = 0;
 	uint64_t pos_ = 0;
+	double env_ = 0;
 	sound::state state_ = sound::state::none;
 };
 }; // namespace sound

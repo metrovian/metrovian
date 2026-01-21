@@ -55,38 +55,40 @@ void sound_sequencer::thread_event() {
 
 double sound_sequencer::calc_envelope(sound::note &note) {
 	switch (note.state_) {
-	case sound::state::sustain:
-		return sustain_;
-
 	case sound::state::attack:
 		if (note.pos_ < attack_) {
-			return static_cast<double>(note.pos_) / attack_;
+			note.env_ = static_cast<double>(note.pos_) / attack_;
 		} else {
 			note.pos_enter_ = note.pos_;
+			note.env_ = 1.000E+0;
 			note.state_ = sound::state::decay;
-			return 1.000E+0;
 		}
+		break;
 	case sound::state::decay:
 		if (note.pos_ < note.pos_enter_ + decay_) {
-			return 1.000E+0 - ((note.pos_ - note.pos_enter_) * (1.000E+0 - sustain_)) / decay_;
+			note.env_ = 1.000E+0 - ((note.pos_ - note.pos_enter_) * (1.000E+0 - sustain_)) / decay_;
 		} else {
 			note.pos_enter_ = note.pos_;
+			note.env_ = sustain_;
 			note.state_ = sound::state::sustain;
-			return sustain_;
 		}
+		break;
 	case sound::state::release:
 		if (note.pos_ < note.pos_enter_ + release_) {
-			return sustain_ - ((note.pos_ - note.pos_enter_) * sustain_) / release_;
+			return note.env_ - ((note.pos_ - note.pos_enter_) * note.env_) / release_;
 		} else {
+			note.active_ = 0;
 			note.pos_enter_ = 0;
 			note.pos_ = 0;
-			note.active_ = 0;
+			note.env_ = 0.000E+0;
 			note.state_ = sound::state::none;
 			return 0.000E+0;
 		}
-	default:
-		return 0.000E+0;
+	default: // sound::state::sustain
+		return sustain_;
 	}
+
+	return note.env_;
 }
 
 void sound_sequencer::set_envelope(double sustain, double attack, double decay, double release) {
