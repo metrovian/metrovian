@@ -1,8 +1,9 @@
 ## Features
-- Physical oscillogram synthesis via reconstruction
-- Mathematical operation
-- Audio command
-- Performance daemon ( Wi-Fi )
+### Commands
+- Mathematical operations
+- Audio commands
+### Daemon
+- Musical instrument digital interface control ( MIDI )
 ## Hardwares
 - Alesis Mini Q32 `audio-sequencer`
 - Dell AC511 `audio-soundbar`
