@@ -1,8 +1,6 @@
 ## Features
-### Commands
 - Mathematical operations
 - Audio commands
-### Daemon
 - Musical instrument digital interface control ( MIDI )
 ## Hardwares
 - Alesis Mini Q32 `audio-sequencer`
