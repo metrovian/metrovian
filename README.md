@@ -2,7 +2,7 @@
 - Mathematical operations
 - Audio commands
 - Musical instrument digital interface control ( MIDI )
-- Host access point mode ( AP )
+- Host access point mode ( WAP )
 ## Hardwares
 - Alesis Mini Q32 `audio-sequencer`
 - Dell AC511 `audio-soundbar`
