@@ -6,6 +6,7 @@
 #include "daemon/state/setup.h"
 #include "daemon/state/synthesis.h"
 #include "daemon/state/performance.h"
+#include "core/sound/automata.h"
 #include "core/synthesis/abstract.h"
 #include "core/synthesis/add.h"
 
