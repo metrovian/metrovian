@@ -106,6 +106,7 @@ machine_singleton::machine_singleton() {
 	handle_setup([&]() { shutdown(); });
 	property_singleton::instance();
 	context_singleton::instance();
+	automata_singleton::instance();
 	api_singleton::instance();
 }
 

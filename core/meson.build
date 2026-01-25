@@ -12,6 +12,7 @@ src_core = files(
   'optimization/transcendental.cpp',
   'optimization/user.cpp',
   'sound/abstract.cpp',
+  'sound/automata.cpp',
   'sound/factory.cpp',
   'sound/player.cpp',
   'sound/sequencer.cpp',
