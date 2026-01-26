@@ -62,6 +62,11 @@ int8_t synthesis_abstract::perform() {
 	return 0;
 }
 
+int8_t synthesis_abstract::panic() {
+	terminate();
+	return 0;
+}
+
 synthesis_abstract::synthesis_abstract() {
 	create();
 	callback_disconnect([&]() { terminate(); });

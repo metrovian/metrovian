@@ -79,6 +79,11 @@ void machine_singleton::shutdown() {
 	return;
 }
 
+void machine_singleton::panic() {
+	core_->panic();
+	return;
+}
+
 void machine_singleton::load_stdout() {
 	std::cout << std::scientific << std::showpos << std::setprecision(6);
 	return;
