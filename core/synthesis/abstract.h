@@ -24,6 +24,7 @@ public: /* synthesis callback */
 public: /* export */
 	int8_t synthesize();
 	int8_t perform();
+	int8_t panic();
 
 public: /* constructor */
 	synthesis_abstract();

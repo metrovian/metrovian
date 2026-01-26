@@ -45,6 +45,7 @@ public: /* export */
 	void transition(machine::state next);
 	void loop();
 	void shutdown();
+	void panic();
 
 private: /* load */
 	void load_stdout();
