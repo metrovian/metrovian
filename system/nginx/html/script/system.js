@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const uploadBtn = document.getElementById("uploadBtn");
   const saveBtn = document.getElementById("saveBtn");
+  const panicBtn = document.getElementById("panicBtn");
   const rebootBtn = document.getElementById("rebootBtn");
   const shutdownBtn = document.getElementById("shutdownBtn");
 
@@ -62,6 +63,19 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   });
 
+  panicBtn.addEventListener("click", async () => {
+    try {
+      await asyncAPI({ action: "write", waveform: -1 });
+    } catch (err) {
+      console.warn("panic", err);
+      return;
+    }
+
+    alert("OK!");
+    console.log("Panic");
+    return;
+  });
+
   rebootBtn.addEventListener("click", async () => {
     if (confirm("Reboot?") == false) {
       return;
@@ -74,6 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    alert("OK!");
     console.log("Reboot");
     return;
   });
@@ -90,6 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    alert("OK!");
     console.log("Shutdown");
     return;
   });
