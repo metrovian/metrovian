@@ -1,15 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
   const STATE_UI = {
-    1: { label: "SETUP", class: "setup", disabled: false },
-    2: { label: "SYNTH", class: "synthesis", disabled: true },
-    3: { label: "PLAY", class: "perform", disabled: true },
-    400: { label: "ERROR", class: "error", disabled: true },
+    1: { label: "SETUP", class: "setup" },
+    2: { label: "SYNTH", class: "synthesis" },
+    3: { label: "PLAY", class: "perform" },
+    400: { label: "ERROR", class: "error" },
   };
 
   const stateCircle = document.getElementById("stateCircle");
   const stateText = document.getElementById("stateText");
   const waveSetup = document.getElementById("waveSetup");
-  const waveSelect = document.getElementById("waveSelect");
+  const waveSelect1 = document.getElementById("waveSelect1");
+  const waveSelect2 = document.getElementById("waveSelect2");
   const waveConfirm = document.getElementById("waveConfirm");
 
   function applyState(state) {
@@ -20,12 +21,19 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     stateCircle.classList.add(info.class);
-    if (info.disabled == false) {
-      waveSelect.disabled = false;
+    if (info.label == "SETUP") {
+      waveSelect1.disabled = false;
+      waveSelect2.disabled = true;
+      waveConfirm.disabled = false;
+      waveSetup.classList.remove("disabled");
+    } else if (info.label == "PLAY") {
+      waveSelect1.disabled = true;
+      waveSelect2.disabled = false;
       waveConfirm.disabled = false;
       waveSetup.classList.remove("disabled");
     } else {
-      waveSelect.disabled = true;
+      waveSelect1.disabled = true;
+      waveSelect2.disabled = true;
       waveConfirm.disabled = true;
       waveSetup.classList.add("disabled");
     }
@@ -63,29 +71,38 @@ document.addEventListener("DOMContentLoaded", () => {
       const opt = document.createElement("option");
       opt.value = wave.id;
       opt.textContent = wave.name;
-      waveSelect.appendChild(opt);
+      waveSelect1.appendChild(opt);
     });
 
     return;
   }
 
   waveConfirm.addEventListener("click", async () => {
-    const value = waveSelect?.value || null;
-    const valids = Array.from(waveSelect.options).map((opt) => opt.value);
-    if (valids.includes(value) == false) {
-      console.error("Invalid Waveform");
-      return;
-    }
+    if (stateText.textContent == "SETUP") {
+      const value = waveSelect1?.value || null;
+      const valids = Array.from(waveSelect1.options).map((opt) => opt.value);
+      if (valids.includes(value) == false) {
+        console.error("Invalid Waveform");
+        return;
+      }
 
-    try {
-      await asyncAPI({ action: "write", waveform: value });
-    } catch (err) {
-      console.warn(`Select Waveform: ${value}`);
-      return;
-    }
+      try {
+        await asyncAPI({ action: "write", waveform: value });
+      } catch (err) {
+        console.warn(`Select Waveform: ${value}`);
+        return;
+      }
 
-    console.log(`Select Waveform: ${value}`);
-    return;
+      console.log(`Select Waveform: ${value}`);
+      return;
+    } else if (stateText.textContent == "PLAY") {
+      const value = waveSelect2?.value || null;
+      const valids = Array.from(waveSelect2.options).map((opt) => opt.value);
+      if (valids.includes(value) == false) {
+        console.error("Invalid MIDI");
+        return;
+      }
+    }
   });
 
   updateOptions();
