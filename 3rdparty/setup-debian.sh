@@ -10,6 +10,7 @@ sudo apt install \
         nginx \
         nlohmann-json3-dev \
         libasound2-dev \
+        libsmf-dev \
         libcli11-dev \
         libeigen3-dev \
         libmuparser-dev \
