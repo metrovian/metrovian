@@ -72,9 +72,9 @@
   margin-top: 6px;
   color: var(--muted);
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
   gap: 10px;
 }
 #waveSetup.disabled {
@@ -82,9 +82,8 @@
   pointer-events: none;
 }
 #waveSetup select {
-  width: 200px;
   height: 40px;
-  padding: 8px 12px;
+  padding: 8px 16px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.04);
   background-color: var(--box);
