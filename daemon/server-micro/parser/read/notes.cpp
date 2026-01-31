@@ -5,5 +5,5 @@
 MHD_Result read_notes::parse(MHD_Connection *connection) {
 	return response::numeric(
 	    connection,
-	    static_cast<uint32_t>(context_singleton::instance().get_notes()));
+	    static_cast<uint32_t>(context_singleton::instance().apiget_notes()));
 }
