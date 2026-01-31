@@ -3,7 +3,6 @@
 #include "core/predefined.h"
 
 void automata_singleton::thread_playback() {
-
 	int tick_delta = 0;
 	int tick_prev = 0;
 	int tick_tempo = 500000;

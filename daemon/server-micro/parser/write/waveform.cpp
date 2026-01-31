@@ -5,11 +5,11 @@
 
 MHD_Result write_waveform::parse(MHD_Connection *connection, std::string param) {
 	if (std::stoi(param) >= 0) {
-		context_singleton::instance().set_preset(std::stoi(param));
+		context_singleton::instance().apiset_preset(std::stoi(param));
 		return response::empty(connection, MHD_HTTP_OK);
 	}
 
-	if (context_singleton::instance().get_state() ==
+	if (context_singleton::instance().apiget_state() ==
 	    machine::state::performance) {
 		machine_singleton::instance().panic();
 		return response::empty(connection, MHD_HTTP_OK);

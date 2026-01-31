@@ -5,5 +5,5 @@
 MHD_Result read_progress::parse(MHD_Connection *connection) {
 	return response::numeric(
 	    connection,
-	    static_cast<uint32_t>(context_singleton::instance().get_progress()));
+	    static_cast<uint32_t>(context_singleton::instance().apiget_progress()));
 }

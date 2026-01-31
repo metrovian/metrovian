@@ -8,22 +8,22 @@ protected: /* context */
 	nlohmann::ordered_json presets_;
 	uint64_t progress_ = 0;
 
+public: /* api getter */
+	machine::state apiget_state();
+	nlohmann::ordered_json apiget_presets();
+	uint64_t apiget_progress();
+	uint64_t apiget_notes();
+
+public: /* api setter */
+	void apiset_preset(uint8_t id);
+
+public: /* main getter */
+	nlohmann::ordered_json get_preset();
+
 public: /* main setter */
 	void set_state(const machine::state &state);
 	void set_presets(const nlohmann::ordered_json &presets);
 	void set_progress(uint64_t progress);
-
-public: /* api getter */
-	machine::state get_state();
-	nlohmann::ordered_json get_presets();
-	uint64_t get_progress();
-	uint64_t get_notes();
-
-public: /* api setter */
-	void set_preset(uint8_t id);
-
-public: /* main getter */
-	nlohmann::ordered_json get_preset();
 
 public: /* instance */
 	static context_singleton &instance();
