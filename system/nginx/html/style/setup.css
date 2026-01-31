@@ -25,10 +25,6 @@
   align-items: stretch;
   gap: 10px;
 }
-#waveSetup.disabled {
-  opacity: 0.45;
-  pointer-events: none;
-}
 #waveSetup select {
   height: 40px;
   padding: 8px 16px;
@@ -40,6 +36,12 @@
   outline: none;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
   appearance: none;
+}
+#waveSetup select:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 #waveSetup select option {
   background: var(--box);
@@ -56,4 +58,10 @@
   cursor: pointer;
   box-shadow: 0 8px 18px rgba(59, 130, 246, 0.12);
   transition: transform 80ms ease, box-shadow 120ms ease;
+}
+#waveSetup button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
