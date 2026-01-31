@@ -20,6 +20,40 @@ body {
   overflow: hidden;
 }
 
+#stateHeader {
+  width: 100%;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+#stateText {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text);
+  letter-spacing: 3px;
+  transform: translateX(1.5px);
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+#stateLine {
+  position: relative;
+  height: 1px;
+  width: 30px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 12px auto;
+  overflow: hidden;
+}
+#stateLine::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: calc(var(--progress, 0) * 1%);
+  background: var(--state-color);
+}
+
 #panel {
   width: 320px;
   margin: 48px auto;

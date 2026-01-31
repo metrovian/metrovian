@@ -14,62 +14,10 @@
   z-index: 10;
 }
 
-.circle {
-  box-sizing: border-box;
-  width: 128px;
-  height: 128px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  background: #0b1220;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 15px;
-  letter-spacing: 3px;
-  font-weight: 600;
-  opacity: 0.8;
-  color: var(--text);
-  margin-bottom: 18px;
-  position: relative;
-  z-index: 1;
-  --progress: 100;
-}
-.circle::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  padding: 3px;
-  background: conic-gradient(
-    var(--border-color, transparent) calc(var(--progress, 0) * 1%),
-    rgba(255, 255, 255, 0.08) 0%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  z-index: -1;
-  transition: --progress 200ms ease;
-}
-.circle.setup {
-  --border-color: #3b82f6;
-}
-.circle.synthesis {
-  --border-color: #2fbdd6;
-}
-.circle.perform {
-  --border-color: #22f7b6;
-}
-.circle.error {
-  --border-color: #ef4444;
-}
-
 #waveSetup {
   width: 100%;
   max-width: 360px;
   text-align: center;
-  margin-top: 6px;
   color: var(--muted);
   display: flex;
   flex-direction: column;
