@@ -5,6 +5,7 @@
 #include "daemon/server-micro/parser/read/progress.h"
 #include "daemon/server-micro/parser/read/state.h"
 #include "daemon/server-micro/parser/read/waveform.h"
+#include "daemon/server-micro/parser/read/waveforms.h"
 #include "daemon/server-micro/parser/write/reboot.h"
 #include "daemon/server-micro/parser/write/waveform.h"
 #include "core/property.h"
@@ -138,6 +139,7 @@ void router_singleton::load_rmap() {
 	rmap_.insert(std::make_pair("progress", std::make_unique<read_progress>()));
 	rmap_.insert(std::make_pair("state", std::make_unique<read_state>()));
 	rmap_.insert(std::make_pair("waveform", std::make_unique<read_waveform>()));
+	rmap_.insert(std::make_pair("waveforms", std::make_unique<read_waveforms>()));
 	return;
 }
 

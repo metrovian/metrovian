@@ -10,6 +10,10 @@ nlohmann::ordered_json context_singleton::apiget_presets() {
 	return presets_;
 }
 
+uint8_t context_singleton::apiget_preset() {
+	return id_;
+}
+
 uint64_t context_singleton::apiget_progress() {
 	return progress_;
 }
@@ -21,6 +25,7 @@ uint64_t context_singleton::apiget_notes() {
 void context_singleton::apiset_preset(uint8_t id) {
 	for (const auto &object : presets_) {
 		if (object.value("id", -1) == id) {
+			id_ = id;
 			preset_ = object.value("data", nlohmann::ordered_json());
 			return;
 		}

@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function updateOptions() {
-    const res = await asyncAPI({ action: "read", waveform: 0 });
+    const res = await asyncAPI({ action: "read", waveforms: 0 });
     const waves = JSON.parse(res);
     waves.forEach((wave) => {
       const opt = document.createElement("option");
@@ -73,6 +73,12 @@ document.addEventListener("DOMContentLoaded", () => {
       opt.textContent = wave.name;
       waveSelect1.appendChild(opt);
     });
+
+    if (stateText.textContent == "SYNTH" || stateText.textContent == "PLAY") {
+      const select = await asyncAPI({ action: "read", waveform: 0 });
+      const id = String(select);
+      waveSelect1.value = id;
+    }
 
     return;
   }
@@ -105,8 +111,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  updateOptions();
   updateState();
+  updateOptions();
   setInterval(updateState, 200);
   return;
 });
