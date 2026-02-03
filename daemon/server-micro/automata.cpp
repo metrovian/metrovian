@@ -1,4 +1,4 @@
-#include "core/sound/automata.h"
+#include "daemon/server-micro/automata.h"
 #include "core/property.h"
 #include "core/predefined.h"
 

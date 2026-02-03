@@ -10,6 +10,7 @@ src_daemon = files(
   'server-micro/parser/abstract.cpp',
   'server-micro/parser/router.cpp',
   'server-micro/api.cpp',
+  'server-micro/automata.cpp',
   'server-micro/context.cpp',
   'server-micro/response.cpp',
   'state/abstract.cpp',
