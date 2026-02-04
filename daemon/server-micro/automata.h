@@ -20,6 +20,9 @@ protected: /* control */
 protected: /* thread */
 	void thread_playback();
 
+public: /* getter */
+	uint8_t get_state();
+
 public: /* export */
 	int8_t open(std::string name);
 	int8_t close();
