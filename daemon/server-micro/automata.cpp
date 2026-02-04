@@ -60,13 +60,23 @@ void automata_singleton::thread_playback() {
 	return;
 }
 
+uint8_t automata_singleton::get_state() {
+	return static_cast<uint8_t>(state_.load() > 0);
+}
+
 int8_t automata_singleton::open(std::string name) {
 	LOG_ENTER();
+	if (state_.load() != 0) {
+		LOG_CONDITION(state_ != 0);
+		LOG_EXIT();
+		return -1;
+	}
+
 	smf_ = smf_load(name.c_str());
 	if (smf_ == nullptr) {
 		LOG_CONDITION(smf_load == nullptr);
 		LOG_EXIT();
-		return -1;
+		return -2;
 	}
 
 	std::thread(&automata_singleton::thread_playback, this).detach();
