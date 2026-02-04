@@ -6,7 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const STATE_UI = {
     1: { label: "SETUP", color: "#3b82f6" },
     2: { label: "SYNTHESIS", color: "#2fbdd6" },
-    3: { label: "PLAY", color: "#22f7b6" },
+    3: { label: "READY", color: "#22f7b6" },
+    4: { label: "PLAY", color: "#22f7b6" },
     502: { label: "ERROR", color: "#ef4444" },
   };
 
