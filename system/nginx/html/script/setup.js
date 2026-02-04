@@ -11,6 +11,11 @@ document.addEventListener("DOMContentLoaded", () => {
         waveSelect2: false,
         waveConfirm: false,
       },
+      4: {
+        waveSelect1: true,
+        waveSelect2: true,
+        waveConfirm: true,
+      },
     };
 
     const STATE_DEFAULT = {
@@ -71,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       console.log(`Select Waveform: ${value}`);
       return;
-    } else if (stateText.textContent == "PLAY") {
+    } else if (stateText.textContent == "READY") {
       const value = waveSelect2?.value || null;
       const valids = Array.from(waveSelect2.options).map((opt) => opt.value);
       if (valids.includes(value) == false) {
