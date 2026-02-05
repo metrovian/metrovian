@@ -19,7 +19,8 @@
 #define CONFIG_FLOAT32(...)             std::stof(CONFIG_STRING(__VA_ARGS__))
 #define CONFIG_FLOAT64(...)             std::stod(CONFIG_STRING(__VA_ARGS__))
 
-#define PATH_DIR                        "/.config/metrovian"
+#define PATH_SHARE                      "/.local/share/metrovian"
+#define PATH_CONFIG                     "/.config/metrovian"
 #define PATH_PROPERTY                   "/.config/metrovian/property.json"
 #define PATH_PRESET                     "/.config/metrovian/preset.json"
 // clang-format on
