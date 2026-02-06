@@ -72,6 +72,7 @@ int8_t automata_singleton::open(std::string name) {
 		return -1;
 	}
 
+	name = std::string(std::getenv("STATE_DIRECTORY")) + (std::string("/") + name);
 	smf_ = smf_load(name.c_str());
 	if (smf_ == nullptr) {
 		LOG_CONDITION(smf_load == nullptr);
@@ -112,6 +113,7 @@ automata_singleton::automata_singleton() {
 	if (access(dir.c_str(), F_OK) != 0) {
 		if (mkdir(dir.c_str(), 0755) != 0) {
 			LOG_CONDITION(mkdir != 0);
+			LOG_EXIT();
 			return;
 		}
 	}
