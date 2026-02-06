@@ -1,7 +1,5 @@
 #pragma once
 // clang-format off
-#define RETURN_CLEANUP(retcode, code)   do { retcode = code; goto cleanup; } while(0)
-
 #define LOG_PATH                        std::string(__FILE__).substr(3)
 #define LOG_EXIT()                      spdlog::trace("[exit] [{}:{}] {}", LOG_PATH, __LINE__, __func__)
 #define LOG_VALUE(now)                  spdlog::debug("[value] [{}:{}] {} == {}", LOG_PATH, __LINE__, std::string(#now), now)
@@ -19,8 +17,6 @@
 #define CONFIG_FLOAT32(...)             std::stof(CONFIG_STRING(__VA_ARGS__))
 #define CONFIG_FLOAT64(...)             std::stod(CONFIG_STRING(__VA_ARGS__))
 
-#define PATH_SHARE                      "/.local/share/metrovian"
-#define PATH_CONFIG                     "/.config/metrovian"
-#define PATH_PROPERTY                   "/.config/metrovian/property.json"
-#define PATH_PRESET                     "/.config/metrovian/preset.json"
+#define CONFIG_PROPERTY                 "property.json"
+#define CONFIG_PRESET                   "preset.json"
 // clang-format on

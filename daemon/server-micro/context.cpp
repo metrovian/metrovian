@@ -45,7 +45,7 @@ void context_singleton::set_state(const machine::state &state) {
 
 void context_singleton::set_presets(const nlohmann::ordered_json &presets) {
 	presets_ = presets;
-	std::string path = std::string(std::getenv("HOME")) + PATH_PRESET;
+	std::string path = std::string(std::getenv("CONFIGURATION_DIRECTORY")) + CONFIG_PRESET;
 	std::ofstream ofs(path);
 	if (ofs.is_open() == true) {
 		ofs << presets_.dump(8);
@@ -66,7 +66,7 @@ context_singleton &context_singleton::instance() {
 }
 
 context_singleton::context_singleton() {
-	std::string path = std::string(std::getenv("HOME")) + PATH_PRESET;
+	std::string path = std::string(std::getenv("CONFIGURATION_DIRECTORY")) + CONFIG_PRESET;
 	std::ifstream ifs(path);
 	if (ifs.is_open() == true) {
 		ifs >> presets_;
