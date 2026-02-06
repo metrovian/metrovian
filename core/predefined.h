@@ -17,6 +17,6 @@
 #define CONFIG_FLOAT32(...)             std::stof(CONFIG_STRING(__VA_ARGS__))
 #define CONFIG_FLOAT64(...)             std::stod(CONFIG_STRING(__VA_ARGS__))
 
-#define CONFIG_PROPERTY                 "property.json"
-#define CONFIG_PRESET                   "preset.json"
+#define CONFIG_PROPERTY                 "/property.json"
+#define CONFIG_PRESET                   "/preset.json"
 // clang-format on
