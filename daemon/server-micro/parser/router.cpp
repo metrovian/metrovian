@@ -1,6 +1,8 @@
 #include "daemon/server-micro/parser/router.h"
 #include "daemon/server-micro/context.h"
 #include "daemon/server-micro/response.h"
+#include "daemon/server-micro/parser/read/mid.h"
+#include "daemon/server-micro/parser/read/mids.h"
 #include "daemon/server-micro/parser/read/notes.h"
 #include "daemon/server-micro/parser/read/progress.h"
 #include "daemon/server-micro/parser/read/state.h"
@@ -136,6 +138,8 @@ router_singleton &router_singleton::instance() {
 }
 
 void router_singleton::load_rmap() {
+	rmap_.insert(std::make_pair("mid", std::make_unique<read_mid>()));
+	rmap_.insert(std::make_pair("mids", std::make_unique<read_mids>()));
 	rmap_.insert(std::make_pair("notes", std::make_unique<read_notes>()));
 	rmap_.insert(std::make_pair("progress", std::make_unique<read_progress>()));
 	rmap_.insert(std::make_pair("state", std::make_unique<read_state>()));

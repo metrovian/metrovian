@@ -60,8 +60,41 @@ void automata_singleton::thread_playback() {
 	return;
 }
 
-uint8_t automata_singleton::get_state() {
+uint8_t automata_singleton::apiget_state() {
 	return static_cast<uint8_t>(state_.load() > 0);
+}
+
+nlohmann::ordered_json automata_singleton::apiget_mids() {
+	nlohmann::ordered_json mids;
+	std::error_code code;
+	std::filesystem::path dir(std::getenv("STATE_DIRECTORY"));
+	for (const auto &entry : std::filesystem::directory_iterator(dir, code)) {
+		if (code.value() == 0) {
+			if (entry.is_regular_file() == false) {
+				continue;
+			}
+
+			auto path = entry.path();
+			auto ext = path.extension().string();
+			if (ext == ".mid") {
+				nlohmann::ordered_json metadata;
+				metadata["filename"] = path.filename().string();
+				metadata["title"] = path.stem().string();
+				metadata["composer"] = nullptr;
+				mids[path.filename().string()] = metadata;
+			}
+		}
+	}
+
+	return mids;
+}
+
+std::string automata_singleton::apiget_mid() {
+	if (state_.load() == 0) {
+		return std::string();
+	}
+
+	return name_;
 }
 
 int8_t automata_singleton::open(std::string name) {
@@ -72,8 +105,8 @@ int8_t automata_singleton::open(std::string name) {
 		return -1;
 	}
 
-	name = std::string(std::getenv("STATE_DIRECTORY")) + (std::string("/") + name);
-	smf_ = smf_load(name.c_str());
+	name_ = name;
+	smf_ = smf_load((std::string(std::getenv("STATE_DIRECTORY")) + (std::string("/") + name_)).c_str());
 	if (smf_ == nullptr) {
 		LOG_CONDITION(smf_load == nullptr);
 		LOG_EXIT();

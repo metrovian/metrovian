@@ -12,6 +12,7 @@ protected: /* handle */
 	smf_t *smf_ = nullptr;
 
 protected: /* control */
+	std::string name_;
 	std::atomic<uint8_t> state_ = 0;
 	int port_ = 0;
 	const int noteon_ = 0x90;
@@ -20,8 +21,10 @@ protected: /* control */
 protected: /* thread */
 	void thread_playback();
 
-public: /* getter */
-	uint8_t get_state();
+public: /* api getter */
+	uint8_t apiget_state();
+	nlohmann::ordered_json apiget_mids();
+	std::string apiget_mid();
 
 public: /* export */
 	int8_t open(std::string name);
