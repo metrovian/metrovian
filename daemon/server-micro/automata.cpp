@@ -81,7 +81,7 @@ nlohmann::ordered_json automata_singleton::apiget_mids() {
 				metadata["filename"] = path.filename().string();
 				metadata["title"] = path.stem().string();
 				metadata["composer"] = nullptr;
-				mids[path.filename().string()] = metadata;
+				mids.push_back(metadata);
 			}
 		}
 	}

@@ -36,6 +36,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const select = await asyncAPI({ action: "read", waveform: 0 });
       const id = String(select);
       waveSelect1.value = id;
+    } else if (event.detail == 4) {
+      const select = await asyncAPI({ action: "read", mid: 0 });
+      const id = String(select);
+      waveSelect2.value = id;
     }
 
     return;
@@ -45,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const waveSelect2 = document.getElementById("waveSelect2");
   const waveConfirm = document.getElementById("waveConfirm");
 
-  async function updateOptions() {
+  async function updateOptions1() {
     const res = await asyncAPI({ action: "read", waveforms: 0 });
     const waves = JSON.parse(res);
     waves.forEach((wave) => {
@@ -55,6 +59,25 @@ document.addEventListener("DOMContentLoaded", () => {
       waveSelect1.appendChild(opt);
     });
 
+    return;
+  }
+
+  async function updateOptions2() {
+    const res = await asyncAPI({ action: "read", mids: 0 });
+    const mids = JSON.parse(res);
+    mids.forEach((mid) => {
+      const opt = document.createElement("option");
+      opt.value = mid.filename;
+      opt.textContent = mid.title;
+      waveSelect2.appendChild(opt);
+    });
+
+    return;
+  }
+
+  async function updateOptions() {
+    updateOptions1();
+    updateOptions2();
     return;
   }
 
@@ -83,6 +106,15 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("Invalid MIDI");
         return;
       }
+
+      try {
+        await asyncAPI({ action: "write", play: value });
+      } catch (err) {
+        console.warn(`Select MIDI: ${value}`);
+        return;
+      }
+
+      console.log(`Select MIDI: ${value}`);
     }
   });
 
