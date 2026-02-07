@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 #include <thread>
 #include <chrono>
 #include <atomic>
@@ -16,6 +17,7 @@
 #include <vector>
 #include <functional>
 #include <spdlog/spdlog.h>
+#include <nlohmann/json.hpp>
 
 class sound_abstract {
 protected: /* parameter */

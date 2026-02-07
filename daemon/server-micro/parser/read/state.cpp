@@ -6,7 +6,7 @@
 MHD_Result read_state::parse(MHD_Connection *connection) {
 	uint32_t state = static_cast<uint32_t>(context_singleton::instance().apiget_state());
 	if (state == static_cast<uint32_t>(machine::state::performance)) {
-		state += static_cast<uint32_t>(automata_singleton::instance().get_state());
+		state += static_cast<uint32_t>(automata_singleton::instance().apiget_state());
 	}
 
 	return response::numeric(connection, state);

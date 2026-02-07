@@ -42,6 +42,27 @@ MHD_Result response::numeric(struct MHD_Connection *connection, uint32_t value) 
 	return ret;
 }
 
+MHD_Result response::string(struct MHD_Connection *connection, std::string value) {
+	struct MHD_Response *response =
+	    MHD_create_response_from_buffer(
+		value.size(),
+		(void *)value.c_str(),
+		MHD_RESPMEM_MUST_COPY);
+
+	MHD_Result ret = MHD_Result::MHD_NO;
+	if (response != nullptr) {
+		ret = MHD_add_response_header(response, "Content-Type", "text/plain");
+		ret = MHD_add_response_header(response, "Cache-Control", "no-store, no-cache, must-revalidate");
+		ret = MHD_add_response_header(response, "Pragma", "no-cache");
+		ret = MHD_add_response_header(response, "Expires", "0");
+		ret = MHD_add_response_header(response, "Access-Control-Allow-Origin", "*");
+		ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
+		MHD_destroy_response(response);
+	}
+
+	return ret;
+}
+
 MHD_Result response::json(struct MHD_Connection *connection, const nlohmann::ordered_json &object) {
 	std::string str_object = object.dump();
 	struct MHD_Response *response =
