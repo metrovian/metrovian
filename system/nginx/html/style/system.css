@@ -50,3 +50,28 @@
   color: var(--text);
   opacity: 0.6;
 }
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+.overlay.hidden {
+  display: none;
+}
+.overlayPanel {
+  width: 150px;
+  padding: 16px 20px;
+  background: linear-gradient(180deg, #0f1419 0%, #0b0f14 100%);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+}

@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
   const uploadBtn = document.getElementById("uploadBtn");
   const saveBtn = document.getElementById("saveBtn");
+  const volumeBtn = document.getElementById("volumeBtn");
+  const volumeOverlay = document.getElementById("volumeOverlay");
   const panicBtn = document.getElementById("panicBtn");
   const rebootBtn = document.getElementById("rebootBtn");
   const shutdownBtn = document.getElementById("shutdownBtn");
@@ -61,6 +63,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log("Save");
     return;
+  });
+
+  volumeBtn.addEventListener("click", () => {
+    volumeOverlay.classList.remove("hidden");
+  });
+
+  volumeOverlay.addEventListener("click", (event) => {
+    if (event.target === volumeOverlay) {
+      volumeOverlay.classList.add("hidden");
+    }
   });
 
   panicBtn.addEventListener("click", async () => {
