@@ -10,7 +10,7 @@ MHD_Result write_reboot::parse(MHD_Connection *connection, std::string param) {
         case 0: cmd = LINUX_REBOOT_CMD_POWER_OFF; break;
         case 1: cmd = LINUX_REBOOT_CMD_RESTART; break;
         default: return response::empty(connection, MHD_HTTP_BAD_REQUEST);
-        }
+    }
 	// clang-format on
 	std::thread([cmd] {
 		sleep(5);
