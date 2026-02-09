@@ -34,6 +34,18 @@
     <line x1="12" y1="3" x2="12" y2="15"></line>
   </symbol>
 
+  <symbol id="icon-volume"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round">
+    <path d="M4 9h4l5-4v14l-5-4H4z"></path>
+    <path d="M16 9a4 4 0 0 1 0 6"></path>
+    <path d="M19 6a7 7 0 0 1 0 12"></path>
+  </symbol>
+
   <symbol id="icon-panic"
     viewBox="0 0 24 24"
     fill="none"
