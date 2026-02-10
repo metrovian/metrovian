@@ -35,7 +35,7 @@ void property_singleton::load_default() {
 	/* hardware */
 	default_["alsa"]["player"]["name"] = "default";
 	default_["alsa"]["sequencer"]["name"] = "default";
-	default_["alsa"]["sequencer"]["mux-length"] = 32;
+	default_["alsa"]["sequencer"]["mux-length"] = 960;
 	/* core */
 	default_["optimization"]["thread-max"] = 8;
 	default_["optimization"]["derivative-step"] = 1.000E-5;
