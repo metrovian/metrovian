@@ -9,6 +9,7 @@ src_daemon = files(
   'server-micro/parser/read/waveforms.cpp',
   'server-micro/parser/write/play.cpp',
   'server-micro/parser/write/reboot.cpp',
+  'server-micro/parser/write/volume.cpp',
   'server-micro/parser/write/waveform.cpp',
   'server-micro/parser/abstract.cpp',
   'server-micro/parser/router.cpp',
