@@ -2,6 +2,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const uploadBtn = document.getElementById("uploadBtn");
   const saveBtn = document.getElementById("saveBtn");
   const volumeBtn = document.getElementById("volumeBtn");
+  const volumeUpBtn = document.getElementById("volumeUpBtn");
+  const volumeDownBtn = document.getElementById("volumeDownBtn");
+  const volumeMuteBtn = document.getElementById("volumeMuteBtn");
   const volumeOverlay = document.getElementById("volumeOverlay");
   const panicBtn = document.getElementById("panicBtn");
   const rebootBtn = document.getElementById("rebootBtn");
@@ -67,6 +70,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
   volumeBtn.addEventListener("click", () => {
     volumeOverlay.classList.remove("hidden");
+  });
+
+  volumeUpBtn.addEventListener("click", async () => {
+    try {
+      await asyncAPI({ action: "write", volume: 1 });
+    } catch (err) {
+      console.warn("Volume Up", err);
+      return;
+    }
+
+    console.log("Volume Up");
+    return;
+  });
+
+  volumeMuteBtn.addEventListener("click", async () => {
+    try {
+      await asyncAPI({ action: "write", volume: 0 });
+    } catch (err) {
+      console.warn("Volume Mute", err);
+      return;
+    }
+
+    console.log("Volume Mute");
+    return;
+  });
+
+  volumeDownBtn.addEventListener("click", async () => {
+    try {
+      await asyncAPI({ action: "write", volume: -1 });
+    } catch (err) {
+      console.warn("Volume Down", err);
+      return;
+    }
+
+    console.log("Volume Down");
+    return;
   });
 
   volumeOverlay.addEventListener("click", (event) => {

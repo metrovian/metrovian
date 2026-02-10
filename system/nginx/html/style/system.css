@@ -38,6 +38,7 @@
   gap: 15px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
+  touch-action: manipulation;
 }
 .systemBtn.text {
   flex-grow: 1;
