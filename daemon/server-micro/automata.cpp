@@ -153,7 +153,7 @@ automata_singleton::automata_singleton() {
 
 	if (snd_seq_open(
 		&handle_,
-		"default",
+		CONFIG_STRING("alsa", "sequencer", "name").c_str(),
 		SND_SEQ_OPEN_OUTPUT,
 		SND_SEQ_NONBLOCK) < 0) {
 		LOG_CONDITION(snd_seq_open < 0);
