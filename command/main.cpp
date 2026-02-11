@@ -7,7 +7,6 @@
 #include "command/optimization/sinusoidal.h"
 #include "command/optimization/transcendental.h"
 #include "command/optimization/user.h"
-#include "command/synthesis/music.h"
 #include "core/predefined.h"
 
 int8_t interface_singleton::command_parse(int argc, char **argv) {
@@ -61,7 +60,6 @@ int32_t main(int argc, char **argv) {
 	interface_singleton::instance().command_setup(std::make_unique<command_sinusoidal>());
 	interface_singleton::instance().command_setup(std::make_unique<command_transcendental>());
 	interface_singleton::instance().command_setup(std::make_unique<command_user>());
-	interface_singleton::instance().command_setup(std::make_unique<command_music>());
 	interface_singleton::instance().command_parse(argc, argv);
 	return 0;
 }
