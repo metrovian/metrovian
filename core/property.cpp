@@ -34,6 +34,7 @@ property_singleton &property_singleton::instance() {
 void property_singleton::load_default() {
 	/* hardware */
 	default_["alsa"]["player"]["name"] = "default";
+	default_["alsa"]["mixer"]["name"] = "default";
 	default_["alsa"]["sequencer"]["name"] = "default";
 	default_["alsa"]["sequencer"]["mux-length"] = 32;
 	/* core */
