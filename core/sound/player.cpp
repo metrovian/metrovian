@@ -53,7 +53,7 @@ int8_t sound_player::open() {
 				channel_,
 				sample_rate_,
 				1,
-				100000) < 0) {
+				5000) < 0) {
 				snd_pcm_drain(handle_);
 				snd_pcm_close(handle_);
 				LOG_CONDITION(snd_pcm_set_params < 0);
