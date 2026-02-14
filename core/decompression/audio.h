@@ -28,7 +28,7 @@ public: /* property */
 	uint32_t sample_rate();
 
 public: /* setter */
-	void seturi(const std::string &path);
+	void set_uri(const std::string &path);
 
 public: /* constructor */
 	decompression_producer() : sound_producer(0, 0) {}
