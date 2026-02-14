@@ -1,6 +1,5 @@
-#include "daemon/state/performance.h"
+#include "daemon/state/abstract.h"
 #include "daemon/main.h"
-#include "core/predefined.h"
 
 void state_performance::enter() {
 	complete_.store(0);

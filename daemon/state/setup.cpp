@@ -1,7 +1,6 @@
-#include "daemon/state/setup.h"
+#include "daemon/state/abstract.h"
 #include "daemon/server-micro/context.h"
 #include "daemon/main.h"
-#include "core/synthesis/abstract.h"
 
 void state_setup::enter() {
 	machine_singleton::instance().setup();

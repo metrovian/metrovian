@@ -1,4 +1,4 @@
-#include "daemon/state/synthesis.h"
+#include "daemon/state/abstract.h"
 #include "daemon/main.h"
 
 void state_synthesis::enter() {
