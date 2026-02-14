@@ -1,10 +1,11 @@
 #pragma once
-#include "daemon/server-micro/parser/abstract.h"
+#include "daemon/server-micro/parser/read/abstract.h"
+#include "daemon/server-micro/parser/write/abstract.h"
 
 class router_singleton {
 protected: /* router map */
-	std::unordered_map<std::string, std::unique_ptr<parser_abstract>> rmap_;
-	std::unordered_map<std::string, std::unique_ptr<parser_abstract>> wmap_;
+	std::unordered_map<std::string, std::unique_ptr<read_abstract>> rmap_;
+	std::unordered_map<std::string, std::unique_ptr<write_abstract>> wmap_;
 
 protected: /* handler */
 	static MHD_Result handle_query(

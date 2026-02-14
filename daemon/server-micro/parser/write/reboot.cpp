@@ -1,4 +1,4 @@
-#include "daemon/server-micro/parser/write/reboot.h"
+#include "daemon/server-micro/parser/write/abstract.h"
 #include "daemon/server-micro/context.h"
 #include "daemon/server-micro/response.h"
 
