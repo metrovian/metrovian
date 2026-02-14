@@ -22,38 +22,38 @@ enum class state : uint8_t {
 }; // namespace machine
 
 class state_abstract {
-public: /* abstract */
+public:
 	virtual ~state_abstract() {}
 	virtual void enter() = 0;
 	virtual void update() = 0;
 };
 
 class state_none final : public state_abstract {
-public: /* override */
+public:
 	void enter() override {}
 	void update() override {}
 };
 
 class state_setup : public state_abstract {
-public: /* override */
+public:
 	void enter() override;
 	void update() override;
 };
 
 class state_synthesis final : public state_abstract {
-private: /* complete flag */
-	std::atomic<uint8_t> complete_ = 0;
-
-public: /* override */
+public:
 	void enter() override;
 	void update() override;
+
+private:
+	std::atomic<uint8_t> complete_ = 0;
 };
 
 class state_performance final : public state_abstract {
-private: /* complete flag */
-	std::atomic<uint8_t> complete_ = 0;
-
-public: /* override */
+public:
 	void enter() override;
 	void update() override;
+
+private:
+	std::atomic<uint8_t> complete_ = 0;
 };
