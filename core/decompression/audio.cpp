@@ -10,7 +10,7 @@ uint32_t decompression_producer::sample_rate() {
 	return sample_rate_;
 }
 
-void decompression_producer::seturi(const std::string &path) {
+void decompression_producer::set_uri(const std::string &path) {
 	LOG_ENTER();
 	if (avformat_open_input(&avformat_ctx_, path.c_str(), nullptr, nullptr) != 0) {
 		LOG_CONDITION(avformat_open_input != 0);
@@ -181,7 +181,7 @@ uint32_t decompression_audio::sample_rate() {
 }
 
 void decompression_audio::prepare(const std::string &path) {
-	dynamic_cast<decompression_producer *>(producer_.get())->seturi(path);
+	dynamic_cast<decompression_producer *>(producer_.get())->set_uri(path);
 	return;
 }
 
