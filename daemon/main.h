@@ -3,10 +3,6 @@
 #include "daemon/server-micro/automata.h"
 #include "daemon/server-micro/context.h"
 #include "daemon/state/abstract.h"
-#include "daemon/state/none.h"
-#include "daemon/state/setup.h"
-#include "daemon/state/synthesis.h"
-#include "daemon/state/performance.h"
 #include "core/synthesis/abstract.h"
 #include "core/synthesis/add.h"
 

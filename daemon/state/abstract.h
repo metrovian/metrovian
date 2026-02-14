@@ -24,8 +24,36 @@ enum class state : uint8_t {
 class state_abstract {
 public: /* abstract */
 	virtual ~state_abstract() {}
-
-public: /* abstract */
 	virtual void enter() = 0;
 	virtual void update() = 0;
+};
+
+class state_none final : public state_abstract {
+public: /* override */
+	void enter() override {}
+	void update() override {}
+};
+
+class state_setup : public state_abstract {
+public: /* override */
+	void enter() override;
+	void update() override;
+};
+
+class state_synthesis final : public state_abstract {
+private: /* complete flag */
+	std::atomic<uint8_t> complete_ = 0;
+
+public: /* override */
+	void enter() override;
+	void update() override;
+};
+
+class state_performance final : public state_abstract {
+private: /* complete flag */
+	std::atomic<uint8_t> complete_ = 0;
+
+public: /* override */
+	void enter() override;
+	void update() override;
 };

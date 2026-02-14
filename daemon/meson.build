@@ -17,8 +17,6 @@ src_daemon = files(
   'server-micro/automata.cpp',
   'server-micro/context.cpp',
   'server-micro/response.cpp',
-  'state/abstract.cpp',
-  'state/none.cpp',
   'state/performance.cpp',
   'state/setup.cpp',
   'state/synthesis.cpp',
