@@ -11,7 +11,6 @@ src_daemon = files(
   'server-micro/parser/write/reboot.cpp',
   'server-micro/parser/write/volume.cpp',
   'server-micro/parser/write/waveform.cpp',
-  'server-micro/parser/abstract.cpp',
   'server-micro/parser/router.cpp',
   'server-micro/api.cpp',
   'server-micro/automata.cpp',
