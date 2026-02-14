@@ -7,12 +7,9 @@
 #include <thread>
 #include <chrono>
 #include <functional>
-#include <sys/utsname.h>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <nlohmann/json.hpp>
-#include <CLI/CLI.hpp>
-#include <Eigen/Dense>
 
 namespace machine {
 enum class state : uint8_t {
