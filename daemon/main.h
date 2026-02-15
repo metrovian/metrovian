@@ -1,6 +1,4 @@
 #pragma once
-#include "daemon/server-micro/api.h"
-#include "daemon/server-micro/automata.h"
 #include "daemon/state/abstract.h"
 #include "core/synthesis/abstract.h"
 #include "core/synthesis/add.h"

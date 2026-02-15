@@ -1,6 +1,6 @@
 #include "daemon/server-micro/parser/write/abstract.h"
-#include "daemon/server-micro/automata.h"
 #include "daemon/server-micro/response.h"
+#include "daemon/automata.h"
 
 MHD_Result write_play::parse(MHD_Connection *connection, std::string param) {
 	if (automata_singleton::instance().open(param) != 0) {

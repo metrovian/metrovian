@@ -9,8 +9,7 @@ MHD_Result write_waveform::parse(MHD_Connection *connection, std::string param) 
 		return response::empty(connection, MHD_HTTP_OK);
 	}
 
-	if (context_api::read_state() ==
-	    machine::state::performance) {
+	if (context_api::read_state() == static_cast<uint8_t>(machine::state::performance)) {
 		machine_singleton::instance().panic();
 		return response::empty(connection, MHD_HTTP_OK);
 	}

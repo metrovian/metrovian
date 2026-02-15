@@ -16,15 +16,45 @@ context_singleton::context_singleton() {
 	}
 }
 
-machine::state context_api::read_state() {
-	return context_singleton::instance().state_.load();
-}
-
 nlohmann::ordered_json context_api::read_presets() {
 	return context_singleton::instance().presets_;
 }
 
-uint8_t context_api::read_preset() {
+nlohmann::ordered_json context_api::read_mids() {
+	nlohmann::ordered_json mids;
+	std::error_code code;
+	std::filesystem::path dir(std::getenv("STATE_DIRECTORY"));
+	for (const auto &entry : std::filesystem::directory_iterator(dir, code)) {
+		if (code.value() == 0) {
+			if (entry.is_regular_file() == false) {
+				continue;
+			}
+
+			auto path = entry.path();
+			auto ext = path.extension().string();
+			if (ext == ".mid") {
+				nlohmann::ordered_json metadata;
+				metadata["filename"] = path.filename().string();
+				metadata["title"] = path.stem().string();
+				metadata["composer"] = nullptr;
+				mids.push_back(metadata);
+			}
+		}
+	}
+
+	return mids;
+}
+
+std::string context_api::read_mid() {
+	return context_singleton::instance().mid_;
+}
+
+uint8_t context_api::read_state() {
+	uint8_t state = static_cast<uint8_t>(context_singleton::instance().state_.load());
+	return state;
+}
+
+uint8_t context_api::read_id() {
 	return context_singleton::instance().id_.load();
 }
 
@@ -67,6 +97,11 @@ machine::state context_main::read_state() {
 
 nlohmann::ordered_json context_main::read_preset() {
 	return std::move(context_singleton::instance().preset_);
+}
+
+void context_main::write_mid(const std::string mid) {
+	context_singleton::instance().mid_ = mid;
+	return;
 }
 
 void context_main::write_state(const machine::state state) {

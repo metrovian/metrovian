@@ -13,11 +13,11 @@ src_daemon = files(
   'server-micro/parser/write/waveform.cpp',
   'server-micro/parser/router.cpp',
   'server-micro/api.cpp',
-  'server-micro/automata.cpp',
   'server-micro/response.cpp',
   'state/performance.cpp',
   'state/setup.cpp',
   'state/synthesis.cpp',
+  'automata.cpp',
   'context.cpp',
   'main.cpp')
 
