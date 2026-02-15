@@ -4,6 +4,11 @@
 #include "core/property.h"
 #include "core/predefined.h"
 
+api_singleton &api_singleton::instance() {
+	static api_singleton instance_;
+	return instance_;
+}
+
 MHD_Result api_singleton::handle_request(
     void *,
     struct MHD_Connection *connection,
@@ -20,11 +25,6 @@ MHD_Result api_singleton::handle_request(
 	}
 
 	return response::empty(connection, MHD_HTTP_METHOD_NOT_ALLOWED);
-}
-
-api_singleton &api_singleton::instance() {
-	static api_singleton instance_;
-	return instance_;
 }
 
 api_singleton::~api_singleton() {
