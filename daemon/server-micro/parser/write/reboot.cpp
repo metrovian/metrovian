@@ -2,6 +2,10 @@
 #include "daemon/server-micro/context.h"
 #include "daemon/server-micro/response.h"
 
+#include <thread>
+#include <sys/reboot.h>
+#include <linux/reboot.h>
+
 MHD_Result write_reboot::parse(MHD_Connection *connection, std::string param) {
 	// clang-format off
 	int action = std::stoi(param);

@@ -1,22 +1,9 @@
 #pragma once
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <iostream>
-#include <vector>
-#include <map>
-#include <memory>
-#include <atomic>
-#include <thread>
-#include <unistd.h>
-#include <sys/reboot.h>
-#include <linux/reboot.h>
-#include <spdlog/spdlog.h>
 #include <microhttpd.h>
 
 class read_abstract {
 public:
-	virtual ~read_abstract() {}
+	virtual ~read_abstract() = default;
 	virtual MHD_Result parse(struct MHD_Connection *connection) = 0;
 };
 
