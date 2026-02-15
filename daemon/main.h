@@ -17,7 +17,6 @@ public:
 	machine_singleton(machine_singleton &&) = delete;
 	machine_singleton &operator=(const machine_singleton &) = delete;
 	machine_singleton &operator=(machine_singleton &&) = delete;
-	void transition(machine::state next);
 	void loop();
 	void shutdown();
 	void panic();
@@ -29,6 +28,7 @@ private:
 private:
 	~machine_singleton() = default;
 	machine_singleton();
+	void transition(const machine::state next);
 	void setup(const nlohmann::ordered_json &preset);
 	void setup();
 	void synthesize();

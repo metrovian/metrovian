@@ -8,7 +8,7 @@ automata_singleton &automata_singleton::instance() {
 	return instance_;
 }
 
-int8_t automata_singleton::open(std::string name) {
+int8_t automata_singleton::play(std::string name) {
 	LOG_ENTER();
 	if (state_.load() != 0) {
 		LOG_CONDITION(state_ != 0);
@@ -23,13 +23,14 @@ int8_t automata_singleton::open(std::string name) {
 		return -2;
 	}
 
+	smf_rewind(smf_);
 	context_machine::write_mid(name);
+	context_machine::write_play(1);
+	state_.store(1);
 	std::thread([&]() {
 		int tick_delta = 0;
 		int tick_prev = 0;
 		int tick_tempo = 500000;
-		smf_rewind(smf_);
-		state_.store(1);
 		while (state_.load() == 1) {
 			smf_event_t *smf_event = smf_get_next_event(smf_);
 			if (smf_event == NULL) {
@@ -79,23 +80,26 @@ int8_t automata_singleton::open(std::string name) {
 		}
 
 		state_.store(0);
+		context_machine::write_play(0);
 	}).detach();
 
 	LOG_EXIT();
 	return 0;
 }
 
-int8_t automata_singleton::close() {
+int8_t automata_singleton::panic() {
 	LOG_ENTER();
-	state_.store(2);
-	while (state_.load() != 0) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
-		continue;
-	}
+	if (state_.load() != 0) {
+		state_.store(2);
+		while (state_.load() != 0) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			continue;
+		}
 
-	if (smf_ != nullptr) {
-		smf_delete(smf_);
-		smf_ = nullptr;
+		if (smf_ != nullptr) {
+			smf_delete(smf_);
+			smf_ = nullptr;
+		}
 	}
 
 	LOG_EXIT();
