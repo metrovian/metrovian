@@ -1,6 +1,5 @@
 #include "daemon/server-micro/parser/write/abstract.h"
 #include "daemon/server-micro/automata.h"
-#include "daemon/server-micro/context.h"
 #include "daemon/server-micro/response.h"
 
 MHD_Result write_play::parse(MHD_Connection *connection, std::string param) {

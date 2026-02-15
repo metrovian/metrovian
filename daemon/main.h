@@ -1,7 +1,6 @@
 #pragma once
 #include "daemon/server-micro/api.h"
 #include "daemon/server-micro/automata.h"
-#include "daemon/server-micro/context.h"
 #include "daemon/state/abstract.h"
 #include "core/synthesis/abstract.h"
 #include "core/synthesis/add.h"
@@ -42,6 +41,5 @@ private:
 
 private:
 	std::unique_ptr<synthesis_abstract> core_ = nullptr;
-	std::atomic<machine::state> state_ = machine::state::none;
 	std::unordered_map<machine::state, std::unique_ptr<state_abstract>> smap_;
 };

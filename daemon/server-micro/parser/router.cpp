@@ -1,8 +1,8 @@
 #include "daemon/server-micro/parser/router.h"
 #include "daemon/server-micro/parser/read/abstract.h"
 #include "daemon/server-micro/parser/write/abstract.h"
-#include "daemon/server-micro/context.h"
 #include "daemon/server-micro/response.h"
+#include "daemon/context.h"
 #include "core/property.h"
 #include "core/predefined.h"
 
@@ -90,7 +90,7 @@ MHD_Result router_singleton::upload(
 	if (upload.is_discarded() == false) {
 		if (upload.is_array() == true) {
 			code = MHD_HTTP_OK;
-			context_singleton::instance().set_presets(upload);
+			context_api::write_presets(upload);
 			spdlog::info("[api] [{}:{}] {}", LOG_PATH, __LINE__, __func__);
 		}
 	}

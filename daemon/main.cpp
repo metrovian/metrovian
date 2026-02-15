@@ -1,4 +1,5 @@
 #include "daemon/main.h"
+#include "daemon/context.h"
 #include "core/property.h"
 #include "core/predefined.h"
 
@@ -8,17 +9,16 @@ machine_singleton &machine_singleton::instance() {
 }
 
 void machine_singleton::transition(machine::state next) {
-	context_singleton::instance().set_state(next);
-	state_.store(next);
-	smap_[state_.load()]->enter();
+	context_main::write_state(next);
+	smap_[next]->enter();
 	return;
 }
 
 void machine_singleton::loop() {
 	LOG_ENTER();
 	transition(machine::state::setup);
-	while (state_.load() != machine::state::shutdown) {
-		smap_[state_.load()]->update();
+	while (context_main::read_state() != machine::state::shutdown) {
+		smap_[context_main::read_state()]->update();
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
 
@@ -27,7 +27,7 @@ void machine_singleton::loop() {
 }
 
 void machine_singleton::shutdown() {
-	state_.store(machine::state::shutdown);
+	context_main::write_state(machine::state::shutdown);
 	return;
 }
 
@@ -88,7 +88,7 @@ void machine_singleton::setup() {
 
 void machine_singleton::synthesize() {
 	core_->callback_synthesis([&](uint64_t value) {
-		context_singleton::instance().set_progress(value);
+		context_main::write_progress(value);
 	});
 
 	core_->synthesize();
