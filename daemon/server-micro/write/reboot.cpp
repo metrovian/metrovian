@@ -1,4 +1,4 @@
-#include "daemon/server-micro/parser/write/abstract.h"
+#include "daemon/server-micro/write/abstract.h"
 #include "daemon/server-micro/response.h"
 
 #include <thread>
