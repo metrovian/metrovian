@@ -1,6 +1,6 @@
 #include "daemon/api/write/abstract.h"
 #include "daemon/api/response.h"
-#include "daemon/automata.h"
+#include "daemon/machine/automata.h"
 
 MHD_Result write_play::parse(MHD_Connection *connection, std::string param) {
 	if (automata_singleton::instance().open(param) != 0) {
