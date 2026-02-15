@@ -24,6 +24,7 @@ private:
 	nlohmann::ordered_json preset_;
 	std::string mid_;
 	std::atomic<machine::state> state_ = machine::state::setup;
+	std::atomic<uint8_t> play_ = 0;
 	std::atomic<uint8_t> id_ = 0;
 	std::atomic<uint64_t> progress_ = 0;
 };
@@ -47,5 +48,6 @@ public:
 	static nlohmann::ordered_json read_preset();
 	static void write_mid(const std::string mid);
 	static void write_state(const machine::state state);
+	static void write_play(const uint8_t play);
 	static void write_progress(const uint64_t progress);
 };

@@ -51,6 +51,10 @@ std::string context_api::read_mid() {
 
 uint8_t context_api::read_state() {
 	uint8_t state = static_cast<uint8_t>(context_singleton::instance().state_.load());
+	if (state == static_cast<uint8_t>(machine::state::performance)) {
+		state += (context_singleton::instance().play_.load() << 4);
+	}
+
 	return state;
 }
 
@@ -106,6 +110,11 @@ void context_machine::write_mid(const std::string mid) {
 
 void context_machine::write_state(const machine::state state) {
 	context_singleton::instance().state_.store(state);
+	return;
+}
+
+void context_machine::write_play(const uint8_t play) {
+	context_singleton::instance().play_.store(play);
 	return;
 }
 

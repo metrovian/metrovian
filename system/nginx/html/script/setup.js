@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
         waveSelect2: false,
         waveConfirm: false,
       },
-      4: {
+      19: {
         waveSelect1: true,
         waveSelect2: true,
         waveConfirm: true,

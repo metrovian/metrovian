@@ -1,5 +1,6 @@
 #include "daemon/api/write/abstract.h"
 #include "daemon/api/response.h"
+#include "daemon/machine/automata.h"
 #include "daemon/context.h"
 #include "daemon/main.h"
 
@@ -9,7 +10,10 @@ MHD_Result write_waveform::parse(MHD_Connection *connection, std::string param) 
 		return response::empty(connection, MHD_HTTP_OK);
 	}
 
-	if (context_api::read_state() == static_cast<uint8_t>(machine::state::performance)) {
+	if ((context_api::read_state() & 0xF0) == 0x10) { // play
+		automata_singleton::instance().panic();
+		return response::empty(connection, MHD_HTTP_OK);
+	} else if ((context_api::read_state() & 0x0F) == 0x03) { // performance
 		machine_singleton::instance().panic();
 		return response::empty(connection, MHD_HTTP_OK);
 	}

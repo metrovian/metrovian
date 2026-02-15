@@ -1,19 +1,13 @@
 #include "daemon/main.h"
+#include "daemon/context.h"
 #include "daemon/machine/api.h"
 #include "daemon/machine/automata.h"
-#include "daemon/context.h"
 #include "core/property.h"
 #include "core/predefined.h"
 
 machine_singleton &machine_singleton::instance() {
 	static machine_singleton instance_;
 	return instance_;
-}
-
-void machine_singleton::transition(machine::state next) {
-	context_machine::write_state(next);
-	smap_[next]->enter();
-	return;
 }
 
 void machine_singleton::loop() {
@@ -70,6 +64,12 @@ machine_singleton::machine_singleton() {
 	automata_singleton::instance();
 	api_singleton::instance();
 	handle_setup([&]() { shutdown(); });
+}
+
+void machine_singleton::transition(const machine::state next) {
+	context_machine::write_state(next);
+	smap_[next]->enter();
+	return;
 }
 
 void machine_singleton::setup(const nlohmann::ordered_json &preset) {
