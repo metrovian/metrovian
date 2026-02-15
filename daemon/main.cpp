@@ -1,7 +1,7 @@
 #include "daemon/main.h"
+#include "daemon/api.h"
 #include "daemon/automata.h"
 #include "daemon/context.h"
-#include "daemon/server-micro/api.h"
 #include "core/property.h"
 #include "core/predefined.h"
 
