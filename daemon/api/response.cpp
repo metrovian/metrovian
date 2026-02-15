@@ -1,4 +1,4 @@
-#include "daemon/server-micro/response.h"
+#include "daemon/api/response.h"
 
 MHD_Result response::empty(struct MHD_Connection *connection, uint32_t code) {
 	struct MHD_Response *response =

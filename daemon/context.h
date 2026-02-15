@@ -1,5 +1,5 @@
 
-#include "daemon/state/abstract.h"
+#include "daemon/machine/abstract.h"
 
 class context_singleton {
 public:
