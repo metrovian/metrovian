@@ -7,49 +7,41 @@
 #include "core/synthesis/add.h"
 
 class machine_singleton {
-protected: /* machine core */
-	std::unique_ptr<synthesis_abstract> core_ = nullptr;
-
-protected: /* machine map */
-	std::atomic<machine::state> state_ = machine::state::none;
-	std::unordered_map<machine::state, std::unique_ptr<state_abstract>> smap_;
-
-protected: /* machine function */
-	void setup(const nlohmann::ordered_json &preset);
-	void setup();
-	void synthesize();
-	void perform();
-
-protected: /* handler */
-	static inline std::function<void(void)> handler_ = nullptr;
-
-protected: /* handler setup */
-	static void handle_setup(const std::function<void(void)> handler);
-	static void handle_terminate(int);
-
-protected: /* friend */
-	friend class state_abstract;
-	friend class state_none;
+public:
 	friend class state_setup;
 	friend class state_synthesis;
 	friend class state_performance;
 
-public: /* instance */
+public:
 	static machine_singleton &instance();
 
-public: /* export */
+public:
+	machine_singleton(const machine_singleton &) = delete;
+	machine_singleton(machine_singleton &&) = delete;
+	machine_singleton &operator=(const machine_singleton &) = delete;
+	machine_singleton &operator=(machine_singleton &&) = delete;
 	void transition(machine::state next);
 	void loop();
 	void shutdown();
 	void panic();
 
-private: /* load */
-	void load_stdout();
-	void load_stderr();
-	void load_smap();
+private:
+	static void handle_setup(const std::function<void(void)> handler);
+	static void handle_terminate(int);
 
-private: /* constraint */
+private:
+	~machine_singleton() = default;
 	machine_singleton();
-	machine_singleton(const machine_singleton &) = default;
-	machine_singleton &operator=(const machine_singleton &) = default;
+	void setup(const nlohmann::ordered_json &preset);
+	void setup();
+	void synthesize();
+	void perform();
+
+private:
+	static inline std::function<void(void)> handler_ = nullptr;
+
+private:
+	std::unique_ptr<synthesis_abstract> core_ = nullptr;
+	std::atomic<machine::state> state_ = machine::state::none;
+	std::unordered_map<machine::state, std::unique_ptr<state_abstract>> smap_;
 };
