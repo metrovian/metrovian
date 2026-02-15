@@ -95,12 +95,16 @@ void context_api::write_preset(const uint8_t id) {
 	return;
 }
 
+nlohmann::ordered_json context_machine::read_preset() {
+	return std::move(context_singleton::instance().preset_);
+}
+
 machine::state context_machine::read_state() {
 	return context_singleton::instance().state_.load();
 }
 
-nlohmann::ordered_json context_machine::read_preset() {
-	return std::move(context_singleton::instance().preset_);
+uint8_t context_machine::read_play() {
+	return context_singleton::instance().play_.load();
 }
 
 void context_machine::write_mid(const std::string mid) {

@@ -44,8 +44,9 @@ public:
 
 class context_machine {
 public:
-	static machine::state read_state();
 	static nlohmann::ordered_json read_preset();
+	static machine::state read_state();
+	static uint8_t read_play();
 	static void write_mid(const std::string mid);
 	static void write_state(const machine::state state);
 	static void write_play(const uint8_t play);

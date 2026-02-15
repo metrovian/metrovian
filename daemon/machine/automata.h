@@ -25,7 +25,6 @@ private:
 private:
 	snd_seq_t *handle_ = nullptr;
 	smf_t *smf_ = nullptr;
-	std::atomic<uint8_t> state_ = 0;
 	int port_ = 0;
 	const int noteon_ = 0x90;
 	const int noteoff_ = 0x80;
