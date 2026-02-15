@@ -1,22 +1,10 @@
 #pragma once
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <iostream>
-#include <vector>
-#include <map>
-#include <memory>
-#include <atomic>
-#include <thread>
-#include <unistd.h>
-#include <sys/reboot.h>
-#include <linux/reboot.h>
-#include <spdlog/spdlog.h>
+#include <string>
 #include <microhttpd.h>
 
 class write_abstract {
 public:
-	virtual ~write_abstract() {}
+	virtual ~write_abstract() = default;
 	virtual MHD_Result parse(struct MHD_Connection *connection, std::string param) = 0;
 };
 

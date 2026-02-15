@@ -1,36 +1,14 @@
 #include "daemon/server-micro/parser/router.h"
+#include "daemon/server-micro/parser/read/abstract.h"
+#include "daemon/server-micro/parser/write/abstract.h"
 #include "daemon/server-micro/context.h"
 #include "daemon/server-micro/response.h"
 #include "core/property.h"
 #include "core/predefined.h"
 
-MHD_Result router_singleton::handle_query(
-    void *cls,
-    MHD_ValueKind,
-    const char *key,
-    const char *value) {
-	auto *params = static_cast<std::unordered_map<std::string, std::string> *>(cls);
-	(*params)[key] = (value != nullptr) ? std::string(value) : std::string("");
-	return MHD_Result::MHD_YES;
-}
-
-MHD_Result router_singleton::read(MHD_Connection *connection, std::string key) {
-	auto iter = rmap_.find(key);
-	if (iter == rmap_.end()) {
-		return response::empty(connection, MHD_HTTP_BAD_REQUEST);
-	}
-
-	return iter->second->parse(connection);
-}
-
-MHD_Result router_singleton::write(MHD_Connection *connection, std::string key, std::string value) {
-	auto iter = wmap_.find(key);
-	if (iter == wmap_.end()) {
-		return response::empty(connection, MHD_HTTP_BAD_REQUEST);
-	}
-
-	spdlog::info("[api] [{}:{}] {}:{}:{}", LOG_PATH, __LINE__, __func__, key, value);
-	return iter->second->parse(connection, value);
+router_singleton &router_singleton::instance() {
+	static router_singleton instance_;
+	return instance_;
 }
 
 MHD_Result router_singleton::parse(struct MHD_Connection *connection) {
@@ -122,12 +100,17 @@ MHD_Result router_singleton::upload(
 	return response::empty(connection, code);
 }
 
-router_singleton &router_singleton::instance() {
-	static router_singleton instance_;
-	return instance_;
+MHD_Result router_singleton::handle_query(
+    void *cls,
+    MHD_ValueKind,
+    const char *key,
+    const char *value) {
+	auto *params = static_cast<std::unordered_map<std::string, std::string> *>(cls);
+	(*params)[key] = (value != nullptr) ? std::string(value) : std::string("");
+	return MHD_Result::MHD_YES;
 }
 
-void router_singleton::load_rmap() {
+router_singleton::router_singleton() {
 	rmap_.insert(std::make_pair("mid", std::make_unique<read_mid>()));
 	rmap_.insert(std::make_pair("mids", std::make_unique<read_mids>()));
 	rmap_.insert(std::make_pair("notes", std::make_unique<read_notes>()));
@@ -135,18 +118,27 @@ void router_singleton::load_rmap() {
 	rmap_.insert(std::make_pair("state", std::make_unique<read_state>()));
 	rmap_.insert(std::make_pair("waveform", std::make_unique<read_waveform>()));
 	rmap_.insert(std::make_pair("waveforms", std::make_unique<read_waveforms>()));
-	return;
-}
-
-void router_singleton::load_wmap() {
 	wmap_.insert(std::make_pair("play", std::make_unique<write_play>()));
 	wmap_.insert(std::make_pair("reboot", std::make_unique<write_reboot>()));
 	wmap_.insert(std::make_pair("volume", std::make_unique<write_volume>()));
 	wmap_.insert(std::make_pair("waveform", std::make_unique<write_waveform>()));
-	return;
 }
 
-router_singleton::router_singleton() {
-	load_rmap();
-	load_wmap();
+MHD_Result router_singleton::read(MHD_Connection *connection, std::string key) {
+	auto iter = rmap_.find(key);
+	if (iter == rmap_.end()) {
+		return response::empty(connection, MHD_HTTP_BAD_REQUEST);
+	}
+
+	return iter->second->parse(connection);
+}
+
+MHD_Result router_singleton::write(MHD_Connection *connection, std::string key, std::string value) {
+	auto iter = wmap_.find(key);
+	if (iter == wmap_.end()) {
+		return response::empty(connection, MHD_HTTP_BAD_REQUEST);
+	}
+
+	spdlog::info("[api] [{}:{}] {}:{}:{}", LOG_PATH, __LINE__, __func__, key, value);
+	return iter->second->parse(connection, value);
 }
