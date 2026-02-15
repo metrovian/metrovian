@@ -1,6 +1,6 @@
 #include "daemon/api.h"
-#include "daemon/server-micro/response.h"
-#include "daemon/server-micro/router.h"
+#include "daemon/api/response.h"
+#include "daemon/api/router.h"
 #include "core/property.h"
 #include "core/predefined.h"
 

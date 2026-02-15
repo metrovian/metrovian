@@ -1,5 +1,5 @@
-#include "daemon/server-micro/write/abstract.h"
-#include "daemon/server-micro/response.h"
+#include "daemon/api/write/abstract.h"
+#include "daemon/api/response.h"
 
 #include <thread>
 #include <sys/reboot.h>
