@@ -9,12 +9,7 @@ MHD_Result response::empty(struct MHD_Connection *connection, uint32_t code) {
 
 	MHD_Result ret = MHD_Result::MHD_NO;
 	if (response != nullptr) {
-		ret = MHD_add_response_header(response, "Content-Type", "text/plain");
-		ret = MHD_add_response_header(response, "Cache-Control", "no-store, no-cache, must-revalidate");
-		ret = MHD_add_response_header(response, "Pragma", "no-cache");
-		ret = MHD_add_response_header(response, "Expires", "0");
-		ret = MHD_add_response_header(response, "Access-Control-Allow-Origin", "*");
-		ret = MHD_queue_response(connection, code, response);
+		ret = queue_response(connection, response, code);
 	}
 
 	return ret;
@@ -30,12 +25,7 @@ MHD_Result response::numeric(struct MHD_Connection *connection, uint32_t value) 
 
 	MHD_Result ret = MHD_Result::MHD_NO;
 	if (response != nullptr) {
-		ret = MHD_add_response_header(response, "Content-Type", "text/plain");
-		ret = MHD_add_response_header(response, "Cache-Control", "no-store, no-cache, must-revalidate");
-		ret = MHD_add_response_header(response, "Pragma", "no-cache");
-		ret = MHD_add_response_header(response, "Expires", "0");
-		ret = MHD_add_response_header(response, "Access-Control-Allow-Origin", "*");
-		ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
+		ret = queue_response(connection, response, MHD_HTTP_OK);
 		MHD_destroy_response(response);
 	}
 
@@ -51,12 +41,7 @@ MHD_Result response::string(struct MHD_Connection *connection, std::string value
 
 	MHD_Result ret = MHD_Result::MHD_NO;
 	if (response != nullptr) {
-		ret = MHD_add_response_header(response, "Content-Type", "text/plain");
-		ret = MHD_add_response_header(response, "Cache-Control", "no-store, no-cache, must-revalidate");
-		ret = MHD_add_response_header(response, "Pragma", "no-cache");
-		ret = MHD_add_response_header(response, "Expires", "0");
-		ret = MHD_add_response_header(response, "Access-Control-Allow-Origin", "*");
-		ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
+		ret = queue_response(connection, response, MHD_HTTP_OK);
 		MHD_destroy_response(response);
 	}
 
@@ -73,14 +58,21 @@ MHD_Result response::json(struct MHD_Connection *connection, const nlohmann::ord
 
 	MHD_Result ret = MHD_Result::MHD_NO;
 	if (response != nullptr) {
-		MHD_add_response_header(response, "Content-Type", "application/json");
-		MHD_add_response_header(response, "Cache-Control", "no-store, no-cache, must-revalidate");
-		MHD_add_response_header(response, "Pragma", "no-cache");
-		MHD_add_response_header(response, "Expires", "0");
-		MHD_add_response_header(response, "Access-Control-Allow-Origin", "*");
-		ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
+		ret = queue_response(connection, response, MHD_HTTP_OK);
 		MHD_destroy_response(response);
 	}
 
 	return ret;
+}
+
+MHD_Result response::queue_response(
+    struct MHD_Connection *connection,
+    struct MHD_Response *response,
+    uint32_t code) {
+	MHD_add_response_header(response, "Content-Type", "application/json");
+	MHD_add_response_header(response, "Cache-Control", "no-store, no-cache, must-revalidate");
+	MHD_add_response_header(response, "Pragma", "no-cache");
+	MHD_add_response_header(response, "Expires", "0");
+	MHD_add_response_header(response, "Access-Control-Allow-Origin", "*");
+	return MHD_queue_response(connection, code, response);
 }
