@@ -28,6 +28,17 @@ api_singleton &api_singleton::instance() {
 	return instance_;
 }
 
+api_singleton::~api_singleton() {
+	LOG_ENTER();
+	if (server_ != nullptr) {
+		MHD_stop_daemon(server_);
+		server_ = nullptr;
+	}
+
+	LOG_EXIT();
+	return;
+}
+
 api_singleton::api_singleton() {
 	LOG_ENTER();
 	server_ = MHD_start_daemon(
@@ -43,17 +54,6 @@ api_singleton::api_singleton() {
 		LOG_CONDITION(MHD_start_daemon == nullptr);
 		LOG_EXIT();
 		return;
-	}
-
-	LOG_EXIT();
-	return;
-}
-
-api_singleton::~api_singleton() {
-	LOG_ENTER();
-	if (server_ != nullptr) {
-		MHD_stop_daemon(server_);
-		server_ = nullptr;
 	}
 
 	LOG_EXIT();
