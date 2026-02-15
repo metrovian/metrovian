@@ -1,10 +1,10 @@
 
-#include "daemon/machine/abstract.h"
+#include "daemon/machine/state/abstract.h"
 
 class context_singleton {
 public:
 	friend class context_api;
-	friend class context_main;
+	friend class context_machine;
 
 public:
 	static context_singleton &instance();
@@ -41,7 +41,7 @@ public:
 	static void write_preset(const uint8_t id);
 };
 
-class context_main {
+class context_machine {
 public:
 	static machine::state read_state();
 	static nlohmann::ordered_json read_preset();

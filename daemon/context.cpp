@@ -91,25 +91,25 @@ void context_api::write_preset(const uint8_t id) {
 	return;
 }
 
-machine::state context_main::read_state() {
+machine::state context_machine::read_state() {
 	return context_singleton::instance().state_.load();
 }
 
-nlohmann::ordered_json context_main::read_preset() {
+nlohmann::ordered_json context_machine::read_preset() {
 	return std::move(context_singleton::instance().preset_);
 }
 
-void context_main::write_mid(const std::string mid) {
+void context_machine::write_mid(const std::string mid) {
 	context_singleton::instance().mid_ = mid;
 	return;
 }
 
-void context_main::write_state(const machine::state state) {
+void context_machine::write_state(const machine::state state) {
 	context_singleton::instance().state_.store(state);
 	return;
 }
 
-void context_main::write_progress(const uint64_t progress) {
+void context_machine::write_progress(const uint64_t progress) {
 	context_singleton::instance().progress_.store(progress);
 	return;
 }

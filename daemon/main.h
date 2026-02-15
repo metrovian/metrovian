@@ -1,5 +1,5 @@
 #pragma once
-#include "daemon/machine/abstract.h"
+#include "daemon/machine/state/abstract.h"
 #include "core/synthesis/abstract.h"
 #include "core/synthesis/add.h"
 

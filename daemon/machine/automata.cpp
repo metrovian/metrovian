@@ -1,4 +1,4 @@
-#include "daemon/automata.h"
+#include "daemon/machine/automata.h"
 #include "daemon/context.h"
 #include "core/property.h"
 #include "core/predefined.h"
@@ -23,7 +23,7 @@ int8_t automata_singleton::open(std::string name) {
 		return -2;
 	}
 
-	context_main::write_mid(name);
+	context_machine::write_mid(name);
 	std::thread([&]() {
 		int tick_delta = 0;
 		int tick_prev = 0;
