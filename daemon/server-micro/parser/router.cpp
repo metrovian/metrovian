@@ -122,6 +122,7 @@ router_singleton::router_singleton() {
 	wmap_.insert(std::make_pair("reboot", std::make_unique<write_reboot>()));
 	wmap_.insert(std::make_pair("volume", std::make_unique<write_volume>()));
 	wmap_.insert(std::make_pair("waveform", std::make_unique<write_waveform>()));
+	return;
 }
 
 MHD_Result router_singleton::read(MHD_Connection *connection, std::string key) {
