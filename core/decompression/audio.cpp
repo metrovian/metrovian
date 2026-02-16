@@ -2,14 +2,6 @@
 #include "core/property.h"
 #include "core/predefined.h"
 
-uint16_t decompression_producer::channel() {
-	return channel_;
-}
-
-uint32_t decompression_producer::sample_rate() {
-	return sample_rate_;
-}
-
 void decompression_producer::set_uri(const std::string &path) {
 	LOG_ENTER();
 	if (avformat_open_input(&avformat_ctx_, path.c_str(), nullptr, nullptr) != 0) {

@@ -10,6 +10,8 @@ public:
 	    uint32_t sample_rate)
 	    : channel_(channel), sample_rate_(sample_rate) {}
 
+	uint16_t channel() const noexcept;
+	uint32_t sample_rate() const noexcept;
 	virtual int open() = 0;
 	virtual int close() = 0;
 
