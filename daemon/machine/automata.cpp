@@ -11,7 +11,7 @@ automata_singleton &automata_singleton::instance() {
 	return instance_;
 }
 
-int8_t automata_singleton::play(std::string name) {
+int automata_singleton::play(std::string name) {
 	LOG_ENTER();
 	if (context_machine::read_play() != 0) {
 		LOG_CONDITION(read_play != 0);
@@ -88,7 +88,7 @@ int8_t automata_singleton::play(std::string name) {
 	return 0;
 }
 
-int8_t automata_singleton::panic() {
+int automata_singleton::panic() {
 	LOG_ENTER();
 	if (context_machine::read_play() == 1) {
 		context_machine::write_play(2);
