@@ -2,7 +2,7 @@
 #include "core/property.h"
 #include "core/predefined.h"
 
-void decompression_producer::set_uri(const std::string &path) {
+void decompression_producer::prepare(const std::string &path) {
 	LOG_ENTER();
 	if (avformat_open_input(&avformat_ctx_, path.c_str(), nullptr, nullptr) != 0) {
 		LOG_CONDITION(avformat_open_input != 0);
@@ -164,16 +164,8 @@ std::vector<int16_t> decompression_producer::produce() {
 	return pcm;
 }
 
-uint16_t decompression_audio::channel() {
-	return dynamic_cast<decompression_producer *>(producer_.get())->channel();
-}
-
-uint32_t decompression_audio::sample_rate() {
-	return dynamic_cast<decompression_producer *>(producer_.get())->sample_rate();
-}
-
 void decompression_audio::prepare(const std::string &path) {
-	dynamic_cast<decompression_producer *>(producer_.get())->set_uri(path);
+	dynamic_cast<decompression_producer *>(producer_.get())->prepare(path);
 	return;
 }
 
@@ -183,8 +175,8 @@ void decompression_audio::decompress(const std::string &path) {
 	prepare(path);
 	consumer_ =
 	    std::make_unique<sound_player>(
-		channel(),
-		sample_rate());
+		producer_->channel(),
+		producer_->sample_rate());
 
 	run(sound::pipeline::common);
 	LOG_EXIT();
@@ -198,8 +190,8 @@ void decompression_audio::decompress(const std::string &path, const std::string 
 	consumer_ =
 	    std::make_unique<sound_writer>(
 		record,
-		channel(),
-		sample_rate());
+		producer_->channel(),
+		producer_->sample_rate());
 
 	run(sound::pipeline::common);
 	LOG_EXIT();
