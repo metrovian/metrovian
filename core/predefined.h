@@ -1,4 +1,6 @@
 #pragma once
+#include <spdlog/spdlog.h>
+
 // clang-format off
 #define LOG_PATH                        std::string(__FILE__).substr(3)
 #define LOG_EXIT()                      spdlog::trace("[exit] [{}:{}] {}", LOG_PATH, __LINE__, __func__)

@@ -2,6 +2,8 @@
 #include "daemon/context.h"
 #include "daemon/main.h"
 
+#include <nlohmann/json.hpp>
+
 void state_setup::enter() {
 	machine_singleton::instance().setup();
 	return;

@@ -1,5 +1,6 @@
 #pragma once
-#include "core/sound/abstract.h"
+#include <stdint.h>
+#include <string>
 
 extern "C" {
 #include <alsa/asoundlib.h>
