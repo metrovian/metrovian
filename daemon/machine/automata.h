@@ -16,8 +16,8 @@ public:
 	automata_singleton(automata_singleton &&) = delete;
 	automata_singleton &operator=(const automata_singleton &) = delete;
 	automata_singleton &operator=(automata_singleton &&) = delete;
-	int8_t play(std::string name);
-	int8_t panic();
+	int play(std::string name);
+	int panic();
 
 private:
 	~automata_singleton();
