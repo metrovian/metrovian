@@ -1,8 +1,8 @@
 #pragma once
-#include "core/synthesis/oscillator.h"
 #include "core/sound/factory.h"
-#include "core/sound/player.h"
-#include "core/sound/sequencer.h"
+
+#include <functional>
+#include <nlohmann/json.hpp>
 
 class synthesis_abstract : public sound_factory {
 public:

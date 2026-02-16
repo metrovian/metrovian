@@ -1,4 +1,5 @@
 #include "core/synthesis/add.h"
+#include "core/synthesis/oscillator.h"
 #include "core/property.h"
 #include "core/predefined.h"
 

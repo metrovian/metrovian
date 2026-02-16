@@ -1,4 +1,7 @@
 #include "core/synthesis/abstract.h"
+#include "core/synthesis/oscillator.h"
+#include "core/sound/player.h"
+#include "core/sound/sequencer.h"
 #include "core/property.h"
 #include "core/predefined.h"
 
