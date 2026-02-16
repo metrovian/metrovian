@@ -25,55 +25,37 @@ struct note {
 };
 }; // namespace sound
 
-class sound_sequencer : public sound_producer {
-protected: /* handle */
-	snd_seq_t *handle_ = nullptr;
-
-protected: /* callback */
-	std::function<void(void)> on_disconnect_ = nullptr;
-	std::function<void(unsigned, int)> on_change_ = nullptr;
-
-protected: /* control */
-	std::atomic<uint8_t> state_;
-	std::mutex mutex_;
-	std::vector<sound::note> key_;
-
-protected: /* parameter */
-	uint64_t len_ = 0;
-	uint16_t volume_ = 64;
-
-protected: /* envelope */
-	double sustain_ = 1.000E+0;
-	uint64_t attack_ = 0;
-	uint64_t decay_ = 0;
-	uint64_t release_ = 0;
-
-protected: /* thread */
-	void thread_event();
-
-protected: /* envelope */
-	double calc_envelope(sound::note &note);
-
-public: /* setter */
-	void set_envelope(double sustain, double attack, double decay, double release);
-	void set_scale(uint16_t volume);
-	void set_size(uint64_t note);
-	void set_sample(uint64_t note, std::vector<int16_t> &pcm);
-
-public: /* callback */
-	void callback_disconnect(std::function<void(void)> function);
-	void callback_change(std::function<void(unsigned, int)> function);
-
-public: /* constructor */
+class sound_sequencer final : public sound_producer {
+public:
 	sound_sequencer(
 	    uint16_t channel,
 	    uint32_t sample_rate)
 	    : sound_producer(channel, sample_rate) {}
 
-public: /* abstract */
-	virtual int8_t open() override final;
-	virtual int8_t close() override final;
+	void set_envelope(double sustain, double attack, double decay, double release);
+	void set_scale(uint16_t volume);
+	void set_size(uint64_t note);
+	void set_sample(uint64_t note, std::vector<int16_t> &pcm);
+	void callback_disconnect(std::function<void(void)> function);
+	void callback_change(std::function<void(unsigned, int)> function);
+	int open() override;
+	int close() override;
+	std::vector<int16_t> produce() override;
 
-public: /* abstract */
-	virtual std::vector<int16_t> produce() override final;
+private:
+	double calc_envelope(sound::note &note);
+
+private:
+	snd_seq_t *handle_ = nullptr;
+	std::function<void(void)> on_disconnect_ = nullptr;
+	std::function<void(unsigned, int)> on_change_ = nullptr;
+	std::atomic<uint8_t> state_;
+	std::mutex mutex_;
+	std::vector<sound::note> key_;
+	uint64_t len_ = 0;
+	uint16_t volume_ = 64;
+	double sustain_ = 1.000E+0;
+	uint64_t attack_ = 0;
+	uint64_t decay_ = 0;
+	uint64_t release_ = 0;
 };
