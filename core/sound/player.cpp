@@ -2,7 +2,7 @@
 #include "core/property.h"
 #include "core/predefined.h"
 
-int8_t sound_player::open() {
+int sound_player::open() {
 	LOG_ENTER();
 	if (channel_ == 0) {
 		LOG_CONDITION(channel_ == 0);
@@ -71,7 +71,7 @@ int8_t sound_player::open() {
 	return -5;
 }
 
-int8_t sound_player::close() {
+int sound_player::close() {
 	LOG_ENTER();
 	if (handle_ != nullptr) {
 		snd_pcm_drain(handle_);

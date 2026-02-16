@@ -20,42 +20,37 @@
 #include <nlohmann/json.hpp>
 
 class sound_abstract {
-protected: /* parameter */
-	uint16_t channel_ = 0;
-	uint32_t sample_rate_ = 0;
-
-public: /* constructor */
+public:
+	virtual ~sound_abstract() = default;
 	sound_abstract(
 	    uint16_t channel,
 	    uint32_t sample_rate)
 	    : channel_(channel), sample_rate_(sample_rate) {}
 
-public: /* abstract */
-	virtual ~sound_abstract() {}
+	virtual int open() = 0;
+	virtual int close() = 0;
 
-public: /* abstract */
-	virtual int8_t open() = 0;
-	virtual int8_t close() = 0;
+protected:
+	uint16_t channel_ = 0;
+	uint32_t sample_rate_ = 0;
 };
 
 class sound_producer : public sound_abstract {
-public: /* constructor */
+public:
 	sound_producer(
 	    uint16_t channel,
 	    uint32_t sample_rate)
 	    : sound_abstract(channel, sample_rate) {}
 
-public: /* abstract */
 	virtual std::vector<int16_t> produce() = 0;
 };
 
 class sound_consumer : public sound_abstract {
-public: /* constructor */
+public:
 	sound_consumer(
 	    uint16_t channel,
 	    uint32_t sample_rate)
 	    : sound_abstract(channel, sample_rate) {}
 
-public: /* abstract */
 	virtual void consume(std::vector<int16_t> &pcm) = 0;
 };

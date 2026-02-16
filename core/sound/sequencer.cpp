@@ -2,95 +2,6 @@
 #include "core/property.h"
 #include "core/predefined.h"
 
-void sound_sequencer::thread_event() {
-	state_.store(1);
-	while (state_.load() == 1) {
-		snd_seq_event_t *event = nullptr;
-		if (snd_seq_event_input(handle_, &event) < 0) {
-			continue;
-		} else if (event != nullptr) {
-			mutex_.lock();
-			switch (event->type) {
-			case SND_SEQ_EVENT_NOTEON:
-				if (event->data.note.velocity > 0) {
-					key_[event->data.note.note].vel_ = event->data.note.velocity;
-					key_[event->data.note.note].pos_enter_ = 0;
-					key_[event->data.note.note].pos_ = 0;
-					key_[event->data.note.note].active_ = 1;
-					key_[event->data.note.note].state_ = sound::state::attack;
-				} else {
-					key_[event->data.note.note].pos_enter_ = key_[event->data.note.note].pos_;
-					key_[event->data.note.note].state_ = sound::state::release;
-				}
-				break;
-			case SND_SEQ_EVENT_NOTEOFF:
-				key_[event->data.note.note].pos_enter_ = key_[event->data.note.note].pos_;
-				key_[event->data.note.note].state_ = sound::state::release;
-				break;
-			case SND_SEQ_EVENT_CONTROLLER:
-				if (on_change_ != nullptr) {
-					on_change_(
-					    event->data.control.param,
-					    event->data.control.value);
-				}
-				break;
-			case SND_SEQ_EVENT_CLIENT_EXIT:
-			case SND_SEQ_EVENT_PORT_EXIT:
-			case SND_SEQ_EVENT_PORT_UNSUBSCRIBED:
-				if (on_disconnect_ != nullptr) {
-					on_disconnect_();
-				}
-				break;
-			default:
-				break;
-			}
-
-			mutex_.unlock();
-		}
-	}
-
-	state_.store(0);
-	return;
-}
-
-double sound_sequencer::calc_envelope(sound::note &note) {
-	switch (note.state_) {
-	case sound::state::attack:
-		if (note.pos_ < attack_) {
-			note.env_ = static_cast<double>(note.pos_) / attack_;
-		} else {
-			note.pos_enter_ = note.pos_;
-			note.env_ = 1.000E+0;
-			note.state_ = sound::state::decay;
-		}
-		break;
-	case sound::state::decay:
-		if (note.pos_ < note.pos_enter_ + decay_) {
-			note.env_ = 1.000E+0 - ((note.pos_ - note.pos_enter_) * (1.000E+0 - sustain_)) / decay_;
-		} else {
-			note.pos_enter_ = note.pos_;
-			note.env_ = sustain_;
-			note.state_ = sound::state::sustain;
-		}
-		break;
-	case sound::state::release:
-		if (note.pos_ < note.pos_enter_ + release_) {
-			return note.env_ - ((note.pos_ - note.pos_enter_) * note.env_) / release_;
-		} else {
-			note.active_ = 0;
-			note.pos_enter_ = 0;
-			note.pos_ = 0;
-			note.env_ = 0.000E+0;
-			note.state_ = sound::state::none;
-			return 0.000E+0;
-		}
-	default: // sound::state::sustain
-		return sustain_;
-	}
-
-	return note.env_;
-}
-
 void sound_sequencer::set_envelope(double sustain, double attack, double decay, double release) {
 	sustain_ = sustain;
 	attack_ = static_cast<uint64_t>(sample_rate_ * attack);
@@ -124,7 +35,7 @@ void sound_sequencer::callback_change(std::function<void(unsigned, int)> functio
 	return;
 }
 
-int8_t sound_sequencer::open() {
+int sound_sequencer::open() {
 	LOG_ENTER();
 	if (snd_seq_open(
 		&handle_,
@@ -169,7 +80,56 @@ int8_t sound_sequencer::open() {
 		}
 
 		if (ports > 0) {
-			std::thread(&sound_sequencer::thread_event, this).detach();
+			std::thread([&]() {
+				state_.store(1);
+				while (state_.load() == 1) {
+					snd_seq_event_t *event = nullptr;
+					if (snd_seq_event_input(handle_, &event) < 0) {
+						continue;
+					} else if (event != nullptr) {
+						mutex_.lock();
+						switch (event->type) {
+						case SND_SEQ_EVENT_NOTEON:
+							if (event->data.note.velocity > 0) {
+								key_[event->data.note.note].vel_ = event->data.note.velocity;
+								key_[event->data.note.note].pos_enter_ = 0;
+								key_[event->data.note.note].pos_ = 0;
+								key_[event->data.note.note].active_ = 1;
+								key_[event->data.note.note].state_ = sound::state::attack;
+							} else {
+								key_[event->data.note.note].pos_enter_ = key_[event->data.note.note].pos_;
+								key_[event->data.note.note].state_ = sound::state::release;
+							}
+							break;
+						case SND_SEQ_EVENT_NOTEOFF:
+							key_[event->data.note.note].pos_enter_ = key_[event->data.note.note].pos_;
+							key_[event->data.note.note].state_ = sound::state::release;
+							break;
+						case SND_SEQ_EVENT_CONTROLLER:
+							if (on_change_ != nullptr) {
+								on_change_(
+								    event->data.control.param,
+								    event->data.control.value);
+							}
+							break;
+						case SND_SEQ_EVENT_CLIENT_EXIT:
+						case SND_SEQ_EVENT_PORT_EXIT:
+						case SND_SEQ_EVENT_PORT_UNSUBSCRIBED:
+							if (on_disconnect_ != nullptr) {
+								on_disconnect_();
+							}
+							break;
+						default:
+							break;
+						}
+
+						mutex_.unlock();
+					}
+				}
+
+				state_.store(0);
+			}).detach();
+
 			LOG_EXIT();
 			return 0;
 		}
@@ -180,7 +140,7 @@ int8_t sound_sequencer::open() {
 	return -2;
 }
 
-int8_t sound_sequencer::close() {
+int sound_sequencer::close() {
 	LOG_ENTER();
 	state_.store(2);
 	while (state_.load() != 0) {
@@ -217,4 +177,42 @@ std::vector<int16_t> sound_sequencer::produce() {
 	}
 
 	return pcm;
+}
+
+double sound_sequencer::calc_envelope(sound::note &note) {
+	switch (note.state_) {
+	case sound::state::attack:
+		if (note.pos_ < attack_) {
+			note.env_ = static_cast<double>(note.pos_) / attack_;
+		} else {
+			note.pos_enter_ = note.pos_;
+			note.env_ = 1.000E+0;
+			note.state_ = sound::state::decay;
+		}
+		break;
+	case sound::state::decay:
+		if (note.pos_ < note.pos_enter_ + decay_) {
+			note.env_ = 1.000E+0 - ((note.pos_ - note.pos_enter_) * (1.000E+0 - sustain_)) / decay_;
+		} else {
+			note.pos_enter_ = note.pos_;
+			note.env_ = sustain_;
+			note.state_ = sound::state::sustain;
+		}
+		break;
+	case sound::state::release:
+		if (note.pos_ < note.pos_enter_ + release_) {
+			return note.env_ - ((note.pos_ - note.pos_enter_) * note.env_) / release_;
+		} else {
+			note.active_ = 0;
+			note.pos_enter_ = 0;
+			note.pos_ = 0;
+			note.env_ = 0.000E+0;
+			note.state_ = sound::state::none;
+			return 0.000E+0;
+		}
+	default: // sound::state::sustain
+		return sustain_;
+	}
+
+	return note.env_;
 }

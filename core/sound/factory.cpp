@@ -1,6 +1,47 @@
 #include "core/sound/factory.h"
 #include "core/predefined.h"
 
+sound_factory::~sound_factory() {
+	queue_state_.store(0);
+	queue_cvar_.notify_one();
+	clear();
+}
+
+sound_factory::sound_factory() {
+	queue_state_.store(0);
+	queue_cvar_.notify_one();
+}
+
+void sound_factory::run(sound::pipeline type) {
+	std::vector<std::jthread> trds;
+	switch (type) {
+	case sound::pipeline::common:
+		trds.push_back(std::jthread(&sound_factory::thread_producer, this));
+		trds.push_back(std::jthread(&sound_factory::thread_consumer, this));
+		break;
+	case sound::pipeline::sync:
+		std::jthread(&sound_factory::thread_sync, this);
+		break;
+	default:
+		LOG_ARGUMENT(type);
+		break;
+	}
+
+	return;
+}
+
+void sound_factory::terminate() {
+	queue_state_.store(0);
+	queue_cvar_.notify_one();
+	return;
+}
+
+void sound_factory::create() {
+	producer_ = create_producer();
+	consumer_ = create_consumer();
+	return;
+}
+
 void sound_factory::push(std::vector<int16_t> &pcm) {
 	std::unique_lock<std::mutex> lock(queue_mutex_);
 	queue_.push(pcm);
@@ -92,45 +133,4 @@ void sound_factory::thread_sync() {
 	producer_->close();
 	consumer_->close();
 	return;
-}
-
-void sound_factory::run(sound::pipeline type) {
-	std::vector<std::jthread> trds;
-	switch (type) {
-	case sound::pipeline::common:
-		trds.push_back(std::jthread(&sound_factory::thread_producer, this));
-		trds.push_back(std::jthread(&sound_factory::thread_consumer, this));
-		break;
-	case sound::pipeline::sync:
-		std::jthread(&sound_factory::thread_sync, this);
-		break;
-	default:
-		LOG_ARGUMENT(type);
-		break;
-	}
-
-	return;
-}
-
-void sound_factory::terminate() {
-	queue_state_.store(0);
-	queue_cvar_.notify_one();
-	return;
-}
-
-void sound_factory::create() {
-	producer_ = create_producer();
-	consumer_ = create_consumer();
-	return;
-}
-
-sound_factory::sound_factory() {
-	queue_state_.store(0);
-	queue_cvar_.notify_one();
-}
-
-sound_factory::~sound_factory() {
-	queue_state_.store(0);
-	queue_cvar_.notify_one();
-	clear();
 }

@@ -48,7 +48,7 @@ void decompression_producer::set_uri(const std::string &path) {
 	return;
 }
 
-int8_t decompression_producer::open() {
+int decompression_producer::open() {
 	LOG_ENTER();
 	if (avcodec_params_ == nullptr) {
 		LOG_CONDITION(avcodec_params_ == nullptr);
@@ -92,7 +92,7 @@ int8_t decompression_producer::open() {
 	return 0;
 }
 
-int8_t decompression_producer::close() {
+int decompression_producer::close() {
 	LOG_ENTER();
 	avformat_close_input(&avformat_ctx_);
 	avcodec_free_context(&avcodec_ctx_);

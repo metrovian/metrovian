@@ -1,7 +1,7 @@
 #include "core/sound/writer.h"
 #include "core/predefined.h"
 
-int8_t sound_writer::open() {
+int sound_writer::open() {
 	LOG_ENTER();
 	output_.open(path_, std::ios::binary);
 	if (output_.is_open() == false) {
@@ -33,7 +33,7 @@ int8_t sound_writer::open() {
 	return 0;
 }
 
-int8_t sound_writer::close() {
+int sound_writer::close() {
 	LOG_ENTER();
 	output_.seekp(4, std::ios::beg);
 	output_.write(reinterpret_cast<const char *>(&chunk_), 4);

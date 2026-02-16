@@ -5,20 +5,17 @@ extern "C" {
 #include <alsa/asoundlib.h>
 }
 
-class sound_player : public sound_consumer {
-protected: /* handle */
-	snd_pcm_t *handle_ = nullptr;
-
-public: /* constructor */
+class sound_player final : public sound_consumer {
+public:
 	sound_player(
 	    uint16_t channel,
 	    uint32_t sample_rate)
 	    : sound_consumer(channel, sample_rate) {}
 
-public: /* abstract */
-	virtual int8_t open() override final;
-	virtual int8_t close() override final;
+	int open() override;
+	int close() override;
+	void consume(std::vector<int16_t> &pcm) override;
 
-public: /* abstract */
-	virtual void consume(std::vector<int16_t> &pcm) override final;
+protected:
+	snd_pcm_t *handle_ = nullptr;
 };

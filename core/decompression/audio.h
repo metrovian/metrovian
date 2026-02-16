@@ -34,8 +34,8 @@ public: /* constructor */
 	decompression_producer() : sound_producer(0, 0) {}
 
 public: /* abstract */
-	virtual int8_t open() override final;
-	virtual int8_t close() override final;
+	virtual int open() override final;
+	virtual int close() override final;
 
 public: /* abstract */
 	virtual std::vector<int16_t> produce() override final;
