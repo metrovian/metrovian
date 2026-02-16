@@ -3,6 +3,9 @@
 #include "core/property.h"
 #include "core/predefined.h"
 
+#include <thread>
+#include <chrono>
+
 automata_singleton &automata_singleton::instance() {
 	static automata_singleton instance_;
 	return instance_;

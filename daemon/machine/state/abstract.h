@@ -1,15 +1,6 @@
 #pragma once
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
-#include <cmath>
-#include <csignal>
-#include <thread>
-#include <chrono>
-#include <functional>
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
-#include <nlohmann/json.hpp>
+#include <atomic>
 
 namespace machine {
 enum class state : uint8_t {
@@ -23,7 +14,7 @@ enum class state : uint8_t {
 
 class state_abstract {
 public:
-	virtual ~state_abstract() {}
+	virtual ~state_abstract() = default;
 	virtual void enter() = 0;
 	virtual void update() = 0;
 };
@@ -34,7 +25,7 @@ public:
 	void update() override {}
 };
 
-class state_setup : public state_abstract {
+class state_setup final : public state_abstract {
 public:
 	void enter() override;
 	void update() override;

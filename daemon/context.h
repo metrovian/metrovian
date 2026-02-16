@@ -1,5 +1,8 @@
-
+#pragma once
 #include "daemon/machine/state/abstract.h"
+
+#include <string>
+#include <nlohmann/json.hpp>
 
 class context_singleton {
 public:

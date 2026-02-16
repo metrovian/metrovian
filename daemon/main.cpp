@@ -2,8 +2,13 @@
 #include "daemon/context.h"
 #include "daemon/machine/api.h"
 #include "daemon/machine/automata.h"
+#include "core/synthesis/add.h"
 #include "core/property.h"
 #include "core/predefined.h"
+
+#include <csignal>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <nlohmann/json.hpp>
 
 machine_singleton &machine_singleton::instance() {
 	static machine_singleton instance_;
