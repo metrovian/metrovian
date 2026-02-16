@@ -1,9 +1,6 @@
 #pragma once
 #include "core/decompression/abstract.h"
-#include "core/sound/abstract.h"
 #include "core/sound/factory.h"
-#include "core/sound/player.h"
-#include "core/sound/writer.h"
 
 extern "C" {
 #include <libavformat/avformat.h>

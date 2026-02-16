@@ -1,4 +1,6 @@
 #include "core/decompression/audio.h"
+#include "core/sound/player.h"
+#include "core/sound/writer.h"
 #include "core/property.h"
 #include "core/predefined.h"
 
