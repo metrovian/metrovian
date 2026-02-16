@@ -11,6 +11,7 @@ src_core = files(
   'optimization/sinusoidal.cpp',
   'optimization/transcendental.cpp',
   'optimization/user.cpp',
+  'sound/abstract.cpp',
   'sound/factory.cpp',
   'sound/player.cpp',
   'sound/sequencer.cpp',

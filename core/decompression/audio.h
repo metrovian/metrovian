@@ -23,10 +23,6 @@ protected: /* context */
 protected: /* paramter */
 	int32_t stream_ = 0;
 
-public: /* property */
-	uint16_t channel();
-	uint32_t sample_rate();
-
 public: /* setter */
 	void set_uri(const std::string &path);
 
