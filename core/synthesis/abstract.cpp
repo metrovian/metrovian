@@ -2,6 +2,62 @@
 #include "core/property.h"
 #include "core/predefined.h"
 
+synthesis_abstract::synthesis_abstract() {
+	create();
+	callback_disconnect([&]() { terminate(); });
+	callback_change([&](unsigned param, int value) {
+		switch (param) {
+		case 0x07:
+			set_scale(value);
+			return;
+		case 0x79:
+			terminate();
+			return;
+		default:
+			return;
+		}
+	});
+}
+
+synthesis_abstract::synthesis_abstract(const nlohmann::ordered_json &preset)
+    : synthesis_abstract() {
+	set_envelope(preset);
+}
+
+int synthesis_abstract::synthesize() {
+	synthesis(
+	    CONFIG_UINT64("synthesis", "note-min"),
+	    CONFIG_UINT64("synthesis", "note-max"),
+	    CONFIG_UINT64("synthesis", "period"));
+
+	return 0;
+}
+
+int synthesis_abstract::perform() {
+	run(sound::pipeline::sync);
+	return 0;
+}
+
+int synthesis_abstract::panic() {
+	terminate();
+	return 0;
+}
+
+void synthesis_abstract::callback_disconnect(std::function<void(void)> function) {
+	dynamic_cast<sound_sequencer *>(producer_.get())->callback_disconnect(function);
+	return;
+}
+
+void synthesis_abstract::callback_change(std::function<void(unsigned, int)> function) {
+	dynamic_cast<sound_sequencer *>(producer_.get())->callback_change(function);
+	return;
+}
+
+void synthesis_abstract::callback_synthesis(std::function<void(uint64_t)> function) {
+	on_synthesis_ = function;
+	return;
+}
+
 void synthesis_abstract::set_envelope(const nlohmann::ordered_json &preset) {
 	auto iter = preset.find("envelope");
 	if (iter != preset.end()) {
@@ -31,62 +87,6 @@ void synthesis_abstract::set_size(uint64_t note) {
 void synthesis_abstract::set_sample(uint64_t note, std::vector<int16_t> &pcm) {
 	dynamic_cast<sound_sequencer *>(producer_.get())->set_sample(note, pcm);
 	return;
-}
-
-void synthesis_abstract::callback_disconnect(std::function<void(void)> function) {
-	dynamic_cast<sound_sequencer *>(producer_.get())->callback_disconnect(function);
-	return;
-}
-
-void synthesis_abstract::callback_change(std::function<void(unsigned, int)> function) {
-	dynamic_cast<sound_sequencer *>(producer_.get())->callback_change(function);
-	return;
-}
-
-void synthesis_abstract::callback_synthesis(std::function<void(uint64_t)> function) {
-	on_synthesis_ = function;
-	return;
-}
-
-int8_t synthesis_abstract::synthesize() {
-	synthesis(
-	    CONFIG_UINT64("synthesis", "note-min"),
-	    CONFIG_UINT64("synthesis", "note-max"),
-	    CONFIG_UINT64("synthesis", "period"));
-
-	return 0;
-}
-
-int8_t synthesis_abstract::perform() {
-	run(sound::pipeline::sync);
-	return 0;
-}
-
-int8_t synthesis_abstract::panic() {
-	terminate();
-	return 0;
-}
-
-synthesis_abstract::synthesis_abstract() {
-	create();
-	callback_disconnect([&]() { terminate(); });
-	callback_change([&](unsigned param, int value) {
-		switch (param) {
-		case 0x07:
-			set_scale(value);
-			return;
-		case 0x79:
-			terminate();
-			return;
-		default:
-			return;
-		}
-	});
-}
-
-synthesis_abstract::synthesis_abstract(const nlohmann::ordered_json &preset)
-    : synthesis_abstract() {
-	set_envelope(preset);
 }
 
 std::unique_ptr<sound_producer> synthesis_abstract::create_producer() {

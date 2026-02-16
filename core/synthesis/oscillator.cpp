@@ -2,6 +2,15 @@
 #include "core/property.h"
 #include "core/predefined.h"
 
+const oscmap_t &synthesis_oscillator::map() {
+	static const oscmap_t map_ =
+	    {{"sin", [](const nlohmann::ordered_json &) { return lambda_sin(); }},
+	     {"saw", [](const nlohmann::ordered_json &obj) { return lambda_saw(obj.value("skew", 0.000E+0)); }},
+	     {"sqr", [](const nlohmann::ordered_json &obj) { return lambda_sqr(obj.value("duty", 0.500E+0)); }}};
+
+	return map_;
+}
+
 double synthesis_oscillator::ratio(double note) {
 	return std::pow(2.000E+0, (note - 6.900E+1) / 1.200E+1);
 }
@@ -61,13 +70,4 @@ std::function<double(double, double)> synthesis_oscillator::lambda_sqr(double du
 	return [duty](double note, double sample) {
 		return sqr(note, sample, duty);
 	};
-}
-
-const oscmap_t &synthesis_oscillator::map() {
-	static const oscmap_t map_ =
-	    {{"sin", [](const nlohmann::ordered_json &) { return lambda_sin(); }},
-	     {"saw", [](const nlohmann::ordered_json &obj) { return lambda_saw(obj.value("skew", 0.000E+0)); }},
-	     {"sqr", [](const nlohmann::ordered_json &obj) { return lambda_sqr(obj.value("duty", 0.500E+0)); }}};
-
-	return map_;
 }
