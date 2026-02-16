@@ -7,6 +7,7 @@
 #include "core/predefined.h"
 
 #include <csignal>
+#include <thread>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <nlohmann/json.hpp>
 
