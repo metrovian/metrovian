@@ -1,6 +1,8 @@
 #include "core/sound/factory.h"
 #include "core/predefined.h"
 
+#include <thread>
+
 sound_factory::~sound_factory() {
 	queue_state_.store(0);
 	queue_cvar_.notify_one();

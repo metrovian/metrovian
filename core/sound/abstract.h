@@ -1,23 +1,6 @@
 #pragma once
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
-#include <iostream>
-#include <fstream>
-#include <filesystem>
-#include <thread>
-#include <chrono>
-#include <atomic>
-#include <condition_variable>
-#include <map>
-#include <mutex>
-#include <cmath>
-#include <string>
-#include <queue>
 #include <vector>
-#include <functional>
-#include <spdlog/spdlog.h>
-#include <nlohmann/json.hpp>
 
 class sound_abstract {
 public:

@@ -1,6 +1,12 @@
 #pragma once
 #include "core/sound/abstract.h"
 
+#include <atomic>
+#include <queue>
+#include <memory>
+#include <mutex>
+#include <condition_variable>
+
 namespace sound {
 enum class pipeline : uint8_t {
 	common = 0,

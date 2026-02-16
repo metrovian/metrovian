@@ -1,6 +1,9 @@
 #pragma once
 #include "core/sound/abstract.h"
 
+#include <atomic>
+#include <functional>
+
 extern "C" {
 #include <alsa/asoundlib.h>
 }

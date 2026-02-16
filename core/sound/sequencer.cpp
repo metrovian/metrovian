@@ -2,6 +2,9 @@
 #include "core/property.h"
 #include "core/predefined.h"
 
+#include <thread>
+#include <chrono>
+
 void sound_sequencer::set_envelope(double sustain, double attack, double decay, double release) {
 	sustain_ = sustain;
 	attack_ = static_cast<uint64_t>(sample_rate_ * attack);

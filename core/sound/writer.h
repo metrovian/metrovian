@@ -1,6 +1,9 @@
 #pragma once
 #include "core/sound/abstract.h"
 
+#include <string>
+#include <fstream>
+
 class sound_writer final : public sound_consumer {
 public:
 	sound_writer(
