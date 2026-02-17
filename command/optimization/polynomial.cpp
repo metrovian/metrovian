@@ -3,7 +3,7 @@
 #include "core/predefined.h"
 
 void command_polynomial::setup(CLI::App *parent) {
-	auto command = parent->add_subcommand("polynomial", "POLYNOMIAL optimization")->group("OPTIMIZATION");
+	auto command = parent->add_subcommand("polynomial", "polynomial optimization")->group("OPTIMIZATION");
 	command->add_option("-f, --func", model_, "polynomial-approximated function")->required();
 	command->add_option("-i, --in", in_, "measured csv");
 	command->add_option("-n, --iter", iter_, "iteration max")->default_val<size_t>(1000);
