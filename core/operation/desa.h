@@ -2,32 +2,30 @@
 #include <Eigen/Dense>
 
 class operation_desa {
-protected: /* energy operator */
+public:
+	int operate(const Eigen::VectorXd &sample, Eigen::VectorXd &iamp, Eigen::VectorXd &irate);
+	int operate(const Eigen::VectorXd &sample, Eigen::VectorXd &iamp);
+
+protected:
 	Eigen::VectorXd tkeo(const Eigen::VectorXd &sample);
-
-public: /* overload */
-	int8_t operate(const Eigen::VectorXd &sample, Eigen::VectorXd &iamp, Eigen::VectorXd &irate);
-	int8_t operate(const Eigen::VectorXd &sample, Eigen::VectorXd &iamp);
-
-protected: /* operation */
-	virtual int8_t operation(
+	virtual int operation(
 	    const Eigen::VectorXd &sample,
 	    Eigen::VectorXd &iamp,
 	    Eigen::VectorXd &irate) = 0;
 };
 
-class operation_desa1 : public operation_desa {
-protected: /* operation */
-	virtual int8_t operation(
+class operation_desa1 final : public operation_desa {
+protected:
+	int operation(
 	    const Eigen::VectorXd &sample,
 	    Eigen::VectorXd &iamp,
-	    Eigen::VectorXd &irate) override final;
+	    Eigen::VectorXd &irate) override;
 };
 
-class operation_desa2 : public operation_desa {
-protected: /* operation */
-	virtual int8_t operation(
+class operation_desa2 final : public operation_desa {
+protected:
+	int operation(
 	    const Eigen::VectorXd &sample,
 	    Eigen::VectorXd &iamp,
-	    Eigen::VectorXd &irate) override final;
+	    Eigen::VectorXd &irate) override;
 };
