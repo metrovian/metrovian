@@ -10,18 +10,19 @@ void command_transcendental::setup(CLI::App *parent) {
 	command->add_option("-e, --eps", eps_, "iteration epsilon")->default_val<double>(1.000E-15);
 	command->add_option("-p, --params", params_, "parameters");
 	command->callback([this]() { run(); });
-	map_.insert(std::make_pair<std::string, transcendental::function>("exp", transcendental::function::exp));
-	map_.insert(std::make_pair<std::string, transcendental::function>("ln", transcendental::function::ln));
-	map_.insert(std::make_pair<std::string, transcendental::function>("sinh", transcendental::function::sinh));
-	map_.insert(std::make_pair<std::string, transcendental::function>("cosh", transcendental::function::cosh));
-	map_.insert(std::make_pair<std::string, transcendental::function>("tanh", transcendental::function::tanh));
 	return;
 }
 
 void command_transcendental::run() {
-	if (map_.find(func_) != map_.end()) {
+	std::unordered_map<std::string, transcendental::function> map;
+	map.insert(std::make_pair<std::string, transcendental::function>("exp", transcendental::function::exp));
+	map.insert(std::make_pair<std::string, transcendental::function>("ln", transcendental::function::ln));
+	map.insert(std::make_pair<std::string, transcendental::function>("sinh", transcendental::function::sinh));
+	map.insert(std::make_pair<std::string, transcendental::function>("cosh", transcendental::function::cosh));
+	map.insert(std::make_pair<std::string, transcendental::function>("tanh", transcendental::function::tanh));
+	if (map.find(func_) != map.end()) {
 		optimization_transcendental engine;
-		if (engine.import_function(map_[func_]).length() > 0) {
+		if (engine.import_function(map[func_]).length() > 0) {
 			Eigen::VectorXd domain;
 			Eigen::VectorXd range;
 			Eigen::VectorXd params = engine.export_parameters();
