@@ -1,4 +1,4 @@
-#include "command/decompression/audio.h"
+#include "command/decompression/abstract.h"
 #include "core/decompression/audio.h"
 #include "core/predefined.h"
 
