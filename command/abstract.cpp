@@ -1,6 +1,8 @@
 #include "command/abstract.h"
 #include "core/predefined.h"
 
+#include <csignal>
+
 void command_abstract::handle_setup(const std::function<void(void)> handler) {
 	handler_ = handler;
 	if (handler_ != nullptr) {
