@@ -27,7 +27,7 @@ public:
 	void setup(CLI::App *parent) override;
 	void run() override;
 
-protected:
+private:
 	uint8_t model_;
 };
 
@@ -36,7 +36,7 @@ public:
 	void setup(CLI::App *parent) override;
 	void run() override;
 
-protected:
+private:
 	std::vector<uint8_t> model_;
 };
 
@@ -45,7 +45,7 @@ public:
 	void setup(CLI::App *parent) override;
 	void run() override;
 
-protected:
+private:
 	std::unordered_map<std::string, sinusoidal::function> map_;
 };
 
@@ -54,6 +54,6 @@ public:
 	void setup(CLI::App *parent) override;
 	void run() override;
 
-protected:
+private:
 	std::unordered_map<std::string, transcendental::function> map_;
 };

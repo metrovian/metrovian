@@ -1,7 +1,6 @@
 #include "command/main.h"
-#include "command/decompression/audio.h"
-#include "command/operation/corr.h"
-#include "command/operation/desa.h"
+#include "command/decompression/abstract.h"
+#include "command/operation/abstract.h"
 #include "command/optimization/abstract.h"
 #include "core/predefined.h"
 

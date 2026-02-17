@@ -1,4 +1,4 @@
-#include "command/operation/desa.h"
+#include "command/operation/abstract.h"
 #include "core/operation/desa.h"
 
 void command_desa::setup(CLI::App *parent) {

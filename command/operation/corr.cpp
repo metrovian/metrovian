@@ -1,4 +1,4 @@
-#include "command/operation/corr.h"
+#include "command/operation/abstract.h"
 #include "core/operation/corr.h"
 
 void command_corr::setup(CLI::App *parent) {
