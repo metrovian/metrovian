@@ -1,16 +1,5 @@
 #pragma once
-#include <iostream>
-#include <iomanip>
-#include <vector>
-#include <thread>
-#include <map>
-#include <algorithm>
-#include <regex>
-#include <sstream>
 #include <string>
-#include <stdint.h>
-#include <spdlog/spdlog.h>
-#include <muParser.h>
 #include <Eigen/Dense>
 
 class optimization_abstract {
