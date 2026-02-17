@@ -11,35 +11,31 @@
 #include <Eigen/Dense>
 
 class command_abstract {
-protected: /* command parser */
-	CLI::App *command_parser_;
-	std::vector<std::unique_ptr<command_abstract>> commands_;
-
-protected: /* handler */
-	static inline std::function<void(void)> handler_ = nullptr;
-
-protected: /* handler setup */
-	static void handle_setup(const std::function<void(void)> handler);
-	static void handle_terminate(int);
-
-protected: /* file */
-	static int8_t read_binary(const std::string &path, std::vector<uint8_t> &binary);
-	static int8_t write_binary(const std::string &path, std::vector<uint8_t> &binary);
-	static int8_t read_text(const std::string &path, std::string &text);
-	static int8_t write_text(const std::string &path, std::string &text);
-	static int8_t read_vector(const std::string &path, Eigen::VectorXd &range);
-	static int8_t write_vector(const std::string &path, Eigen::VectorXd &range);
-	static int8_t read_vector(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter);
-	static int8_t write_vector(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter);
-
-protected: /* subcommand */
-	int8_t setup_subcommand(std::unique_ptr<command_abstract> command);
-	int8_t select_subcommand();
-
-public: /* abstract */
-	virtual ~command_abstract() {}
-
-public: /* abstract */
+public:
+	virtual ~command_abstract() = default;
 	virtual void setup(CLI::App *parent) = 0;
 	virtual void run() = 0;
+
+protected:
+	static void handle_setup(const std::function<void(void)> handler);
+	static void handle_terminate(int);
+	static int read_binary(const std::string &path, std::vector<uint8_t> &binary);
+	static int write_binary(const std::string &path, std::vector<uint8_t> &binary);
+	static int read_text(const std::string &path, std::string &text);
+	static int write_text(const std::string &path, std::string &text);
+	static int read_vector(const std::string &path, Eigen::VectorXd &range);
+	static int write_vector(const std::string &path, Eigen::VectorXd &range);
+	static int read_vector(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter);
+	static int write_vector(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter);
+
+private:
+	int setup_subcommand(std::unique_ptr<command_abstract> command);
+	int select_subcommand();
+
+private:
+	static inline std::function<void(void)> handler_ = nullptr;
+
+private:
+	CLI::App *command_parser_;
+	std::vector<std::unique_ptr<command_abstract>> commands_;
 };
