@@ -14,7 +14,3 @@ std::string optimization_polynomial::import_function(uint8_t model) {
 
 	return optimization_abstract::import_function(oss.str());
 }
-
-std::string optimization_polynomial::objective_function() {
-	return export_function();
-}

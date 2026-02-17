@@ -15,7 +15,3 @@ std::string optimization_transcendental::import_function(transcendental::functio
 	// clang-format on
 	return optimization_abstract::import_function(function);
 }
-
-std::string optimization_transcendental::objective_function() {
-	return export_function();
-}
