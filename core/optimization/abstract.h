@@ -26,7 +26,7 @@ public:
 	Eigen::VectorXd export_parameters();
 	Eigen::VectorXd import_parameters(const Eigen::VectorXd &params);
 	std::string export_function();
-	std::string import_function(const std::string &function);
+	std::string import_function(const std::string &func);
 
 protected:
 	virtual std::string objective_function() = 0;
@@ -60,5 +60,5 @@ private:
 
 private:
 	Eigen::VectorXd params_;
-	std::string function_;
+	std::string func_;
 };

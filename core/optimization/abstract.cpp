@@ -69,14 +69,14 @@ Eigen::VectorXd optimization_abstract::import_parameters(const Eigen::VectorXd &
 }
 
 std::string optimization_abstract::export_function() {
-	return function_;
+	return func_;
 }
 
-std::string optimization_abstract::import_function(const std::string &function) {
+std::string optimization_abstract::import_function(const std::string &func) {
 	std::regex rex(R"(c(\d+))");
 	std::smatch match;
 	size_t dimension = 0;
-	auto begin = std::sregex_iterator(function.begin(), function.end(), rex);
+	auto begin = std::sregex_iterator(func.begin(), func.end(), rex);
 	auto end = std::sregex_iterator();
 	for (auto it = begin; it != end; ++it) {
 		if (dimension < std::stoull((*it)[1].str()) + 1) {
@@ -88,7 +88,7 @@ std::string optimization_abstract::import_function(const std::string &function) 
 		params_ = Eigen::VectorXd::Zero(dimension);
 	}
 
-	function_ = function;
+	func_ = func;
 	return export_function();
 }
 

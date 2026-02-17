@@ -2,11 +2,7 @@
 #include "command/decompression/audio.h"
 #include "command/operation/corr.h"
 #include "command/operation/desa.h"
-#include "command/optimization/polynomial.h"
-#include "command/optimization/rational.h"
-#include "command/optimization/sinusoidal.h"
-#include "command/optimization/transcendental.h"
-#include "command/optimization/user.h"
+#include "command/optimization/abstract.h"
 #include "core/predefined.h"
 
 int8_t interface_singleton::command_parse(int argc, char **argv) {
