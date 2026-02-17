@@ -2,7 +2,7 @@
 #include "core/operation/corr.h"
 
 void command_corr::setup(CLI::App *parent) {
-	auto command = parent->add_subcommand("corr", "CORR operation")->group("OPERATION");
+	auto command = parent->add_subcommand("corr", "corr operation")->group("OPERATION");
 	command->add_option("-i, --in", in_, "measured csv");
 	command->add_option("-o, --out", out_, "return csv")->required();
 	command->callback([this]() { run(); });
