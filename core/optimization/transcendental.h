@@ -11,10 +11,10 @@ enum class function : uint8_t {
 };
 };
 
-class optimization_transcendental : public optimization_abstract {
-public: /* function */
+class optimization_transcendental final : public optimization_abstract {
+public:
 	std::string import_function(transcendental::function model);
 
-protected: /* abstract */
-	virtual std::string objective_function() override final;
+protected:
+	std::string objective_function() override;
 };
