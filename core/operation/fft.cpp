@@ -19,26 +19,26 @@ Eigen::VectorXcd operation_fft::fft(const Eigen::VectorXcd &sample) {
 	return result;
 }
 
-int8_t operation_fft::operate(const Eigen::VectorXcd &sample, Eigen::VectorXcd &spectrum) {
+int operation_fft::operate(const Eigen::VectorXcd &sample, Eigen::VectorXcd &spectrum) {
 	return operation(sample, spectrum);
 }
 
-int8_t operation_fft::operate(const Eigen::VectorXd &sample, Eigen::VectorXcd &spectrum) {
+int operation_fft::operate(const Eigen::VectorXd &sample, Eigen::VectorXcd &spectrum) {
 	Eigen::VectorXcd sample_complex = Eigen::VectorXcd::Zero(sample.size());
 	sample_complex.real() = sample;
 	return operation(sample_complex, spectrum);
 }
 
-int8_t operation_fft::operate(const Eigen::VectorXd &sample, Eigen::VectorXd &spectrum) {
+int operation_fft::operate(const Eigen::VectorXd &sample, Eigen::VectorXd &spectrum) {
 	Eigen::VectorXcd sample_complex = Eigen::VectorXcd::Zero(sample.size());
 	Eigen::VectorXcd spectrum_complex = Eigen::VectorXcd::Zero(spectrum.size());
 	sample_complex.real() = sample;
-	int8_t retcode = operation(sample_complex, spectrum_complex);
+	int retcode = operation(sample_complex, spectrum_complex);
 	spectrum = spectrum_complex.array().abs();
 	return retcode;
 }
 
-int8_t operation_fft::operation(const Eigen::VectorXcd &sample, Eigen::VectorXcd &spectrum) {
+int operation_fft::operation(const Eigen::VectorXcd &sample, Eigen::VectorXcd &spectrum) {
 	if (sample.size() < 2) {
 		return -1;
 	}
@@ -66,7 +66,7 @@ Eigen::VectorXcd operation_ifft::ifft(const Eigen::VectorXcd &spectrum) {
 	return result;
 }
 
-int8_t operation_ifft::operation(const Eigen::VectorXcd &spectrum, Eigen::VectorXcd &sample) {
+int operation_ifft::operation(const Eigen::VectorXcd &spectrum, Eigen::VectorXcd &sample) {
 	if (spectrum.size() < 2) {
 		return -1;
 	}

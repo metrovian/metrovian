@@ -1,5 +1,14 @@
 #include "core/operation/desa.h"
 
+int operation_desa::operate(const Eigen::VectorXd &sample, Eigen::VectorXd &iamp, Eigen::VectorXd &irate) {
+	return operation(sample, iamp, irate);
+}
+
+int operation_desa::operate(const Eigen::VectorXd &sample, Eigen::VectorXd &iamp) {
+	Eigen::VectorXd irate;
+	return operation(sample, iamp, irate);
+}
+
 Eigen::VectorXd operation_desa::tkeo(const Eigen::VectorXd &sample) {
 	Eigen::VectorXd psi = Eigen::VectorXd::Zero(sample.size());
 	for (Eigen::Index i = 1; i < sample.size() - 1; ++i) {
@@ -10,16 +19,7 @@ Eigen::VectorXd operation_desa::tkeo(const Eigen::VectorXd &sample) {
 	return psi;
 }
 
-int8_t operation_desa::operate(const Eigen::VectorXd &sample, Eigen::VectorXd &iamp, Eigen::VectorXd &irate) {
-	return operation(sample, iamp, irate);
-}
-
-int8_t operation_desa::operate(const Eigen::VectorXd &sample, Eigen::VectorXd &iamp) {
-	Eigen::VectorXd irate;
-	return operation(sample, iamp, irate);
-}
-
-int8_t operation_desa1::operation(const Eigen::VectorXd &sample, Eigen::VectorXd &iamp, Eigen::VectorXd &irate) {
+int operation_desa1::operation(const Eigen::VectorXd &sample, Eigen::VectorXd &iamp, Eigen::VectorXd &irate) {
 	Eigen::VectorXd prev = Eigen::VectorXd::Zero(sample.size());
 	for (Eigen::Index i = 1; i < sample.size(); ++i) {
 		prev[i] = sample[i - 1];
@@ -37,7 +37,7 @@ int8_t operation_desa1::operation(const Eigen::VectorXd &sample, Eigen::VectorXd
 	return 0;
 }
 
-int8_t operation_desa2::operation(const Eigen::VectorXd &sample, Eigen::VectorXd &iamp, Eigen::VectorXd &irate) {
+int operation_desa2::operation(const Eigen::VectorXd &sample, Eigen::VectorXd &iamp, Eigen::VectorXd &irate) {
 	Eigen::VectorXd prev = Eigen::VectorXd::Zero(sample.size());
 	Eigen::VectorXd next = Eigen::VectorXd::Zero(sample.size());
 	for (Eigen::Index i = 1; i < sample.size(); ++i) {
