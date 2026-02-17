@@ -2,6 +2,10 @@
 #include "core/property.h"
 #include "core/predefined.h"
 
+#include <regex>
+#include <thread>
+#include <muParser.h>
+
 Eigen::VectorXd optimization_abstract::calibrate(
     const Eigen::VectorXd &domain,
     const Eigen::VectorXd &range,
