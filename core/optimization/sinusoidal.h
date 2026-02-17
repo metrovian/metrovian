@@ -10,10 +10,10 @@ enum class function : uint8_t {
 };
 };
 
-class optimization_sinusoidal : public optimization_abstract {
-public: /* function */
+class optimization_sinusoidal final : public optimization_abstract {
+public:
 	std::string import_function(sinusoidal::function model);
 
-protected: /* abstract */
-	virtual std::string objective_function() override final;
+protected:
+	std::string objective_function() override;
 };

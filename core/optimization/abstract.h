@@ -14,40 +14,51 @@
 #include <Eigen/Dense>
 
 class optimization_abstract {
-protected: /* function */
-	std::string function_;
+public:
+	virtual ~optimization_abstract() = default;
+	Eigen::VectorXd calibrate(
+	    const Eigen::VectorXd &domain,
+	    const Eigen::VectorXd &range,
+	    const size_t iteration,
+	    const double epsilon);
 
-public: /* function */
+	Eigen::VectorXd estimate(const Eigen::VectorXd &domain);
+	Eigen::VectorXd export_parameters();
+	Eigen::VectorXd import_parameters(const Eigen::VectorXd &params);
 	std::string export_function();
 	std::string import_function(const std::string &function);
 
-protected: /* paramter */
-	Eigen::VectorXd params_;
+protected:
+	virtual std::string objective_function() = 0;
 
-public: /* parameter */
-	Eigen::VectorXd export_parameters();
-	Eigen::VectorXd import_parameters(const Eigen::VectorXd &params);
-
-protected: /* residual */
+private:
 	double residual(const double domain, const double range);
 	double residual(const double domain, const double range, const Eigen::VectorXd &params);
 	Eigen::VectorXd residual(const Eigen::VectorXd &domain, const Eigen::VectorXd &range);
-	Eigen::VectorXd residual(const Eigen::VectorXd &domain, const Eigen::VectorXd &range, const Eigen::VectorXd &params);
-	Eigen::VectorXd derivative(const Eigen::VectorXd &domain, const Eigen::VectorXd &range, const size_t feature);
-	Eigen::MatrixXd jacobian(const Eigen::VectorXd &domain, const Eigen::VectorXd &range);
+	Eigen::VectorXd residual(
+	    const Eigen::VectorXd &domain,
+	    const Eigen::VectorXd &range,
+	    const Eigen::VectorXd &params);
 
-public: /* calibration */
-	Eigen::VectorXd calibrate(const Eigen::VectorXd &domain, const Eigen::VectorXd &range, const size_t iteration, const double epsilon);
-	Eigen::VectorXd estimate(const Eigen::VectorXd &domain);
+	Eigen::VectorXd derivative(
+	    const Eigen::VectorXd &domain,
+	    const Eigen::VectorXd &range,
+	    const size_t feature);
 
-public: /* abstract */
-	virtual ~optimization_abstract() {}
+	Eigen::MatrixXd jacobian(
+	    const Eigen::VectorXd &domain,
+	    const Eigen::VectorXd &range);
 
-protected: /* abstract */
-	virtual double step_derivative();
-	virtual double step_damp();
-	virtual double step_increase();
-	virtual double step_decrease();
-	virtual Eigen::VectorXd step_iteration(const Eigen::VectorXd &domain, const Eigen::VectorXd &range, const double damp);
-	virtual std::string objective_function() = 0;
+	double step_derivative();
+	double step_damp();
+	double step_increase();
+	double step_decrease();
+	Eigen::VectorXd step_iteration(
+	    const Eigen::VectorXd &domain,
+	    const Eigen::VectorXd &range,
+	    const double damp);
+
+private:
+	Eigen::VectorXd params_;
+	std::string function_;
 };
