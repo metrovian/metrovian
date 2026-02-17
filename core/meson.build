@@ -8,8 +8,6 @@ src_core = files(
   'optimization/abstract.cpp',
   'optimization/polynomial.cpp',
   'optimization/rational.cpp',
-  'optimization/sinusoidal.cpp',
-  'optimization/transcendental.cpp',
   'optimization/user.cpp',
   'sound/abstract.cpp',
   'sound/factory.cpp',

@@ -5,8 +5,6 @@ src_command = files(
   'operation/desa.cpp',
   'optimization/polynomial.cpp',
   'optimization/rational.cpp',
-  'optimization/sinusoidal.cpp',
-  'optimization/transcendental.cpp',
   'optimization/user.cpp',
   'abstract.cpp',
   'main.cpp')
