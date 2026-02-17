@@ -1,14 +1,6 @@
 #pragma once
 #include "command/abstract.h"
 
-namespace sinusoidal {
-enum class function : uint8_t;
-};
-
-namespace transcendental {
-enum class function : uint8_t;
-};
-
 class command_user : public command_abstract {
 public:
 	void setup(CLI::App *parent) override;
@@ -44,16 +36,10 @@ class command_sinusoidal final : public command_user {
 public:
 	void setup(CLI::App *parent) override;
 	void run() override;
-
-private:
-	std::unordered_map<std::string, sinusoidal::function> map_;
 };
 
 class command_transcendental final : public command_user {
 public:
 	void setup(CLI::App *parent) override;
 	void run() override;
-
-private:
-	std::unordered_map<std::string, transcendental::function> map_;
 };
