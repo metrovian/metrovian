@@ -1,6 +1,11 @@
 #include "core/property.h"
 #include "core/predefined.h"
 
+property_singleton &property_singleton::instance() {
+	static property_singleton instance_;
+	return instance_;
+}
+
 std::string property_singleton::parse(std::vector<std::string> property) {
 	nlohmann::ordered_json json = parser_;
 	for (const auto &key : property) {
@@ -26,9 +31,31 @@ std::string property_singleton::parse(std::vector<std::string> property) {
 	return json.dump();
 }
 
-property_singleton &property_singleton::instance() {
-	static property_singleton instance_;
-	return instance_;
+property_singleton::property_singleton() {
+	std::string dir = std::string(std::getenv("CONFIGURATION_DIRECTORY"));
+	if (access(dir.c_str(), F_OK) != 0) {
+		if (mkdir(dir.c_str(), 0755) != 0) {
+			LOG_CONDITION(mkdir != 0);
+			return;
+		}
+	}
+
+	load_default();
+	std::string path = std::string(std::getenv("CONFIGURATION_DIRECTORY")) + CONFIG_PROPERTY;
+	std::ifstream ifs(path);
+	if (ifs.is_open() == true) {
+		ifs >> parser_;
+		ifs.close();
+	} else {
+		parser_ = default_;
+	}
+
+	merge_default(parser_, default_);
+	std::ofstream ofs(path);
+	if (ofs.is_open() == true) {
+		ofs << parser_.dump(8);
+		ofs.close();
+	}
 }
 
 void property_singleton::load_default() {
@@ -60,32 +87,5 @@ void property_singleton::merge_default(nlohmann::ordered_json &target, const nlo
 				merge_default(target[key], value);
 			}
 		}
-	}
-}
-
-property_singleton::property_singleton() {
-	std::string dir = std::string(std::getenv("CONFIGURATION_DIRECTORY"));
-	if (access(dir.c_str(), F_OK) != 0) {
-		if (mkdir(dir.c_str(), 0755) != 0) {
-			LOG_CONDITION(mkdir != 0);
-			return;
-		}
-	}
-
-	load_default();
-	std::string path = std::string(std::getenv("CONFIGURATION_DIRECTORY")) + CONFIG_PROPERTY;
-	std::ifstream ifs(path);
-	if (ifs.is_open() == true) {
-		ifs >> parser_;
-		ifs.close();
-	} else {
-		parser_ = default_;
-	}
-
-	merge_default(parser_, default_);
-	std::ofstream ofs(path);
-	if (ofs.is_open() == true) {
-		ofs << parser_.dump(8);
-		ofs.close();
 	}
 }
