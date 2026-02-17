@@ -1,12 +1,4 @@
 #pragma once
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <cmath>
-#include <csignal>
-#include <functional>
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 #include <CLI/CLI.hpp>
 #include <Eigen/Dense>
 

@@ -4,6 +4,8 @@
 #include "command/optimization/abstract.h"
 #include "core/predefined.h"
 
+#include <spdlog/sinks/stdout_color_sinks.h>
+
 interface_singleton &interface_singleton::instance() {
 	static interface_singleton instance_;
 	return instance_;
