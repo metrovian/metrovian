@@ -27,7 +27,3 @@ std::string optimization_rational::import_function(std::vector<uint8_t> model) {
 
 	return optimization_abstract::import_function(oss.str());
 }
-
-std::string optimization_rational::objective_function() {
-	return export_function();
-}

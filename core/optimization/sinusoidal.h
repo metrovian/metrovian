@@ -1,5 +1,5 @@
 #pragma once
-#include "core/optimization/abstract.h"
+#include "core/optimization/user.h"
 
 namespace sinusoidal {
 enum class function : uint8_t {
@@ -10,10 +10,7 @@ enum class function : uint8_t {
 };
 };
 
-class optimization_sinusoidal final : public optimization_abstract {
+class optimization_sinusoidal final : public optimization_user {
 public:
 	std::string import_function(sinusoidal::function model);
-
-protected:
-	std::string objective_function() override;
 };

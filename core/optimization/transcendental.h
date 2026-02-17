@@ -1,5 +1,5 @@
 #pragma once
-#include "core/optimization/abstract.h"
+#include "core/optimization/user.h"
 
 namespace transcendental {
 enum class function : uint8_t {
@@ -11,10 +11,7 @@ enum class function : uint8_t {
 };
 };
 
-class optimization_transcendental final : public optimization_abstract {
+class optimization_transcendental final : public optimization_user {
 public:
 	std::string import_function(transcendental::function model);
-
-protected:
-	std::string objective_function() override;
 };

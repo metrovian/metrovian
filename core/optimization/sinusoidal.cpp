@@ -14,7 +14,3 @@ std::string optimization_sinusoidal::import_function(sinusoidal::function model)
 	// clang-format on
 	return optimization_abstract::import_function(function);
 }
-
-std::string optimization_sinusoidal::objective_function() {
-	return export_function();
-}
