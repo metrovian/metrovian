@@ -31,15 +31,3 @@ public:
 private:
 	std::vector<uint8_t> model_;
 };
-
-class command_sinusoidal final : public command_user {
-public:
-	void setup(CLI::App *parent) override;
-	void run() override;
-};
-
-class command_transcendental final : public command_user {
-public:
-	void setup(CLI::App *parent) override;
-	void run() override;
-};

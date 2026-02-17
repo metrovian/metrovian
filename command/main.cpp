@@ -37,8 +37,6 @@ int main(int argc, char **argv) {
 	interface_singleton::instance().command_setup(std::make_unique<command_desa>());
 	interface_singleton::instance().command_setup(std::make_unique<command_polynomial>());
 	interface_singleton::instance().command_setup(std::make_unique<command_rational>());
-	interface_singleton::instance().command_setup(std::make_unique<command_sinusoidal>());
-	interface_singleton::instance().command_setup(std::make_unique<command_transcendental>());
 	interface_singleton::instance().command_setup(std::make_unique<command_user>());
 	interface_singleton::instance().command_parse(argc, argv);
 	return 0;
