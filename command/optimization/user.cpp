@@ -1,10 +1,10 @@
-#include "command/optimization/user.h"
+#include "command/optimization/abstract.h"
 #include "core/optimization/user.h"
 #include "core/predefined.h"
 
 void command_user::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("user", "USER optimization")->group("OPTIMIZATION");
-	command->add_option("-f, --func", function_, "user-defined function")->required();
+	command->add_option("-f, --func", func_, "user-defined function")->required();
 	command->add_option("-i, --in", in_, "measured csv");
 	command->add_option("-n, --iter", iter_, "iteration max")->default_val<size_t>(1000);
 	command->add_option("-e, --eps", eps_, "iteration epsilon")->default_val<double>(1.000E-15);
@@ -15,7 +15,7 @@ void command_user::setup(CLI::App *parent) {
 
 void command_user::run() {
 	optimization_user engine;
-	if (engine.import_function(function_).length() > 0) {
+	if (engine.import_function(func_).length() > 0) {
 		Eigen::VectorXd domain;
 		Eigen::VectorXd range;
 		Eigen::VectorXd params = engine.export_parameters();

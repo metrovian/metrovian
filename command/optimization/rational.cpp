@@ -1,4 +1,4 @@
-#include "command/optimization/rational.h"
+#include "command/optimization/abstract.h"
 #include "core/optimization/rational.h"
 #include "core/predefined.h"
 
