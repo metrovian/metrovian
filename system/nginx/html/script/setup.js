@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const select = await asyncAPI({ action: "read", waveform: 0 });
       const id = String(select);
       waveSelect1.value = id;
-    } else if (event.detail == 4) {
+    } else if (event.detail == 19) {
       const select = await asyncAPI({ action: "read", mid: 0 });
       const id = String(select);
       waveSelect2.value = id;
