@@ -15,5 +15,5 @@ protected:
 class operation_ifft final : public operation_fft {
 protected:
 	Eigen::VectorXcd ifft(const Eigen::VectorXcd &spectrum);
-	virtual int operation(const Eigen::VectorXcd &spectrum, Eigen::VectorXcd &sample) override;
+	int operation(const Eigen::VectorXcd &spectrum, Eigen::VectorXcd &sample) override;
 };

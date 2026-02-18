@@ -1,24 +1,5 @@
 #include "core/operation/fft.h"
 
-Eigen::VectorXcd operation_fft::fft(const Eigen::VectorXcd &sample) {
-	if (sample.size() == 1) {
-		return sample;
-	}
-
-	Eigen::VectorXcd result = Eigen::VectorXcd::Zero(sample.size());
-	Eigen::VectorXcd even = sample(Eigen::seq(0, sample.size() - 1, 2));
-	Eigen::VectorXcd odd = sample(Eigen::seq(1, sample.size() - 1, 2));
-	Eigen::VectorXcd feven = fft(even);
-	Eigen::VectorXcd fodd = fft(odd);
-	for (Eigen::Index i = 0; i < sample.size() / 2; ++i) {
-		Eigen::dcomplex twiddle = std::polar(1.000E+0, -2.000E+0 * (M_PI * i) / sample.size());
-		result[i] = feven[i] + fodd[i] * twiddle;
-		result[i + sample.size() / 2] = feven[i] - fodd[i] * twiddle;
-	}
-
-	return result;
-}
-
 int operation_fft::operate(const Eigen::VectorXcd &sample, Eigen::VectorXcd &spectrum) {
 	return operation(sample, spectrum);
 }
@@ -36,6 +17,25 @@ int operation_fft::operate(const Eigen::VectorXd &sample, Eigen::VectorXd &spect
 	int retcode = operation(sample_complex, spectrum_complex);
 	spectrum = spectrum_complex.array().abs();
 	return retcode;
+}
+
+Eigen::VectorXcd operation_fft::fft(const Eigen::VectorXcd &sample) {
+	if (sample.size() == 1) {
+		return sample;
+	}
+
+	Eigen::VectorXcd result = Eigen::VectorXcd::Zero(sample.size());
+	Eigen::VectorXcd even = sample(Eigen::seq(0, sample.size() - 1, 2));
+	Eigen::VectorXcd odd = sample(Eigen::seq(1, sample.size() - 1, 2));
+	Eigen::VectorXcd feven = fft(even);
+	Eigen::VectorXcd fodd = fft(odd);
+	for (Eigen::Index i = 0; i < sample.size() / 2; ++i) {
+		Eigen::dcomplex twiddle = std::polar(1.000E+0, -2.000E+0 * (M_PI * i) / sample.size());
+		result[i] = feven[i] + fodd[i] * twiddle;
+		result[i + sample.size() / 2] = feven[i] - fodd[i] * twiddle;
+	}
+
+	return result;
 }
 
 int operation_fft::operation(const Eigen::VectorXcd &sample, Eigen::VectorXcd &spectrum) {

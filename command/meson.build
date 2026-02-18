@@ -3,6 +3,7 @@ src_command = files(
   'decompression/audio.cpp',
   'operation/corr.cpp',
   'operation/desa.cpp',
+  'operation/fft.cpp',
   'optimization/polynomial.cpp',
   'optimization/rational.cpp',
   'optimization/user.cpp',

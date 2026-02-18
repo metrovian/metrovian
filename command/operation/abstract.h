@@ -20,3 +20,13 @@ private:
 	std::string in_;
 	std::string out_;
 };
+
+class command_fft final : public command_abstract {
+public:
+	void setup(CLI::App *parent) override;
+	void run() override;
+
+private:
+	std::string in_;
+	std::string out_;
+};
