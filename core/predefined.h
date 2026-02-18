@@ -22,3 +22,6 @@
 #define CONFIG_PROPERTY                 "/property.json"
 #define CONFIG_PRESET                   "/preset.json"
 // clang-format on
+
+extern std::string CONFIG_PATH();
+extern std::string CONFIG_PATH(std::string name);

@@ -8,7 +8,7 @@ context_singleton &context_singleton::instance() {
 }
 
 context_singleton::context_singleton() {
-	std::string path = std::string(std::getenv("CONFIGURATION_DIRECTORY")) + CONFIG_PRESET;
+	std::string path = CONFIG_PATH(CONFIG_PRESET);
 	std::ifstream ifs(path);
 	if (ifs.is_open() == true) {
 		ifs >> presets_;
@@ -72,7 +72,7 @@ uint64_t context_api::read_notes() {
 
 void context_api::write_presets(const nlohmann::ordered_json &presets) {
 	context_singleton::instance().presets_ = presets;
-	std::string path = std::string(std::getenv("CONFIGURATION_DIRECTORY")) + CONFIG_PRESET;
+	std::string path = CONFIG_PATH(CONFIG_PRESET);
 	std::ofstream ofs(path);
 	if (ofs.is_open() == true) {
 		ofs << presets.dump(8);
