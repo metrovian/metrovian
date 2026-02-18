@@ -32,7 +32,7 @@ std::string property_singleton::parse(std::vector<std::string> property) {
 }
 
 property_singleton::property_singleton() {
-	std::string dir = std::string(std::getenv("CONFIGURATION_DIRECTORY"));
+	std::string dir = CONFIG_PATH();
 	if (access(dir.c_str(), F_OK) != 0) {
 		if (mkdir(dir.c_str(), 0755) != 0) {
 			LOG_CONDITION(mkdir != 0);
@@ -41,7 +41,7 @@ property_singleton::property_singleton() {
 	}
 
 	load_default();
-	std::string path = std::string(std::getenv("CONFIGURATION_DIRECTORY")) + CONFIG_PROPERTY;
+	std::string path = CONFIG_PATH(CONFIG_PROPERTY);
 	std::ifstream ifs(path);
 	if (ifs.is_open() == true) {
 		ifs >> parser_;
