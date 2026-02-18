@@ -22,7 +22,7 @@ Eigen::VectorXd optimization_abstract::calibrate(
 		Eigen::VectorXd step = step_iteration(domain, range, damp);
 		Eigen::VectorXd prev = residual(domain, range);
 		Eigen::VectorXd now = residual(domain, range, params_ - step);
-		predicted = prev.norm() - (prev - step).norm();
+		predicted = step.norm();
 		measured = prev.norm() - now.norm();
 		if (measured > 0.000E+0) {
 			if (measured > predicted * 0.750E+0) {
