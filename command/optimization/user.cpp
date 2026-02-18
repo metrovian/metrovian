@@ -3,7 +3,7 @@
 #include "core/predefined.h"
 
 void command_user::setup(CLI::App *parent) {
-	auto command = parent->add_subcommand("user", "user optimization")->group("OPTIMIZATION");
+	auto command = parent->add_subcommand("user")->group("OPTIMIZATION");
 	command->add_option("-f, --func", func_, "user-defined function")->required();
 	command->add_option("-i, --in", in_, "measured csv");
 	command->add_option("-n, --iter", iter_, "iteration max")->default_val<size_t>(1000);

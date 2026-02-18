@@ -2,7 +2,7 @@
 #include "core/operation/desa.h"
 
 void command_desa::setup(CLI::App *parent) {
-	auto command = parent->add_subcommand("desa", "desa operation")->group("OPERATION");
+	auto command = parent->add_subcommand("desa")->group("OPERATION");
 	command->add_option("-i, --in", in_, "measured csv");
 	command->add_option("-o, --out", out_, "return csv")->required();
 	command->callback([this]() { run(); });
