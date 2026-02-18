@@ -3,7 +3,7 @@
 #include "core/predefined.h"
 
 void command_rational::setup(CLI::App *parent) {
-	auto command = parent->add_subcommand("rational", "rational optimization")->group("OPTIMIZATION");
+	auto command = parent->add_subcommand("rational")->group("OPTIMIZATION");
 	command->add_option("-f, --func", model_, "rational-approximated function")->required()->expected(2);
 	command->add_option("-i, --in", in_, "measured csv");
 	command->add_option("-n, --iter", iter_, "iteration max")->default_val<size_t>(1000);

@@ -2,7 +2,7 @@
 #include "core/operation/fft.h"
 
 void command_fft::setup(CLI::App *parent) {
-	auto command = parent->add_subcommand("fourier", "fourier operation")->group("OPERATION");
+	auto command = parent->add_subcommand("fourier")->group("OPERATION");
 	command->add_option("-i, --in", in_, "measured csv");
 	command->add_option("-o, --out", out_, "return csv")->required();
 	command->callback([this]() { run(); });
