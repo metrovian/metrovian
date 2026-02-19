@@ -9,9 +9,9 @@ public:
 	virtual ~synthesis_abstract() = default;
 	synthesis_abstract();
 	synthesis_abstract(const nlohmann::ordered_json &preset);
-	int synthesize();
-	int perform();
-	int panic();
+	void synthesize();
+	void perform();
+	void panic();
 	void callback_disconnect(std::function<void(void)> function);
 	void callback_change(std::function<void(unsigned, int)> function);
 	void callback_synthesis(std::function<void(uint64_t)> function);
