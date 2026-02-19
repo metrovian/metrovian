@@ -35,9 +35,8 @@ int interface_singleton::command_setup(std::unique_ptr<command_abstract> command
 
 int main(int argc, char **argv) {
 	interface_singleton::instance().command_setup(std::make_unique<command_audio>());
-	interface_singleton::instance().command_setup(std::make_unique<command_corr>());
-	interface_singleton::instance().command_setup(std::make_unique<command_desa>());
-	interface_singleton::instance().command_setup(std::make_unique<command_fft>());
+	interface_singleton::instance().command_setup(std::make_unique<command_correlation>());
+	interface_singleton::instance().command_setup(std::make_unique<command_fourier>());
 	interface_singleton::instance().command_setup(std::make_unique<command_polynomial>());
 	interface_singleton::instance().command_setup(std::make_unique<command_rational>());
 	interface_singleton::instance().command_setup(std::make_unique<command_user>());

@@ -1,7 +1,7 @@
 #include "command/operation/abstract.h"
-#include "core/operation/fft.h"
+#include "core/operation/fourier.h"
 
-void command_fft::setup(CLI::App *parent) {
+void command_fourier::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("fourier")->group("OPERATION");
 	command->add_option("-i, --in", in_, "measured csv");
 	command->add_option("-o, --out", out_, "return csv")->required();
@@ -9,7 +9,7 @@ void command_fft::setup(CLI::App *parent) {
 	return;
 }
 
-void command_fft::run() {
+void command_fourier::run() {
 	operation_fft engine;
 	Eigen::VectorXd sample;
 	Eigen::VectorXd spectrum;

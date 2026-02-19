@@ -1,9 +1,8 @@
 # metrovian command
 src_command = files(
   'decompression/audio.cpp',
-  'operation/corr.cpp',
-  'operation/desa.cpp',
-  'operation/fft.cpp',
+  'operation/correlation.cpp',
+  'operation/fourier.cpp',
   'optimization/polynomial.cpp',
   'optimization/rational.cpp',
   'optimization/user.cpp',
