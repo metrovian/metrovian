@@ -1,7 +1,7 @@
 #pragma once
 #include "command/abstract.h"
 
-class command_corr final : public command_abstract {
+class command_correlation final : public command_abstract {
 public:
 	void setup(CLI::App *parent) override;
 	void run() override;
@@ -11,17 +11,7 @@ private:
 	std::string out_;
 };
 
-class command_desa final : public command_abstract {
-public:
-	void setup(CLI::App *parent) override;
-	void run() override;
-
-private:
-	std::string in_;
-	std::string out_;
-};
-
-class command_fft final : public command_abstract {
+class command_fourier final : public command_abstract {
 public:
 	void setup(CLI::App *parent) override;
 	void run() override;

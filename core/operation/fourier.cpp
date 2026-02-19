@@ -1,4 +1,4 @@
-#include "core/operation/fft.h"
+#include "core/operation/fourier.h"
 
 int operation_fft::operate(const Eigen::VectorXcd &sample, Eigen::VectorXcd &spectrum) {
 	return operation(sample, spectrum);

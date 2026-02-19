@@ -1,7 +1,7 @@
 #pragma once
 #include <Eigen/Dense>
 
-class operation_xcorr {
+class operation_correlation {
 public:
 	Eigen::VectorXd operate(const Eigen::VectorXd &sample);
 	Eigen::VectorXd operate(const Eigen::VectorXd &sample1, const Eigen::VectorXd &sample2);

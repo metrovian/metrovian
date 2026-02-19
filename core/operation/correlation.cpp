@@ -1,15 +1,15 @@
-#include "core/operation/corr.h"
-#include "core/operation/fft.h"
+#include "core/operation/correlation.h"
+#include "core/operation/fourier.h"
 
-Eigen::VectorXd operation_xcorr::operate(const Eigen::VectorXd &sample) {
+Eigen::VectorXd operation_correlation::operate(const Eigen::VectorXd &sample) {
 	return operation(sample, sample);
 }
 
-Eigen::VectorXd operation_xcorr::operate(const Eigen::VectorXd &sample1, const Eigen::VectorXd &sample2) {
+Eigen::VectorXd operation_correlation::operate(const Eigen::VectorXd &sample1, const Eigen::VectorXd &sample2) {
 	return operation(sample1, sample2);
 }
 
-Eigen::VectorXd operation_xcorr::operation(const Eigen::VectorXd &sample1, const Eigen::VectorXd &sample2) {
+Eigen::VectorXd operation_correlation::operation(const Eigen::VectorXd &sample1, const Eigen::VectorXd &sample2) {
 	operation_fft fft;
 	operation_ifft ifft;
 	Eigen::VectorXcd spectrum1;

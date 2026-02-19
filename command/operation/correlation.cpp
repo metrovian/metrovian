@@ -1,7 +1,7 @@
 #include "command/operation/abstract.h"
-#include "core/operation/corr.h"
+#include "core/operation/correlation.h"
 
-void command_corr::setup(CLI::App *parent) {
+void command_correlation::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("correlation")->group("OPERATION");
 	command->add_option("-i, --in", in_, "measured csv");
 	command->add_option("-o, --out", out_, "return csv")->required();
@@ -9,8 +9,8 @@ void command_corr::setup(CLI::App *parent) {
 	return;
 }
 
-void command_corr::run() {
-	operation_xcorr engine;
+void command_correlation::run() {
+	operation_correlation engine;
 	if (in_.size() == 2) {
 		Eigen::VectorXd sample1;
 		Eigen::VectorXd sample2;

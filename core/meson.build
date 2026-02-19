@@ -1,8 +1,7 @@
 # metrovian core
 src_core = files(
-  'operation/corr.cpp',
-  'operation/desa.cpp',
-  'operation/fft.cpp',
+  'operation/correlation.cpp',
+  'operation/fourier.cpp',
   'decompression/abstract.cpp',
   'decompression/audio.cpp',
   'optimization/abstract.cpp',
