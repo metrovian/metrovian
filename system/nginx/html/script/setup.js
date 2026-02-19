@@ -32,11 +32,15 @@ document.addEventListener("DOMContentLoaded", () => {
     waveSelect2.classList.toggle("disabled", ui.waveSelect2);
     waveConfirm.classList.toggle("disabled", ui.waveConfirm);
 
-    if (event.detail == 2 || event.detail == 3) {
+    const stateSynth = event.detail & 0x0f;
+    if (stateSynth == 0x02 || stateSynth == 0x03) {
       const select = await asyncAPI({ action: "read", waveform: 0 });
       const id = String(select);
       waveSelect1.value = id;
-    } else if (event.detail == 19) {
+    }
+
+    const stateAuto = event.detail & 0xf0;
+    if (stateAuto == 0x10) {
       const select = await asyncAPI({ action: "read", mid: 0 });
       const id = String(select);
       waveSelect2.value = id;
