@@ -25,25 +25,25 @@ synthesis_abstract::synthesis_abstract() {
 synthesis_abstract::synthesis_abstract(const nlohmann::ordered_json &preset)
     : synthesis_abstract() {
 	set_envelope(preset);
+	return;
 }
 
-int synthesis_abstract::synthesize() {
+void synthesis_abstract::synthesize() {
 	synthesis(
 	    CONFIG_UINT64("synthesis", "note-min"),
 	    CONFIG_UINT64("synthesis", "note-max"),
 	    CONFIG_UINT64("synthesis", "period"));
-
-	return 0;
+	return;
 }
 
-int synthesis_abstract::perform() {
+void synthesis_abstract::perform() {
 	run(sound::pipeline::sync);
-	return 0;
+	return;
 }
 
-int synthesis_abstract::panic() {
+void synthesis_abstract::panic() {
 	terminate();
-	return 0;
+	return;
 }
 
 void synthesis_abstract::callback_disconnect(std::function<void(void)> function) {
