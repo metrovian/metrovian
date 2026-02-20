@@ -7,7 +7,7 @@ public:
 	void run() override;
 
 private:
-	std::vector<std::string> in_;
+	std::string in_;
 	std::string out_;
 };
 
