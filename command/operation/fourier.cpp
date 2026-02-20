@@ -3,7 +3,7 @@
 
 void command_fourier::setup(CLI::App *parent) {
 	auto command = parent->add_subcommand("fourier")->group("OPERATION");
-	command->add_option("-i, --in", in_, "measured csv");
+	command->add_option("-i, --in", in_, "measured wav");
 	command->add_option("-o, --out", out_, "return csv")->required();
 	command->callback([this]() { run(); });
 	return;

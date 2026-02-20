@@ -27,7 +27,6 @@ int command_abstract::read_binary(const std::string &path, std::vector<uint8_t> 
 		return -1;
 	}
 
-	binary.clear();
 	binary.resize(static_cast<size_t>(std::filesystem::file_size(path)));
 	ifs.read(reinterpret_cast<char *>(binary.data()), binary.size());
 	if (ifs.fail() == true) {
@@ -51,51 +50,61 @@ int command_abstract::write_binary(const std::string &path, std::vector<uint8_t>
 	return 0;
 }
 
-int command_abstract::read_text(const std::string &path, std::string &text) {
-	std::ifstream ifs(path);
-	if (ifs.is_open() == false) {
-		return -1;
-	}
-
-	std::ostringstream oss;
-	oss << ifs.rdbuf();
-	if (ifs.fail() == true) {
-		return -2;
-	}
-
-	text = oss.str();
-	return 0;
-}
-
-int command_abstract::write_text(const std::string &path, std::string &text) {
-	std::ofstream ofs(path);
-	if (ofs.is_open() == false) {
-		return -1;
-	}
-
-	ofs << text;
-	if (ofs.fail() == true) {
-		return -2;
-	}
-
-	return 0;
-}
-
 int command_abstract::read_vector(const std::string &path, Eigen::VectorXd &range) {
-	std::ifstream ifs(path);
-	if (!ifs.is_open()) {
+	std::vector<uint8_t> binary;
+	if (read_binary(path, binary) != 0) {
 		return -1;
+	} else if (binary.size() < 44) {
+		return -2;
 	}
 
-	std::vector<double> read_range;
-	std::string line;
-	while (std::getline(ifs, line)) {
-		if (line.empty() == false) {
-			read_range.push_back(std::stod(line));
+	auto ptr = binary.data();
+	if (std::memcmp(ptr, "RIFF", 4) != 0) {
+		return -3;
+	} else if (std::memcmp(ptr + 8, "WAVE", 4) != 0) {
+		return -4;
+	}
+
+	const uint8_t *dptr = nullptr;
+	const uint8_t *cptr = nullptr;
+	uint32_t csize = 0;
+	uint16_t format = 0;
+	uint16_t channel = 0;
+	uint32_t sample_rate = 0;
+	uint16_t bps = 0;
+	uint64_t unit = 0;
+	uint64_t ofs = 12;
+	while (ofs + 8 <= binary.size()) {
+		cptr = ptr + ofs;
+		csize = *reinterpret_cast<const uint32_t *>(cptr + 4);
+		if (std::memcmp(cptr, "fmt ", 4) == 0) {
+			format = *reinterpret_cast<const uint16_t *>(cptr + 8);
+			channel = *reinterpret_cast<const uint16_t *>(cptr + 10);
+			sample_rate = *reinterpret_cast<const uint32_t *>(cptr + 12);
+			bps = *reinterpret_cast<const uint16_t *>(cptr + 22);
+			if (format != 1) {
+				return -5;
+			} else if (bps != 16) {
+				return -6;
+			}
+		} else if (std::memcmp(cptr, "data", 4) == 0) {
+			dptr = cptr + 8;
+			unit = channel * bps * 8;
+			break;
 		}
+
+		ofs += static_cast<uint64_t>(csize + 8);
 	}
 
-	range = Eigen::Map<Eigen::VectorXd>(read_range.data(), read_range.size());
+	if (dptr == nullptr) {
+		return -7;
+	}
+
+	range.resize(csize / unit);
+	for (Eigen::Index i = 0; i < range.size(); ++i) {
+		range[i] = *reinterpret_cast<const int16_t *>(dptr + i * unit);
+	}
+
 	return 0;
 }
 
