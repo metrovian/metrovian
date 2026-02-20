@@ -36,21 +36,7 @@ int command_abstract::read_binary(const std::string &path, std::vector<uint8_t> 
 	return 0;
 }
 
-int command_abstract::write_binary(const std::string &path, std::vector<uint8_t> &binary) {
-	std::ofstream ofs(path, std::ios::binary);
-	if (ofs.is_open() == false) {
-		return -1;
-	}
-
-	ofs.write(reinterpret_cast<const char *>(binary.data()), binary.size());
-	if (ofs.fail() == true) {
-		return -2;
-	}
-
-	return 0;
-}
-
-int command_abstract::read_vector(const std::string &path, Eigen::VectorXd &range) {
+int command_abstract::read_audio(const std::string &path, Eigen::VectorXd &range) {
 	std::vector<uint8_t> binary;
 	if (read_binary(path, binary) != 0) {
 		return -1;
@@ -65,14 +51,15 @@ int command_abstract::read_vector(const std::string &path, Eigen::VectorXd &rang
 		return -4;
 	}
 
-	const uint8_t *dptr = nullptr;
 	const uint8_t *cptr = nullptr;
+	const uint8_t *dptr = nullptr;
 	uint32_t csize = 0;
+	uint32_t dsize = 0;
+	uint64_t unit = 0;
 	uint16_t format = 0;
 	uint16_t channel = 0;
 	uint32_t sample_rate = 0;
 	uint16_t bps = 0;
-	uint64_t unit = 0;
 	uint64_t ofs = 12;
 	while (ofs + 8 <= binary.size()) {
 		cptr = ptr + ofs;
@@ -89,7 +76,8 @@ int command_abstract::read_vector(const std::string &path, Eigen::VectorXd &rang
 			}
 		} else if (std::memcmp(cptr, "data", 4) == 0) {
 			dptr = cptr + 8;
-			unit = channel * bps * 8;
+			dsize = csize;
+			unit = channel * (bps / 8);
 			break;
 		}
 
@@ -100,29 +88,13 @@ int command_abstract::read_vector(const std::string &path, Eigen::VectorXd &rang
 		return -7;
 	}
 
-	range.resize(csize / unit);
+	range.resize(dsize / unit);
 	for (Eigen::Index i = 0; i < range.size(); ++i) {
 		range[i] = *reinterpret_cast<const int16_t *>(dptr + i * unit);
 	}
 
-	return 0;
-}
-
-int command_abstract::write_vector(const std::string &path, Eigen::VectorXd &range) {
-	std::ofstream ofs(path);
-	if (ofs.is_open() == false) {
-		return -1;
-	}
-
-	for (Eigen::Index i = 0; i < range.size(); ++i) {
-		ofs << range[i] << std::endl;
-	}
-
-	if (ofs.fail() == true) {
-		return -2;
-	}
-
-	return 0;
+	range /= static_cast<double>(INT16_MAX + 1);
+	return static_cast<int>(sample_rate);
 }
 
 int command_abstract::read_vector(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter) {

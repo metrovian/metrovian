@@ -12,9 +12,7 @@ protected:
 	static void handle_setup(const std::function<void(void)> handler);
 	static void handle_terminate(int);
 	static int read_binary(const std::string &path, std::vector<uint8_t> &binary);
-	static int write_binary(const std::string &path, std::vector<uint8_t> &binary);
-	static int read_vector(const std::string &path, Eigen::VectorXd &range);
-	static int write_vector(const std::string &path, Eigen::VectorXd &range);
+	static int read_audio(const std::string &path, Eigen::VectorXd &range);
 	static int read_vector(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter);
 	static int write_vector(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter);
 

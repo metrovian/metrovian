@@ -11,20 +11,15 @@ void command_correlation::setup(CLI::App *parent) {
 
 void command_correlation::run() {
 	operation_correlation engine;
-	if (in_.size() == 2) {
-		Eigen::VectorXd sample1;
-		Eigen::VectorXd sample2;
-		if (read_vector(in_[0], sample1) == 0 &&
-		    read_vector(in_[1], sample2) == 0) {
-			Eigen::VectorXd xcorr = engine.operate(sample1, sample2);
-			write_vector(out_, xcorr);
-		}
-	} else if (in_.size() == 1) {
-		Eigen::VectorXd sample;
-		if (read_vector(in_[0], sample) == 0) {
-			Eigen::VectorXd acorr = engine.operate(sample);
-			write_vector(out_, acorr);
-		}
+	Eigen::VectorXd sample;
+	Eigen::VectorXd acorr;
+	Eigen::VectorXd time;
+	int sample_rate = read_audio(in_, sample);
+	if (sample_rate > 0) {
+		acorr = engine.operate(sample);
+		time = Eigen::VectorXd::LinSpaced(acorr.size(), 0.000E+0, (acorr.size() - 1));
+		time /= static_cast<double>(sample_rate);
+		write_vector(out_, time, acorr, ',');
 	}
 
 	return;
