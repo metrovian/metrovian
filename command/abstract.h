@@ -13,8 +13,6 @@ protected:
 	static void handle_terminate(int);
 	static int read_binary(const std::string &path, std::vector<uint8_t> &binary);
 	static int write_binary(const std::string &path, std::vector<uint8_t> &binary);
-	static int read_text(const std::string &path, std::string &text);
-	static int write_text(const std::string &path, std::string &text);
 	static int read_vector(const std::string &path, Eigen::VectorXd &range);
 	static int write_vector(const std::string &path, Eigen::VectorXd &range);
 	static int read_vector(const std::string &path, Eigen::VectorXd &domain, Eigen::VectorXd &range, char delimiter);
