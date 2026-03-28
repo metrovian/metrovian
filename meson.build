@@ -8,7 +8,7 @@ project(
     'cpp_std=c++20',
     'c_std=c99',
     'warning_level=2',
-    'buildtype=release'])
+    'buildtype=debugoptimized'])
 
 # include
 inc_core = include_directories('.')
