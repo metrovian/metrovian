@@ -8,6 +8,7 @@
 
 #include <csignal>
 #include <thread>
+#include <execinfo.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <nlohmann/json.hpp>
 
@@ -43,6 +44,14 @@ void machine_singleton::handle_setup(const std::function<void(void)> handler) {
 	if (handler_ != nullptr) {
 		std::signal(SIGTERM, machine_singleton::handle_terminate);
 		std::signal(SIGINT, machine_singleton::handle_terminate);
+		std::signal(SIGSEGV, [](int) {
+			constexpr int max_frames = 64;
+			void *array[max_frames] = {0};
+			size_t size = backtrace(array, max_frames);
+			spdlog::critical("[segfault] callstack backtrace");
+			backtrace_symbols_fd(array, size, 2);
+			exit(1);
+		});
 	}
 
 	return;
