@@ -43,7 +43,7 @@ int automata_singleton::play(std::string name) {
 				tick_delta = smf_event->time_pulses - tick_prev;
 				tick_prev = smf_event->time_pulses;
 				if (tick_delta > 0) {
-					usleep(static_cast<int64_t>(tick_delta * tick_tempo) / smf_->ppqn);
+					usleep((static_cast<int64_t>(tick_delta) * tick_tempo) / smf_->ppqn);
 				}
 
 				if (smf_event->midi_buffer[0] == 0xFF) {
