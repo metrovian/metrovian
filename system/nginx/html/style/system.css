@@ -57,15 +57,16 @@
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(2px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: 10000;
 }
 .overlay.hidden {
   display: none;
 }
 .overlayPanel {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   width: 150px;
   padding: 16px 20px;
   background: linear-gradient(180deg, #0f1419 0%, #0b0f14 100%);

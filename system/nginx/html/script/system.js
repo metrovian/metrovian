@@ -6,9 +6,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const volumeDownBtn = document.getElementById("volumeDownBtn");
   const volumeMuteBtn = document.getElementById("volumeMuteBtn");
   const volumeOverlay = document.getElementById("volumeOverlay");
+  const volumeOverlayPanel = volumeOverlay.querySelector(".overlayPanel");
+  const panel = document.getElementById("panel");
   const panicBtn = document.getElementById("panicBtn");
   const rebootBtn = document.getElementById("rebootBtn");
   const shutdownBtn = document.getElementById("shutdownBtn");
+
+  const updateVolumeOverlayPosition = () => {
+    const panelRect = panel.getBoundingClientRect();
+    const centerX = panelRect.left + panelRect.width / 2;
+    const centerY = panelRect.top + panelRect.height / 2;
+
+    volumeOverlayPanel.style.left = `${centerX}px`;
+    volumeOverlayPanel.style.top = `${centerY}px`;
+  };
 
   uploadBtn.addEventListener("click", async () => {
     const fileInput = document.createElement("input");
@@ -69,6 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   volumeBtn.addEventListener("click", () => {
+    updateVolumeOverlayPosition();
     volumeOverlay.classList.remove("hidden");
   });
 
@@ -161,5 +173,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   });
 
+  window.addEventListener("resize", updateVolumeOverlayPosition);
   return;
 });
