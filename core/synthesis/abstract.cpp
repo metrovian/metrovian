@@ -8,7 +8,7 @@
 synthesis_abstract::synthesis_abstract() {
 	create();
 	callback_disconnect([&]() { terminate(); });
-	callback_change([&](unsigned param, int value) {
+	callback_change([&](uint32_t param, int32_t value) {
 		switch (param) {
 		case 0x07:
 			set_scale(value);
@@ -29,10 +29,7 @@ synthesis_abstract::synthesis_abstract(const nlohmann::ordered_json &preset)
 }
 
 void synthesis_abstract::synthesize() {
-	synthesis(
-	    CONFIG_UINT64("synthesis", "note-min"),
-	    CONFIG_UINT64("synthesis", "note-max"),
-	    CONFIG_UINT64("synthesis", "period"));
+	synthesis(CONFIG_UINT64("synthesis", "note-max"));
 	return;
 }
 
@@ -51,13 +48,8 @@ void synthesis_abstract::callback_disconnect(std::function<void(void)> function)
 	return;
 }
 
-void synthesis_abstract::callback_change(std::function<void(unsigned, int)> function) {
+void synthesis_abstract::callback_change(std::function<void(uint32_t, int32_t)> function) {
 	dynamic_cast<sound_sequencer *>(producer_.get())->callback_change(function);
-	return;
-}
-
-void synthesis_abstract::callback_synthesis(std::function<void(uint64_t)> function) {
-	on_synthesis_ = function;
 	return;
 }
 
@@ -87,8 +79,8 @@ void synthesis_abstract::set_size(uint64_t note) {
 	return;
 }
 
-void synthesis_abstract::set_sample(uint64_t note, std::vector<int16_t> &pcm) {
-	dynamic_cast<sound_sequencer *>(producer_.get())->set_sample(note, pcm);
+void synthesis_abstract::set_synthesis(std::function<int16_t(uint64_t, uint64_t)> function) {
+	dynamic_cast<sound_sequencer *>(producer_.get())->callback_synthesis(function);
 	return;
 }
 

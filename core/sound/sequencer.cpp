@@ -20,11 +20,10 @@ void sound_sequencer::set_scale(uint16_t volume) {
 
 void sound_sequencer::set_size(uint64_t note) {
 	key_.resize(note);
-	return;
-}
+	for (uint64_t i = 0; i < key_.size(); ++i) {
+		key_[i].key_ = i;
+	}
 
-void sound_sequencer::set_sample(uint64_t note, std::vector<int16_t> &pcm) {
-	key_[note].sample_ = pcm;
 	return;
 }
 
@@ -33,8 +32,13 @@ void sound_sequencer::callback_disconnect(std::function<void(void)> function) {
 	return;
 }
 
-void sound_sequencer::callback_change(std::function<void(unsigned, int)> function) {
+void sound_sequencer::callback_change(std::function<void(uint32_t, int32_t)> function) {
 	on_change_ = function;
+	return;
+}
+
+void sound_sequencer::callback_synthesis(std::function<int16_t(uint64_t, uint64_t)> function) {
+	on_synthesis_ = function;
 	return;
 }
 
@@ -164,17 +168,15 @@ std::vector<int16_t> sound_sequencer::produce() {
 	std::lock_guard lock(mutex_);
 	std::vector<int16_t> pcm(len_, 0);
 	for (sound::note &note : key_) {
-		double env = calc_envelope(note) / 16129.0;
 		if (note.active_ != 0) {
+			double env = calc_envelope(note) / 16129.0;
 			env *= note.vel_ * volume_;
 			for (uint64_t i = 0; i < len_; ++i) {
-				if (note.pos_ > note.sample_.size() - 1) {
-					note.pos_ = 0;
-					note.active_ = 0;
-					break;
+				if (on_synthesis_ != nullptr) {
+					pcm[i] += on_synthesis_(note.key_, note.pos_) * env;
 				}
 
-				pcm[i] += note.sample_[note.pos_++] * env;
+				++note.pos_;
 			}
 		}
 	}

@@ -18,9 +18,9 @@ enum class state {
 };
 
 struct note {
-	std::vector<int16_t> sample_;
 	uint8_t active_ = 0;
 	uint8_t vel_ = 0;
+	uint64_t key_ = 0;
 	uint64_t pos_enter_ = 0;
 	uint64_t pos_ = 0;
 	double env_ = 0;
@@ -38,9 +38,9 @@ public:
 	void set_envelope(double sustain, double attack, double decay, double release);
 	void set_scale(uint16_t volume);
 	void set_size(uint64_t note);
-	void set_sample(uint64_t note, std::vector<int16_t> &pcm);
 	void callback_disconnect(std::function<void(void)> function);
-	void callback_change(std::function<void(unsigned, int)> function);
+	void callback_change(std::function<void(uint32_t, int32_t)> function);
+	void callback_synthesis(std::function<int16_t(uint64_t, uint64_t)> function);
 	int open() override;
 	int close() override;
 	std::vector<int16_t> produce() override;
@@ -51,7 +51,8 @@ private:
 private:
 	snd_seq_t *handle_ = nullptr;
 	std::function<void(void)> on_disconnect_ = nullptr;
-	std::function<void(unsigned, int)> on_change_ = nullptr;
+	std::function<void(uint32_t, int32_t)> on_change_ = nullptr;
+	std::function<int16_t(uint64_t, uint64_t)> on_synthesis_ = nullptr;
 	std::atomic<uint8_t> state_;
 	std::mutex mutex_;
 	std::vector<sound::note> key_;

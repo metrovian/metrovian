@@ -21,35 +21,23 @@ synthesis_add::synthesis_add(const nlohmann::ordered_json &preset)
 	}
 }
 
-void synthesis_add::synthesis(uint64_t min, uint64_t max, uint64_t period) {
+void synthesis_add::synthesis(uint64_t max) {
 	LOG_ENTER();
-	double sum = 0.000E+0;
 	double peak = 0.000E+0;
 	for (uint64_t i = 0; i < components_.size(); ++i) {
 		peak += amps_[i];
 	}
 
-	uint64_t sample_rate = CONFIG_UINT64("synthesis", "sample-rate");
-	std::vector<int16_t> sample(sample_rate * period, 0);
 	set_size(max);
-	for (uint64_t i = min; i < max; ++i) {
-		if (on_synthesis_ != nullptr) {
-			on_synthesis_((i + 1) - min);
+	set_synthesis([this, peak](uint64_t note, uint64_t sample) {
+		double sum = 0.000E+0;
+		for (uint64_t i = 0; i < components_.size(); ++i) {
+			sum += components_[i](note + std::log2(ratios_[i]) * 1.200E+1, sample) *
+			       amps_[i] / peak;
 		}
 
-		for (uint64_t j = 0; j < sample.size(); ++j) {
-			sum = 0.000E+0;
-			for (uint64_t k = 0; k < components_.size(); ++k) {
-				sum += components_[k](i + std::log2(ratios_[k]) * 1.200E+1, j) *
-				       amps_[k] / peak;
-			}
-
-			sample[j] = static_cast<int16_t>(sum * 3276);
-		}
-
-		set_sample(i, sample);
-		LOG_PROGRESS((i + 1) - min, max - min);
-	}
+		return static_cast<int16_t>(sum * 3276);
+	});
 
 	LOG_EXIT();
 	return;

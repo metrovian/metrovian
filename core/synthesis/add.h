@@ -6,7 +6,7 @@ public:
 	synthesis_add(const nlohmann::ordered_json &preset);
 
 protected:
-	void synthesis(uint64_t min, uint64_t max, uint64_t period) override;
+	void synthesis(uint64_t max) override;
 
 protected:
 	std::vector<std::function<double(double, double)>> components_;
