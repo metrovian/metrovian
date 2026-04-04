@@ -1,6 +1,11 @@
 # Targets
 build/
 
+# Harnesses
+.agents
+.codex
+.claude
+
 # IDE
 .vscode
 
