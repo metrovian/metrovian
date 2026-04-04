@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   saveBtn.addEventListener("click", async () => {
     try {
-      const res = await asyncAPI({ action: "read", waveform: 0 });
+      const res = await asyncAPI({ action: "read", waveforms: 0 });
       const data = JSON.parse(res);
       const blob = new Blob([JSON.stringify(data, null, 2)], {
         type: "application/json",
