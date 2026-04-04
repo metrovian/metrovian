@@ -33,19 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
           detail: METROVIAN.state,
         })
       );
-
-      if (METROVIAN.state != 2) {
-        stateLine.style.setProperty("--progress", 100);
-      }
-    }
-
-    if (METROVIAN.state == 2) {
-      const now = await asyncAPI({ action: "read", progress: 0 });
-      const max = await asyncAPI({ action: "read", notes: 0 });
-      stateLine.style.setProperty(
-        "--progress",
-        (parseInt(now) * 100.0) / parseInt(max)
-      );
     }
 
     return;

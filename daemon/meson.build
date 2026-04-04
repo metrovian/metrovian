@@ -2,8 +2,6 @@
 src_daemon = files(
   'api/read/mid.cpp',
   'api/read/mids.cpp',
-  'api/read/notes.cpp',
-  'api/read/progress.cpp',
   'api/read/state.cpp',
   'api/read/waveform.cpp',
   'api/read/waveforms.cpp',

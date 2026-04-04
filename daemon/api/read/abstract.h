@@ -15,8 +15,6 @@ public:
 
 DECL_READ(mid);
 DECL_READ(mids);
-DECL_READ(notes);
-DECL_READ(progress);
 DECL_READ(state);
 DECL_READ(waveform);
 DECL_READ(waveforms);

@@ -50,7 +50,7 @@ body {
   left: 0;
   top: 0;
   height: 100%;
-  width: calc(var(--progress, 0) * 1%);
+  width: 100%;
   background: var(--state-color);
 }
 

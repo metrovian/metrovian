@@ -113,8 +113,6 @@ MHD_Result router_singleton::handle_query(
 router_singleton::router_singleton() {
 	rmap_.insert(std::make_pair("mid", std::make_unique<read_mid>()));
 	rmap_.insert(std::make_pair("mids", std::make_unique<read_mids>()));
-	rmap_.insert(std::make_pair("notes", std::make_unique<read_notes>()));
-	rmap_.insert(std::make_pair("progress", std::make_unique<read_progress>()));
 	rmap_.insert(std::make_pair("state", std::make_unique<read_state>()));
 	rmap_.insert(std::make_pair("waveform", std::make_unique<read_waveform>()));
 	rmap_.insert(std::make_pair("waveforms", std::make_unique<read_waveforms>()));

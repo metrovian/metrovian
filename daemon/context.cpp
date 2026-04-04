@@ -62,14 +62,6 @@ uint8_t context_api::read_id() {
 	return context_singleton::instance().id_.load();
 }
 
-uint64_t context_api::read_progress() {
-	return context_singleton::instance().progress_.load();
-}
-
-uint64_t context_api::read_notes() {
-	return CONFIG_UINT64("synthesis", "note-max") - CONFIG_UINT64("synthesis", "note-min");
-}
-
 void context_api::write_presets(const nlohmann::ordered_json &presets) {
 	context_singleton::instance().presets_ = presets;
 	std::string path = CONFIG_PATH(CONFIG_PRESET);
@@ -119,10 +111,5 @@ void context_machine::write_state(const machine::state state) {
 
 void context_machine::write_play(const uint8_t play) {
 	context_singleton::instance().play_.store(play);
-	return;
-}
-
-void context_machine::write_progress(const uint64_t progress) {
-	context_singleton::instance().progress_.store(progress);
 	return;
 }
