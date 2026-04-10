@@ -16,21 +16,7 @@ void command_polynomial::setup(CLI::App *parent) {
 void command_polynomial::run() {
 	optimization_polynomial engine;
 	if (engine.import_function(model_).length() > 0) {
-		Eigen::VectorXd domain;
-		Eigen::VectorXd range;
-		Eigen::VectorXd params = engine.export_parameters();
-		for (size_t i = 0; i < std::min(static_cast<size_t>(params.size()), params_.size()); ++i) {
-			params[i] = params_[i];
-		}
-
-		engine.import_parameters(params);
-		if (read_vector(in_, domain, range, ',') == 0) {
-			if (engine.calibrate(domain, range, iter_, eps_).norm() >= 0) {
-				std::cout << engine.export_parameters().transpose() << std::endl;
-			}
-		} else {
-			std::cout << engine.export_function() << std::endl;
-		}
+		calibrate(&engine);
 	}
 
 	return;

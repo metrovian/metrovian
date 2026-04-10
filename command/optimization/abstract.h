@@ -1,10 +1,14 @@
 #pragma once
 #include "command/abstract.h"
+#include "core/optimization/abstract.h"
 
 class command_user : public command_abstract {
 public:
 	void setup(CLI::App *parent) override;
 	void run() override;
+
+protected:
+	void calibrate(optimization_abstract *engine);
 
 protected:
 	std::string func_;
