@@ -66,7 +66,6 @@ void machine_singleton::handle_terminate(int) {
 }
 
 machine_singleton::machine_singleton() {
-	std::cout << std::scientific << std::showpos << std::setprecision(6);
 	spdlog::set_default_logger(spdlog::stderr_color_mt("stderr"));
 	spdlog::set_level(spdlog::level::info);
 	smap_.insert(std::make_pair(machine::state::none, std::make_unique<state_none>()));
