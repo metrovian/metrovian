@@ -19,7 +19,7 @@ interface_singleton::interface_singleton() {
 	command_parser_.set_version_flag("--version, -v", std::string(__DATE__ " " __TIME__))->description("");
 	std::cout << std::scientific << std::showpos << std::setprecision(6);
 	spdlog::set_default_logger(spdlog::stderr_color_mt("stderr"));
-	spdlog::set_level(spdlog::level::trace);
+	spdlog::set_level(spdlog::level::warn);
 }
 
 int interface_singleton::command_parse(int argc, char **argv) {
