@@ -32,7 +32,7 @@ void command_user::calibrate(optimization_abstract *engine) {
 
 	engine->import_parameters(params);
 	if (read_vector(in_, domain, range, ',') == 0) {
-		double error = engine->calibrate(domain, range, iter_, eps_).norm() / domain.size();
+		double error = engine->calibrate(domain, range, iter_, eps_).norm() / std::sqrt(domain.size());
 		if (error >= 0) {
 			params = engine->export_parameters();
 			std::cout << "error: " << error << std::endl;
