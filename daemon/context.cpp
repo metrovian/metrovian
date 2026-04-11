@@ -22,6 +22,7 @@ nlohmann::ordered_json context_api::read_presets() {
 
 nlohmann::ordered_json context_api::read_mids() {
 	nlohmann::ordered_json mids;
+	std::vector<std::filesystem::path> paths;
 	std::error_code code;
 	std::filesystem::path dir(std::getenv("STATE_DIRECTORY"));
 	dir /= std::string("mids");
@@ -35,13 +36,63 @@ nlohmann::ordered_json context_api::read_mids() {
 			auto path = entry.path();
 			auto ext = path.extension().string();
 			if (ext == ".mid") {
-				nlohmann::ordered_json metadata;
-				metadata["filename"] = path.filename().string();
-				metadata["title"] = path.stem().string();
-				metadata["composer"] = nullptr;
-				mids.push_back(metadata);
+				paths.push_back(path);
 			}
 		}
+	}
+
+	std::sort(paths.begin(), paths.end(),
+		  [](const auto &a, const auto &b) {
+			  auto sa = a.stem().string();
+			  auto sb = b.stem().string();
+			  size_t i = 0;
+			  size_t j = 0;
+			  while (
+			      i < sa.size() &&
+			      j < sb.size()) {
+				  if (isdigit(sa[i]) == true &&
+				      isdigit(sb[j]) == true) {
+					  size_t si = i;
+					  size_t sj = j;
+					  while (i < sa.size()) {
+						  if (isdigit(sa[i]) == true) {
+							  ++i;
+						  } else {
+							  break;
+						  }
+					  }
+					  while (j < sb.size()) {
+						  if (isdigit(sb[j]) == true) {
+							  ++j;
+						  } else {
+							  break;
+						  }
+					  }
+
+					  int na = std::stoi(sa.substr(si, i - si));
+					  int nb = std::stoi(sb.substr(sj, j - sj));
+					  if (na != nb) {
+						  return na < nb;
+					  }
+				  } else {
+					  if (sa[i] != sb[j]) {
+						  return sa[i] < sb[j];
+					  } else {
+						  ++i;
+						  ++j;
+					  }
+				  }
+			  }
+
+			  return sa.size() < sb.size();
+		  });
+
+	for (const auto &path : paths) {
+		nlohmann::ordered_json metadata;
+		metadata["filename"] = path.filename().string();
+		metadata["title"] = path.stem().string();
+		metadata["composer"] = nullptr;
+		mids.push_back(metadata);
 	}
 
 	return mids;
