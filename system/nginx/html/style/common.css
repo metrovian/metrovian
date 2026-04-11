@@ -68,13 +68,27 @@ body {
   align-items: center;
   max-height: calc(100vh - 40px);
   overflow-y: auto;
+  animation: panel-enter 180ms ease-out;
+}
+.page-leaving #panel {
+  opacity: 0;
+  transition: opacity 140ms ease-out;
 }
 
-@media (max-width: 520px) {
+@media (max-width: 420px) {
   #panel {
     width: calc(100% - 100px);
     padding: 20px;
     margin: 32px auto;
-    max-height: calc(100vh - 64px);
+    max-height: calc(100vh - 40px);
+  }
+}
+
+@keyframes panel-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

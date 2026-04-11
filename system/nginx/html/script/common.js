@@ -12,6 +12,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const stateText = document.getElementById("stateText");
   const stateLine = document.getElementById("stateLine");
+  const pageLinks = document.querySelectorAll(
+    'a[href="setup.html"], a[href="system.html"]'
+  );
+
+  pageLinks.forEach((link) => {
+    link.addEventListener("click", (event) => {
+      if (
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      document.body.classList.add("page-leaving");
+      setTimeout(() => {
+        window.location.href = link.href;
+      }, 120);
+      return;
+    });
+  });
 
   async function updateState() {
     const prev = METROVIAN.state;
