@@ -59,7 +59,7 @@ body {
   margin: 48px auto;
   background: linear-gradient(180deg, #0f1419 0%, #0b0f14 100%);
   border-radius: 16px;
-  padding: 28px;
+  padding: 20px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.55);
   border: 1px solid var(--panel-border);
   position: relative;
@@ -82,9 +82,7 @@ body {
 @media (max-width: 420px) {
   #panel {
     width: calc(100% - 100px);
-    padding: 20px;
     margin: 32px auto;
-    max-height: calc(100vh - 40px);
   }
 }
 
