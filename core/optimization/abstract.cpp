@@ -98,7 +98,7 @@ std::string optimization_abstract::import_function(const std::string &func) {
 
 double optimization_abstract::residual(const double domain, const double range) {
 	mu::Parser parser;
-	parser.DefineVar("t", const_cast<double *>(&domain));
+	parser.DefineVar("x", const_cast<double *>(&domain));
 	for (Eigen::Index i = 0; i < params_.size(); ++i) {
 		std::string symbol = std::string("c") + std::to_string(i);
 		parser.DefineVar(symbol, &params_[i]);
@@ -110,7 +110,7 @@ double optimization_abstract::residual(const double domain, const double range) 
 
 double optimization_abstract::residual(const double domain, const double range, const Eigen::VectorXd &params) {
 	mu::Parser parser;
-	parser.DefineVar("t", const_cast<double *>(&domain));
+	parser.DefineVar("x", const_cast<double *>(&domain));
 	for (Eigen::Index i = 0; i < params.size(); ++i) {
 		std::string symbol = std::string("c") + std::to_string(i);
 		parser.DefineVar(symbol, const_cast<double *>(&params[i]));

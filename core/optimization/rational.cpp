@@ -6,7 +6,7 @@ std::string optimization_rational::import_function(std::vector<uint8_t> model) {
 	if (model.size() == 2) {
 		oss << "(c0";
 		for (uint8_t i = 0; i < model[0]; ++i) {
-			oss << " + t*(c" << i + 1;
+			oss << " + x*(c" << i + 1;
 		}
 
 		for (uint8_t i = 0; i < model[0]; ++i) {
@@ -15,7 +15,7 @@ std::string optimization_rational::import_function(std::vector<uint8_t> model) {
 
 		oss << ") / (1";
 		for (uint8_t i = 0; i < model[1]; ++i) {
-			oss << " + t*(c"
+			oss << " + x*(c"
 			    << static_cast<uint16_t>(model[0]) + (i + 1);
 		}
 
