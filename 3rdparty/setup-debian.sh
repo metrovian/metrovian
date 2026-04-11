@@ -8,6 +8,7 @@ sudo apt install \
         dhcpcd \
         hostapd \
         nginx \
+        samba \
         nlohmann-json3-dev \
         libasound2-dev \
         libsmf-dev \

@@ -24,6 +24,8 @@ nlohmann::ordered_json context_api::read_mids() {
 	nlohmann::ordered_json mids;
 	std::error_code code;
 	std::filesystem::path dir(std::getenv("STATE_DIRECTORY"));
+	dir /= std::string("mids");
+	std::filesystem::create_directories(dir);
 	for (const auto &entry : std::filesystem::directory_iterator(dir, code)) {
 		if (code.value() == 0) {
 			if (entry.is_regular_file() == false) {

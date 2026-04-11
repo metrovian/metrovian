@@ -19,7 +19,10 @@ int automata_singleton::play(std::string name) {
 		return -1;
 	}
 
-	smf_ = smf_load((std::string(std::getenv("STATE_DIRECTORY")) + (std::string("/") + name)).c_str());
+	std::string path = std::string(std::getenv("STATE_DIRECTORY"));
+	path += std::string("/mids/");
+	path += name;
+	smf_ = smf_load(path.c_str());
 	if (smf_ == nullptr) {
 		LOG_CONDITION(smf_load == nullptr);
 		LOG_EXIT();
