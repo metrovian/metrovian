@@ -5,9 +5,8 @@ window.METROVIAN = {
 document.addEventListener("DOMContentLoaded", () => {
   const STATE_UI = {
     1: { label: "SETUP", color: "#3b82f6" },
-    2: { label: "SYNTHESIS", color: "#2fbdd6" },
-    3: { label: "READY", color: "#22f7b6" },
-    19: { label: "PLAY", color: "#22f7b6" },
+    2: { label: "READY", color: "#22f7b6" },
+    18: { label: "SYNTHESIS", color: "#22f7b6" },
     502: { label: "ERROR", color: "#ef4444" },
   };
 

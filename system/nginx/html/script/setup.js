@@ -6,12 +6,12 @@ document.addEventListener("DOMContentLoaded", () => {
         waveSelect2: true,
         waveConfirm: false,
       },
-      3: {
+      2: {
         waveSelect1: true,
         waveSelect2: false,
         waveConfirm: false,
       },
-      19: {
+      18: {
         waveSelect1: true,
         waveSelect2: true,
         waveConfirm: true,
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     waveConfirm.classList.toggle("disabled", ui.waveConfirm);
 
     const stateSynth = event.detail & 0x0f;
-    if (stateSynth == 0x02 || stateSynth == 0x03) {
+    if (stateSynth == 0x02) {
       const select = await asyncAPI({ action: "read", waveform: 0 });
       const id = String(select);
       waveSelect1.value = id;
