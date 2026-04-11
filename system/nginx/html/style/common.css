@@ -70,6 +70,10 @@ body {
   overflow-y: auto;
   animation: panel-enter 180ms ease-out;
 }
+.page-loading #panel {
+  opacity: 0;
+  animation: none;
+}
 .page-leaving #panel {
   opacity: 0;
   transition: opacity 140ms ease-out;

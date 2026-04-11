@@ -2,6 +2,10 @@ window.METROVIAN = {
   state: 0,
 };
 
+window.addEventListener("load", () => {
+  document.documentElement.classList.remove("page-loading");
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   const STATE_UI = {
     1: { label: "SETUP", color: "#3b82f6" },
