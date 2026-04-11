@@ -28,12 +28,12 @@ synthesis_abstract::synthesis_abstract(const nlohmann::ordered_json &preset)
 	return;
 }
 
-void synthesis_abstract::synthesize() {
-	synthesis(CONFIG_UINT64("synthesis", "note-max"));
+void synthesis_abstract::setup() {
+	setup(CONFIG_UINT64("synthesis", "note-max"));
 	return;
 }
 
-void synthesis_abstract::perform() {
+void synthesis_abstract::synthesis() {
 	run(sound::pipeline::sync);
 	return;
 }

@@ -11,7 +11,6 @@ src_daemon = files(
   'api/write/waveform.cpp',
   'api/router.cpp',
   'api/response.cpp',
-  'machine/state/performance.cpp',
   'machine/state/setup.cpp',
   'machine/state/synthesis.cpp',
   'machine/api.cpp',

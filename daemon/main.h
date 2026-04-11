@@ -30,8 +30,7 @@ private:
 	void transition(const machine::state next);
 	void setup(const nlohmann::ordered_json &preset);
 	void setup();
-	void synthesize();
-	void perform();
+	void synthesis();
 
 private:
 	static inline std::function<void(void)> handler_ = nullptr;

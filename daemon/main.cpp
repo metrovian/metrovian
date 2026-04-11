@@ -72,7 +72,6 @@ machine_singleton::machine_singleton() {
 	smap_.insert(std::make_pair(machine::state::shutdown, std::make_unique<state_none>()));
 	smap_.insert(std::make_pair(machine::state::setup, std::make_unique<state_setup>()));
 	smap_.insert(std::make_pair(machine::state::synthesis, std::make_unique<state_synthesis>()));
-	smap_.insert(std::make_pair(machine::state::performance, std::make_unique<state_performance>()));
 	property_singleton::instance();
 	context_singleton::instance();
 	automata_singleton::instance();
@@ -91,6 +90,7 @@ void machine_singleton::setup(const nlohmann::ordered_json &preset) {
 	std::string method = preset.value("method", "");
 	if (method == std::string("add")) {
 		core_ = std::make_unique<synthesis_add>(preset);
+		core_->setup();
 	}
 
 	LOG_EXIT();
@@ -102,13 +102,8 @@ void machine_singleton::setup() {
 	return;
 }
 
-void machine_singleton::synthesize() {
-	core_->synthesize();
-	return;
-}
-
-void machine_singleton::perform() {
-	core_->perform();
+void machine_singleton::synthesis() {
+	core_->synthesis();
 	return;
 }
 

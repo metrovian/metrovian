@@ -10,10 +10,10 @@ MHD_Result write_waveform::parse(MHD_Connection *connection, std::string param) 
 		return response::empty(connection, MHD_HTTP_OK);
 	}
 
-	if ((context_api::read_state() & 0xF0) == 0x10) { // play
+	if ((context_api::read_state() & 0xF0) == 0x10) { // synthesis
 		automata_singleton::instance().panic();
 		return response::empty(connection, MHD_HTTP_OK);
-	} else if ((context_api::read_state() & 0x0F) == 0x03) { // performance
+	} else if ((context_api::read_state() & 0x0F) == 0x02) { // ready
 		machine_singleton::instance().panic();
 		return response::empty(connection, MHD_HTTP_OK);
 	}

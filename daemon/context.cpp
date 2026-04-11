@@ -104,7 +104,7 @@ std::string context_api::read_mid() {
 
 uint8_t context_api::read_state() {
 	uint8_t state = static_cast<uint8_t>(context_singleton::instance().state_.load());
-	if (state == static_cast<uint8_t>(machine::state::performance)) {
+	if (state == static_cast<uint8_t>(machine::state::synthesis)) {
 		state += (context_singleton::instance().play_.load() << 4);
 	}
 

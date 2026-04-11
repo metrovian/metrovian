@@ -21,7 +21,7 @@ synthesis_add::synthesis_add(const nlohmann::ordered_json &preset)
 	}
 }
 
-void synthesis_add::synthesis(uint64_t max) {
+void synthesis_add::setup(uint64_t max) {
 	LOG_ENTER();
 	double peak = 0.000E+0;
 	for (uint64_t i = 0; i < components_.size(); ++i) {

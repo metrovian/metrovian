@@ -9,8 +9,8 @@ public:
 	virtual ~synthesis_abstract() = default;
 	synthesis_abstract();
 	synthesis_abstract(const nlohmann::ordered_json &preset);
-	void synthesize();
-	void perform();
+	void setup();
+	void synthesis();
 	void panic();
 	void callback_disconnect(std::function<void(void)> function);
 	void callback_change(std::function<void(uint32_t, int32_t)> function);
@@ -20,7 +20,7 @@ protected:
 	void set_scale(uint16_t volume);
 	void set_size(uint64_t note);
 	void set_synthesis(std::function<int16_t(uint64_t, uint64_t)> function);
-	virtual void synthesis(uint64_t max) = 0;
+	virtual void setup(uint64_t max) = 0;
 
 private:
 	std::unique_ptr<sound_producer> create_producer() override final;
