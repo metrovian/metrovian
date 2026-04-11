@@ -3,7 +3,11 @@ window.METROVIAN = {
 };
 
 window.addEventListener("load", () => {
-  document.documentElement.classList.remove("page-loading");
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.documentElement.classList.remove("page-loading");
+    });
+  });
 });
 
 document.addEventListener("DOMContentLoaded", () => {
