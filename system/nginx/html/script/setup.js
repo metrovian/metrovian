@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   waveConfirm.addEventListener("click", async () => {
-    if (stateText.textContent == "SETUP") {
+    if (METROVIAN.state == 1) {
       const value = waveSelect1?.value || null;
       const valids = Array.from(waveSelect1.options).map((opt) => opt.value);
       if (valids.includes(value) == false) {
@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       console.log(`Select Waveform: ${value}`);
       return;
-    } else if (stateText.textContent == "READY") {
+    } else if (METROVIAN.state == 2) {
       const value = waveSelect2?.value || null;
       const valids = Array.from(waveSelect2.options).map((opt) => opt.value);
       if (valids.includes(value) == false) {
