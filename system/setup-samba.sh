@@ -5,7 +5,7 @@ USER_NAME="${SUDO_USER:-$(logname)}"
 
 sudo systemctl stop smbd
 if ! sudo pdbedit -L | grep -q "^$USER_NAME:"; then
-    sudo smbpasswd -a $USER_NAME
+  sudo smbpasswd -a $USER_NAME
 fi
 
 sudo groupadd -f $GROUP
@@ -15,7 +15,7 @@ sudo chown root:$GROUP $SHARE_DIR
 sudo chmod 2775 $SHARE_DIR
 
 if ! grep -q "^\[$GROUP\]" /etc/samba/smb.conf; then
-sudo tee -a /etc/samba/smb.conf > /dev/null <<EOF
+  sudo tee -a /etc/samba/smb.conf > /dev/null <<EOF
 
 [$GROUP]
 path = $SHARE_DIR
